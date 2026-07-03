@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "thirdparty/SDL2/SDL-release-2.32.6",
+		"source" : "thirdparty/SDL2/SDL-release-2.32.6"
+	}
+}

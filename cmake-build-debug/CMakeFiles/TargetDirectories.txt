@@ -1,0 +1,10 @@
+D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/toyProjects.dir
+D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/C++Projects/toyProjects/cmake-build-debug/thirdparty/SDL2/SDL-release-2.32.6/CMakeFiles/sdl_headers_copy.dir
+D:/C++Projects/toyProjects/cmake-build-debug/thirdparty/SDL2/SDL-release-2.32.6/CMakeFiles/SDL2main.dir
+D:/C++Projects/toyProjects/cmake-build-debug/thirdparty/SDL2/SDL-release-2.32.6/CMakeFiles/SDL2.dir
+D:/C++Projects/toyProjects/cmake-build-debug/thirdparty/SDL2/SDL-release-2.32.6/CMakeFiles/SDL2_test.dir
+D:/C++Projects/toyProjects/cmake-build-debug/thirdparty/SDL2/SDL-release-2.32.6/CMakeFiles/uninstall.dir
+D:/C++Projects/toyProjects/cmake-build-debug/thirdparty/SDL2/SDL-release-2.32.6/CMakeFiles/edit_cache.dir
+D:/C++Projects/toyProjects/cmake-build-debug/thirdparty/SDL2/SDL-release-2.32.6/CMakeFiles/rebuild_cache.dir

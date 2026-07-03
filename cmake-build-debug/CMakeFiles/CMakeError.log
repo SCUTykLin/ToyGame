@@ -1,0 +1,234 @@
+Performing C SOURCE FILE Test COMPILER_SUPPORTS_MMX failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-aandmc
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_21f4a && [1/2] Building C object CMakeFiles\cmTC_21f4a.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_21f4a.dir/src.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo -DCOMPILER_SUPPORTS_MMX  /DWIN32 /D_WINDOWS  -D_GNU_SOURCE=1 /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_21f4a.dir\src.c.obj /FdCMakeFiles\cmTC_21f4a.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-aandmc\src.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-aandmc\src.c(15): error C2440: “=”: 无法从“int”转换为“__m64”
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+    #if 0
+    # if defined(__i386__) || defined(__x86_64__)
+    #  define test_enabled 1
+    # else
+    #  define test_enabled 0 /* feign success in Apple multi-arch configs */
+    # endif
+    #else                    /* test normally */
+    # define test_enabled 1
+    #endif
+    #if test_enabled
+          #include <mmintrin.h>
+      void ints_add(int *dest, int *a, int *b, unsigned size) {
+        for (; size >= 2; size -= 2, dest += 2, a += 2, b += 2) {
+          *(__m64*)dest = _mm_add_pi32(*(__m64*)a, *(__m64*)b);
+        }
+      }
+      int main(int argc, char *argv[]) {
+        ints_add((int*)0, (int*)0, (int*)0, 0);
+        return 0;
+      }
+    #else
+    int main(int argc, char *argv[]) {
+      (void)argc;
+      (void)argv;
+      return 0;
+    }
+    #endif
+
+Performing C SOURCE FILE Test COMPILER_SUPPORTS_SSE failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-a092kz
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_2c95f && [1/2] Building C object CMakeFiles\cmTC_2c95f.dir\src.c.obj
+[2/2] Linking C executable cmTC_2c95f.exe
+FAILED: cmTC_2c95f.exe 
+cmd.exe /C "cd . && "D:\CLion 2023.1.2\bin\cmake\win\x64\bin\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\cmTC_2c95f.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x86\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x86\mt.exe --manifests  -- C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\link.exe /nologo CMakeFiles\cmTC_2c95f.dir\src.c.obj  /out:cmTC_2c95f.exe /implib:cmTC_2c95f.lib /pdb:cmTC_2c95f.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+FINAL LINK: command "C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\link.exe /nologo CMakeFiles\cmTC_2c95f.dir\src.c.obj /out:cmTC_2c95f.exe /implib:cmTC_2c95f.lib /pdb:cmTC_2c95f.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:console kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\cmTC_2c95f.dir/intermediate.manifest CMakeFiles\cmTC_2c95f.dir/manifest.res" failed (exit code 1104) with the following output:
+LINK : fatal error LNK1104: 无法打开文件“cmTC_2c95f.exe”
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+    #if 0
+    # if defined(__i386__) || defined(__x86_64__)
+    #  define test_enabled 1
+    # else
+    #  define test_enabled 0 /* feign success in Apple multi-arch configs */
+    # endif
+    #else                    /* test normally */
+    # define test_enabled 1
+    #endif
+    #if test_enabled
+          #include <xmmintrin.h>
+      void floats_add(float *dest, float *a, float *b, unsigned size) {
+        for (; size >= 4; size -= 4, dest += 4, a += 4, b += 4) {
+          _mm_storeu_ps(dest, _mm_add_ps(_mm_loadu_ps(a), _mm_loadu_ps (b)));
+        }
+      }
+      int main(int argc, char **argv) {
+        floats_add((float*)0, (float*)0, (float*)0, 0);
+        return 0;
+      }
+    #else
+    int main(int argc, char *argv[]) {
+      (void)argc;
+      (void)argv;
+      return 0;
+    }
+    #endif
+
+Performing C SOURCE FILE Test HAVE_GAMEINPUT_H failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-3ln10v
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_8bdc0 && [1/2] Building C object CMakeFiles\cmTC_8bdc0.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_8bdc0.dir/src.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo -DHAVE_GAMEINPUT_H  /DWIN32 /D_WINDOWS  -D_GNU_SOURCE=1 /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_8bdc0.dir\src.c.obj /FdCMakeFiles\cmTC_8bdc0.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-3ln10v\src.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-3ln10v\src.c(4): fatal error C1083: 无法打开包括文件: “gameinput.h”: No such file or directory
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+    #include <stdbool.h>
+    #define COBJMACROS
+    #include <gameinput.h>
+    int main(int argc, char **argv) { return 0; }
+
+Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_X86 failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-2l9hsc
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_a8b32 && [1/2] Building C object CMakeFiles\cmTC_a8b32.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_a8b32.dir/src.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo -DCHECK_CPU_ARCHITECTURE_X86  /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_a8b32.dir\src.c.obj /FdCMakeFiles\cmTC_a8b32.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-2l9hsc\src.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-2l9hsc\src.c(8): error C2065: “choke”: 未声明的标识符
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-2l9hsc\src.c(8): error C2143: 语法错误: 缺少“;”(在“}”的前面)
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+int main(int argc, char *argv[]) {
+#if defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) ||defined( __i386) || defined(_M_IX86)
+  return 0;
+#else
+  choke
+#endif
+}
+
+
+Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_ARM32 failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0vu0dm
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_6d523 && [1/2] Building C object CMakeFiles\cmTC_6d523.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_6d523.dir/src.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo -DCHECK_CPU_ARCHITECTURE_ARM32  /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_6d523.dir\src.c.obj /FdCMakeFiles\cmTC_6d523.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-0vu0dm\src.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-0vu0dm\src.c(8): error C2065: “choke”: 未声明的标识符
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-0vu0dm\src.c(8): error C2143: 语法错误: 缺少“;”(在“}”的前面)
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+int main(int argc, char *argv[]) {
+#if defined(__arm__) || defined(_M_ARM)
+  return 0;
+#else
+  choke
+#endif
+}
+
+
+Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_ARM64 failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-5t8g9z
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_2601a && [1/2] Building C object CMakeFiles\cmTC_2601a.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_2601a.dir/src.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo -DCHECK_CPU_ARCHITECTURE_ARM64  /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_2601a.dir\src.c.obj /FdCMakeFiles\cmTC_2601a.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-5t8g9z\src.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-5t8g9z\src.c(8): error C2065: “choke”: 未声明的标识符
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-5t8g9z\src.c(8): error C2143: 语法错误: 缺少“;”(在“}”的前面)
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+int main(int argc, char *argv[]) {
+#if defined(__aarch64__) || defined(_M_ARM64)
+  return 0;
+#else
+  choke
+#endif
+}
+
+
+Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_ARM64EC failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-x5yxgh
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_a4068 && [1/2] Building C object CMakeFiles\cmTC_a4068.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_a4068.dir/src.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo -DCHECK_CPU_ARCHITECTURE_ARM64EC  /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_a4068.dir\src.c.obj /FdCMakeFiles\cmTC_a4068.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-x5yxgh\src.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-x5yxgh\src.c(8): error C2065: “choke”: 未声明的标识符
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-x5yxgh\src.c(8): error C2143: 语法错误: 缺少“;”(在“}”的前面)
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+int main(int argc, char *argv[]) {
+#if defined(_M_ARM64EC)
+  return 0;
+#else
+  choke
+#endif
+}
+
+
+Performing C SOURCE FILE Test CHECK_CPU_ARCHITECTURE_LOONGARCH64 failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-rqdve4
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_dd08b && [1/2] Building C object CMakeFiles\cmTC_dd08b.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_dd08b.dir/src.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo -DCHECK_CPU_ARCHITECTURE_LOONGARCH64  /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_dd08b.dir\src.c.obj /FdCMakeFiles\cmTC_dd08b.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-rqdve4\src.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-rqdve4\src.c(8): error C2065: “choke”: 未声明的标识符
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-rqdve4\src.c(8): error C2143: 语法错误: 缺少“;”(在“}”的前面)
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+int main(int argc, char *argv[]) {
+#if defined(__loongarch64)
+  return 0;
+#else
+  choke
+#endif
+}
+
+
+Determining if the M_PI exist failed with the following output:
+Change Dir: D:/C++Projects/toyProjects/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-6jl4r3
+
+Run Build Command(s):D:/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe cmTC_72299 && [1/2] Building C object CMakeFiles\cmTC_72299.dir\CheckSymbolExists.c.obj
+FAILED: CMakeFiles/cmTC_72299.dir/CheckSymbolExists.c.obj 
+C:\PROGRA~2\MICROS~4\2019\COMMUN~1\VC\Tools\MSVC\1429~1.301\bin\Hostx86\x64\cl.exe  /nologo   /DWIN32 /D_WINDOWS  -D_GNU_SOURCE=1 /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\cmTC_72299.dir\CheckSymbolExists.c.obj /FdCMakeFiles\cmTC_72299.dir\ /FS -c D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-6jl4r3\CheckSymbolExists.c
+D:\C++Projects\toyProjects\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-6jl4r3\CheckSymbolExists.c(8): error C2065: “M_PI”: 未声明的标识符
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef M_PI
+  return ((int*)(&M_PI))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
