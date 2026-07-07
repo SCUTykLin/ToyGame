@@ -4,6 +4,19 @@
 
 #include "pong_game.h"
 
+namespace Pong {
+    Uint32 black_color = 0x00000000;
+    Uint32 white_color = 0xffffffff;
+    float MOVEMENT_SPEED = 2.0f;
+    const int FRAME_TARGET = 1000 / 60;
+    const int LEFT_BORDER = 80;
+    const int RIGHT_BORDER = 560;
+    const int PL_HEIGHT = 200;
+    const int TOP_INNER_BORDER = 0;
+    const int BOTTOM_INNER_BORDER = 640;
+
+}
+
 void Pong::startPongGame(){
     Pong::main_loop();
 }
@@ -110,10 +123,21 @@ float Pong::Ball::get_speed_y() {
     return this->speed->y;
 }
 
-void Pong::main_loop(){
+SDL_Surface* Pong::create_window(std::string title, int height, int width) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
-    SDL_Window* window = SDL_CreateWindow("pong game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0);
+    window = SDL_CreateWindow(title.c_str(),
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        width, height, 0);
     SDL_Surface* surface = SDL_GetWindowSurface(window);
+    return surface;
+}
+
+void Pong::update_window() {
+    SDL_UpdateWindowSurface(window);
+}
+
+void Pong::main_loop(){
+    SDL_Surface* surface = Pong::create_window("pong game",480, 640);
 
     SDL_Rect pl1 = create_rect(surface, Pong::white_color, 40, 40, 40, 200);
     SDL_Rect pl2 = create_rect(surface, Pong::white_color, 560, 300, 40, 200);
@@ -154,8 +178,7 @@ void Pong::main_loop(){
 
         ball.move_ball(surface, &pl1, &pl2);
         draw_rect(surface, &border, Pong::white_color);
-        SDL_UpdateWindowSurface(window);
-
+        Pong::update_window();
         // 固定帧数
         Uint32 frame_cost = SDL_GetTicks() - frame_start;
         if (FRAME_TARGET > frame_cost) {

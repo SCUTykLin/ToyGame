@@ -10,15 +10,17 @@
 #include <SDL_main.h>
 
 namespace Pong {
-    constexpr static Uint32 black_color = 0x00000000;
-    constexpr static Uint32 white_color = 0xffffffff;
-    constexpr static float MOVEMENT_SPEED = 2.0f;
-    constexpr const int FRAME_TARGET = 1000 / 60;
-    constexpr const int LEFT_BORDER = 80;
-    constexpr const int RIGHT_BORDER = 560;
-    constexpr const int PL_HEIGHT = 200;
-    constexpr const int TOP_INNER_BORDER = 0;
-    constexpr const int BOTTOM_INNER_BORDER = 640;
+    extern Uint32 black_color;
+    extern Uint32 white_color;
+    extern float MOVEMENT_SPEED;
+    extern const int FRAME_TARGET;
+    extern const int LEFT_BORDER;
+    extern const int RIGHT_BORDER;
+    extern const int PL_HEIGHT;
+    extern const int TOP_INNER_BORDER;
+    extern const int BOTTOM_INNER_BORDER;
+
+    static SDL_Window* window = nullptr;
 
     typedef struct Speed{
         float x;
@@ -54,5 +56,9 @@ namespace Pong {
     void move_player(SDL_Surface* surface, SDL_Rect* pl, int direction);
 
     void move_rect(SDL_Surface* surface, SDL_Rect* rect, Pong::Speed* speed);
+
+    SDL_Surface* create_window(std::string title, int height, int width);
+
+    void update_window();
 }
 #endif //TOYPROJECTS_PONG_GAME_H
