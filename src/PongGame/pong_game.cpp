@@ -48,13 +48,28 @@ void Pong::Ball::move_ball(SDL_Surface *surface, SDL_Rect* pl1, SDL_Rect* pl2) {
         if ((get_y() + get_size_y() > pl1->y) && (get_y() < pl1->y + pl1->h)){
 
             auto hit_fraction = ((double)(get_y() + get_size_y()) / (double)2 - (double)(pl1->y + pl1->h) / (double)2) / ((double)PL_HEIGHT / 2);
-            std::cout << hit_fraction << std::endl;
-            set_speed(-fabs(1 - hit_fraction) * get_speed_x(), fabs(hit_fraction) * get_speed_y());
+            float x_speed = -get_speed_x();
+            float y_speed = (double)(hit_fraction * (double)Pong::MOVEMENT_SPEED);
+            set_speed(x_speed, y_speed);
         }
     }
-    if (this->rect->x + this->rect->w >= Pong::RIGHT_BORDER){
-        this->speed->x *= -1;
+
+    if (get_x() + get_size_x() >= Pong::RIGHT_BORDER){
+        if ((get_y() + get_size_y() > pl2->y) && (get_y() < pl2->y + pl2->h)){
+            auto hit_fraction = ((double)(get_y() + get_size_y()) / (double)2 - (double)(pl2->y + pl2->h) / (double)2) / ((double)PL_HEIGHT/2);
+            float x_speed = -get_speed_x();
+            float y_speed = (double)(hit_fraction * (double)Pong::MOVEMENT_SPEED);
+            set_speed(x_speed, y_speed);
+        }
     }
+
+    if (get_y() <= Pong::TOP_INNER_BORDER){
+        set_speed(get_speed_x(), -get_speed_y());
+    }
+    if (get_y() + get_size_y() >= Pong::BOTTOM_INNER_BORDER){
+        set_speed(get_speed_x(), -get_speed_y());
+    }
+
     move_rect(surface, this->rect, this->speed);
 }
 

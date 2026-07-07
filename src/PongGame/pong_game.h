@@ -12,11 +12,13 @@
 namespace Pong {
     constexpr static Uint32 black_color = 0x00000000;
     constexpr static Uint32 white_color = 0xffffffff;
-    constexpr static float MOVEMENT_SPEED = 5.0f;
+    constexpr static float MOVEMENT_SPEED = 2.0f;
     constexpr const int FRAME_TARGET = 1000 / 60;
     constexpr const int LEFT_BORDER = 80;
     constexpr const int RIGHT_BORDER = 560;
     constexpr const int PL_HEIGHT = 200;
+    constexpr const int TOP_INNER_BORDER = 0;
+    constexpr const int BOTTOM_INNER_BORDER = 640;
 
     typedef struct Speed{
         float x;
