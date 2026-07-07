@@ -14,6 +14,10 @@
 
 namespace bouncy {
 
+    namespace window_tool{
+        struct SDL_Circle;
+    }
+
     typedef struct Physic_Circle {
         int x;
         int y;
@@ -21,7 +25,6 @@ namespace bouncy {
         int v_x;
         int v_y;
         window_tool::SDL_Circle* sdl_circle;
-
         Physic_Circle(int x, int y, int radius, int v_x, int v_y);
         ~Physic_Circle();
         void step();

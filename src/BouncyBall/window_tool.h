@@ -39,37 +39,40 @@ namespace bouncy {
 
         SDL_Rect* create_rect(int x, int y, int w, int h);
 
+        void delete_assets();
+
         template <typename T>
         concept hasSDL_Circle = requires(T){std::declval<T>().sdl_circle;};
 
-        template <typename T, typename U=void>
+        template <typename T>
+        concept hasCircle_Primitives = requires(T){std::declval<T>().circle_primitives;};
+
+        template <typename T>
         void delete_assets(T* asset) {
-            int idx = -1;
-            for (int i = 0; i < Game_Assets_Ptr.size(); i++) {
-                if (reinterpret_cast<T*>(Game_Assets_Ptr[i]) == asset) {
-                    idx = i;
-                    break;
-                }
-            }
-            // 可能是圆：递归删除，可能是SDL_Circle或者Physic_Circle
-            if (std::is_same_v<T, SDL_Circle>) {
-                for (int i = 0;i < asset->circle_primitives->size(); ++i) {
-                    delete_assets(asset->circle_primitives->at(i));
+            if (asset == nullptr) return;
+
+            auto ptr_it = std::find(Game_Assets_Ptr.begin(), Game_Assets_Ptr.end(),
+                                    static_cast<void*>(asset));
+            const bool exists = (ptr_it != Game_Assets_Ptr.end());
+            const int idx = static_cast<int>(ptr_it - Game_Assets_Ptr.begin());
+
+            // 自动检测：有对应成员就自动递归删除
+            if constexpr (hasCircle_Primitives<T>) {
+                for (auto* sub : *asset->circle_primitives) {
+                    delete_assets(sub);
                 }
             }
 
-            if (hasSDL_Circle<T>) { // 这里本来是写Physic_Circle的，但是这个文件没有
+            if constexpr (hasSDL_Circle<T>) {
                 delete_assets(asset->sdl_circle);
             }
 
-            if (idx >= 0) {
+            if (exists) {
                 Game_Assets_Delete[idx]();
-                Game_Assets_Ptr.erase(Game_Assets_Ptr.begin() + idx);
+                Game_Assets_Ptr.erase(ptr_it);
                 Game_Assets_Delete.erase(Game_Assets_Delete.begin() + idx);
             }
         }
-
-        void delete_assets();
 
         template <typename T, typename U = void>
         struct type_traits_circle_ptr {
