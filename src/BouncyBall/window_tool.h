@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <optional>
 #include <functional>
 #include <SDL2/SDL.h>
 
@@ -83,7 +84,7 @@ namespace bouncy::window_tool {
         };
 
         template <typename T, bool U=false>
-        void draw_circle(SDL_Surface* surface, T* circle, Uint32 color) {
+        void draw_circle(SDL_Surface* surface, T* circle, Uint32 color, std::optional<double> radius = std::nullopt) {
             if (circle) {
                 if constexpr (U) {
                     if constexpr (static_cast<bool>(sizeof(decltype(std::declval<T>().v_x + std::declval<T>().v_x)))) {
@@ -97,31 +98,13 @@ namespace bouncy::window_tool {
                         }
                     }
                 }
+                const bool use_radius = radius.has_value();
+                const double r2 = use_radius ? (*radius) : 0.0;
                 for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
-
+                    if (use_radius && std::pow(circle->circle_primitives->at(i)->x - circle->x, 2) + std::pow(circle->circle_primitives->at(i)->y - circle->y, 2) - std::pow(r2, 2) > 0){
+                        continue;
+                    }
                     SDL_FillRect(surface, circle->circle_primitives->at(i), color);
-                }
-            }
-        }
-
-    template <typename T, bool U=false>
-    void draw_circle(SDL_Surface* surface, T* circle, Uint32 color, double radius) {
-            if (circle) {
-                if constexpr (U) {
-                    if constexpr (static_cast<bool>(sizeof(decltype(std::declval<T>().v_x + std::declval<T>().v_x)))) {
-                        // 有速度，才能退回上一帧擦除掉
-                        for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
-                            circle->circle_primitives->at(i)->x -= circle->v_x;
-                            circle->circle_primitives->at(i)->y -= circle->v_y;
-                            SDL_FillRect(surface, circle->circle_primitives->at(i), 0x00000000);
-                            circle->circle_primitives->at(i)->x += circle->v_x;
-                            circle->circle_primitives->at(i)->y += circle->v_y;
-                        }
-                    }
-                }
-                for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
-                    if (std::pow(circle->circle_primitives->at(i)->x - circle->x, 2) + std::pow(circle->circle_primitives->at(i)->y - circle->y, 2) - std::pow(radius, 2) <= 0)
-                        SDL_FillRect(surface, circle->circle_primitives->at(i), color);
                 }
             }
         }
