@@ -18,6 +18,9 @@ set(PHONG_GAME src/PongGame/pong_game.cpp src/PongGame/pong_game.h)
 set(BOUNCY_BALL
         src/BouncyBall/bouncy_ball.cpp src/BouncyBall/bouncy_ball.h
         src/BouncyBall/window_tool.cpp src/BouncyBall/window_tool.h)
+set(FLUID_SIMULATION
+        src/FluidSimulation/fluid.cpp
+        src/FluidSimulation/fluid.h)
 
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
 set(EXECUTABLE main.cpp main.h)
