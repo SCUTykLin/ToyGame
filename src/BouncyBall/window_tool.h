@@ -11,15 +11,12 @@
 #include <functional>
 #include <SDL2/SDL.h>
 
-#include "bouncy_ball.h"
-
-namespace bouncy {
-    namespace window_tool {
+namespace bouncy::window_tool {
         extern SDL_Window* window;
         extern std::vector<std::function<void()>> Game_Assets_Delete;
         extern std::vector<void*> Game_Assets_Ptr;
 
-        typedef struct SDL_Circle {
+        struct SDL_Circle {
             int x;
             int y;
             int radius;
@@ -28,10 +25,11 @@ namespace bouncy {
             float circle_sdf(int coordinate_x, int coordinate_y) {
                 return std::pow(coordinate_x - x, 2) + std::pow(coordinate_y - y, 2) - std::pow(this->radius, 2);
             }
+            void step(int vx, int vy);
             SDL_Circle(int x, int y, int radius);
-
+            void reset_circle_primitives(double size_perce);
             ~SDL_Circle();
-        }SDL_Circle;
+        };
 
         SDL_Surface* create_window(std::string title, int width, int height);
 
@@ -84,30 +82,68 @@ namespace bouncy {
             using type = decltype(std::declval<T>().sdl_circle);
         };
 
-        template <typename T>
+        template <typename T, bool U=false>
         void draw_circle(SDL_Surface* surface, T* circle, Uint32 color) {
             if (circle) {
-                using rawT = std::remove_cv_t<std::remove_reference_t<T>>;
-                typename type_traits_circle_ptr<rawT>::type _temp_circle = nullptr;
-                if (std::is_same_v<rawT, SDL_Circle>) {
-                    _temp_circle = reinterpret_cast<SDL_Circle*>(circle);
+                if constexpr (U) {
+                    if constexpr (static_cast<bool>(sizeof(decltype(std::declval<T>().v_x + std::declval<T>().v_x)))) {
+                        // 有速度，才能退回上一帧擦除掉
+                        for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
+                            circle->circle_primitives->at(i)->x -= circle->v_x;
+                            circle->circle_primitives->at(i)->y -= circle->v_y;
+                            SDL_FillRect(surface, circle->circle_primitives->at(i), 0x00000000);
+                            circle->circle_primitives->at(i)->x += circle->v_x;
+                            circle->circle_primitives->at(i)->y += circle->v_y;
+                        }
+                    }
                 }
-                else if (hasSDL_Circle<T>) {
-                    _temp_circle = circle->sdl_circle;
-                }
-                for (size_t i = 0; i < _temp_circle->circle_primitives->size(); ++i) {
-                    SDL_FillRect(surface, _temp_circle->circle_primitives->at(i), color);
+                for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
+
+                    SDL_FillRect(surface, circle->circle_primitives->at(i), color);
                 }
             }
         }
 
+    template <typename T, bool U=false>
+    void draw_circle(SDL_Surface* surface, T* circle, Uint32 color, double radius) {
+            if (circle) {
+                if constexpr (U) {
+                    if constexpr (static_cast<bool>(sizeof(decltype(std::declval<T>().v_x + std::declval<T>().v_x)))) {
+                        // 有速度，才能退回上一帧擦除掉
+                        for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
+                            circle->circle_primitives->at(i)->x -= circle->v_x;
+                            circle->circle_primitives->at(i)->y -= circle->v_y;
+                            SDL_FillRect(surface, circle->circle_primitives->at(i), 0x00000000);
+                            circle->circle_primitives->at(i)->x += circle->v_x;
+                            circle->circle_primitives->at(i)->y += circle->v_y;
+                        }
+                    }
+                }
+                for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
+                    if (std::pow(circle->circle_primitives->at(i)->x - circle->x, 2) + std::pow(circle->circle_primitives->at(i)->y - circle->y, 2) - std::pow(radius, 2) <= 0)
+                        SDL_FillRect(surface, circle->circle_primitives->at(i), color);
+                }
+            }
+        }
+
+        template <typename T>
+        void draw_trajectory(SDL_Surface* surface, T* physic_circle,  const size_t N) {
+            using no_pointer_T = std::remove_pointer_t<decltype(physic_circle->trajectory[0]->circle)>;
+            for (int idx = (physic_circle->current_index - 1 + N) % N, i = 0; i < physic_circle->trajectory_length; ++i, idx = (idx - 1 + N) % N) {
+                draw_circle<no_pointer_T, false>(
+                    surface,
+                    physic_circle->trajectory[idx]->circle,
+                    physic_circle->get_trajectory_color(surface->format, physic_circle->trajectory[idx]->alpha),
+                    physic_circle->trajectory[idx]->radius
+                    );
+            }
+        }
         void draw_rect(SDL_Surface* surface, SDL_Rect* rect, Uint32 color);
 
         void move_rect(SDL_Surface* surface, SDL_Rect* rect);
 
         void update_window();
 
-    }
 }
 
 #endif //TOYPROJECTS_BOUNCYBALL_WINDOW_TOOL_H

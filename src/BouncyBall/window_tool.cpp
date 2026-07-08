@@ -9,7 +9,15 @@ namespace bouncy {
         std::vector<std::function<void()>> Game_Assets_Delete;
         std::vector<void*> Game_Assets_Ptr;
 
+        void SDL_Circle::step(int vx, int vy) {
+            for (SDL_Rect* r : *circle_primitives) {
+                r->x += vx;
+                r->y += vy;
+            }
+        }
+
         SDL_Circle::SDL_Circle(int x, int y, int radius) : x(x), y(y), radius(radius) {
+
             this->circle_primitives = new std::vector<SDL_Rect*>();
             int low_x = this->x - this->radius;
             int low_y = this->y - this->radius;
@@ -28,7 +36,7 @@ namespace bouncy {
 
         SDL_Circle::~SDL_Circle() {
             for (size_t i = 0; i < this->circle_primitives->size(); i++) {
-                delete this->circle_primitives->at(i);
+                delete_assets(this->circle_primitives->at(i));
             }
             delete this->circle_primitives;
         }
@@ -43,13 +51,11 @@ namespace bouncy {
         }
         SDL_Circle* create_cirle(int x, int y, int radius) {
             SDL_Circle* circle = new SDL_Circle(x, y, radius);
-            std::cout << "created circle" << std::endl;
             Game_Assets_Ptr.emplace_back(static_cast<void*>(circle));
             Game_Assets_Delete.emplace_back(
                 [circle]()->void {
                     if(circle) {
                         delete circle;
-                        std::cout << "deleted circle" << std::endl;
                     }
                 }
             );
@@ -57,13 +63,11 @@ namespace bouncy {
         }
         SDL_Rect* create_rect(int x, int y, int w, int h) {
             SDL_Rect* rect = new SDL_Rect(x, y, w, h);
-            std::cout << "created rect" << std::endl;
             Game_Assets_Ptr.emplace_back(reinterpret_cast<void*>(rect));
             Game_Assets_Delete.emplace_back(
                 [rect]()->void {
                     if(rect) {
                         delete rect;
-                        std::cout << "deleted rect" << std::endl;
                     }
                 }
                 );
