@@ -11,6 +11,7 @@
 #include <mutex>
 #include "src/PongGame/pong_game.h"
 #include "src/BouncyBall/bouncy_ball.h"
+#include "src/FluidSimulation/fluid.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -39,17 +40,33 @@ public:
     }
 };
 
+class Fluid_Command : public Base_Command<Fluid_Command> {
+public:
+    Fluid_Command() {}
+    void run_command_Impl() {
+        fluid::start_fluid();
+    }
+};
+
 void create_commands_set() {
     std::call_once(flag, []() {
         auto pong_command = std::make_shared<Pong_Command>();
         commands["Pong"] = [pong_command]()->void{pong_command->run_command();};
         auto bouncy_command = std::make_shared<Bouncy_Command>();
         commands["Bouncy"] = [bouncy_command]()->void{bouncy_command->run_command();};
+        auto fluid_command = std::make_shared<Fluid_Command>();
+        commands["Fluid"] = [fluid_command]()->void{fluid_command->run_command();};
     });
 }
 
 std::unordered_map<std::string, std::function<void()>>* get_commands_set() {
     create_commands_set();
+    std::cout << "Commands List: [ ";
+    for (const auto& pair : commands) {
+        std::cout << pair.first << " ";  // key
+    }
+    std::cout << "]" << std::endl;
+
     return &commands;
 }
 

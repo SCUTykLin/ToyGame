@@ -17,6 +17,8 @@
 
 namespace bouncy {
 
+    extern SDL_Surface* surface;
+
     namespace window_tool {
         struct SDL_Circle;
     }

@@ -9,10 +9,12 @@ namespace bouncy {
     constexpr Uint32 white_color = 0xffffffff;
     constexpr Uint32 color_background = 0x0f0f0f0f;
     constexpr int FRAME_TARGET = 1000 / 60;
+    SDL_Surface* surface = nullptr;
 
     void start_bouncy(){
         main_loop();
         window_tool::delete_assets();
+        window_tool::finish_window(surface);
     }
 
     void Physic_Circle::update_velocity() {

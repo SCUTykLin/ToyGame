@@ -127,6 +127,8 @@ namespace bouncy::window_tool {
 
         void update_window();
 
+        void finish_window(SDL_Surface* surface);
+
 }
 
 #endif //TOYPROJECTS_BOUNCYBALL_WINDOW_TOOL_H

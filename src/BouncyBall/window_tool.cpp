@@ -74,6 +74,11 @@ namespace bouncy {
             return rect;
         }
 
+        void finish_window(SDL_Surface* surface) {
+            SDL_FreeSurface(surface);
+            SDL_DestroyWindow(window);
+        }
+
         void delete_assets() {
             for (int i = 0; i < Game_Assets_Delete.size(); i++) {
                 Game_Assets_Delete[i]();

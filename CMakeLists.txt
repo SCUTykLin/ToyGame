@@ -19,8 +19,8 @@ set(BOUNCY_BALL
         src/BouncyBall/bouncy_ball.cpp src/BouncyBall/bouncy_ball.h
         src/BouncyBall/window_tool.cpp src/BouncyBall/window_tool.h)
 set(FLUID_SIMULATION
-        src/FluidSimulation/fluid.cpp
-        src/FluidSimulation/fluid.h)
+        src/FluidSimulation/fluid.cpp src/FluidSimulation/fluid.h
+        src/FluidSimulation/window_tool.cpp src/FluidSimulation/window_tool.h)
 
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
 set(EXECUTABLE main.cpp main.h)
@@ -29,7 +29,8 @@ add_executable(${PROJECT_NAME}
         ${EXECUTABLE}
         ${COMPILER}
         ${PHONG_GAME}
-        ${BOUNCY_BALL})
+        ${BOUNCY_BALL}
+        ${FLUID_SIMULATION})
 
 # SDL2
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main)
