@@ -13,7 +13,6 @@ namespace fluid {
     void start_fluid() {
         main_loop();
     }
-
     void draw_cell(SDL_Surface* surface, Cell cell) {
         int pixel_x = cell.x * CELL_SIZE;
         int pixel_y = cell.y * CELL_SIZE;
