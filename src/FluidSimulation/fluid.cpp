@@ -46,17 +46,23 @@ namespace fluid {
     }
 
     void simulation_step(Cell environment[]) {
-        // water should drop to the cell below
+        CellFlow flows[ROWS * COLUMNS];
+
+        for (int i = 0; i < ROWS * COLUMNS; ++i){
+            flows[i] = CellFlow{0, 0, 0, 0};
+        }
+
         for (int i = 0; i < ROWS; ++i) {
             for (int j = 0; j < COLUMNS; ++j) {
                 Cell current_cell = environment[j + COLUMNS * i];
                 if (i < ROWS - 1) {
                     // water can fall down
-                    Cell cell_below = environment[j + COLUMNS * (i + 1)];
-                    double free_space_below = 1 - cell_below.fill_level;
-                    double retain_fill_current = (current_cell.fill_level - free_space_below) < 0 ? 0 : (current_cell.fill_level - free_space_below);
+                    flows[j + COLUMNS * i].flow_down = ;
                 }
             }
+        }
+        for (int i = 0; i < ROWS * COLUMNS; ++i){
+
         }
     }
 

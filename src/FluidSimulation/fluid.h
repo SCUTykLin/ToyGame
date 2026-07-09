@@ -31,6 +31,13 @@ namespace fluid {
         Cell(int type, double fill_level, int x, int y) : type(type), fill_level(fill_level), x(x), y(y){}
     };
 
+    struct CellFlow{
+        double flow_left;
+        double flow_right;
+        double flow_up;
+        double flow_down;
+    };
+
     void start_fluid();
     void main_loop();
     void draw();
