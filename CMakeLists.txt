@@ -25,6 +25,7 @@ set(IMGUI_DIR
 set(STB_IMAGE
         thirdparty/stb_image/src/stb_image.cpp)
 
+# projects:
 set(COMPILER src/compiler/token.h)
 set(PHONG_GAME src/PongGame/pong_game.cpp src/PongGame/pong_game.h)
 set(BOUNCY_BALL

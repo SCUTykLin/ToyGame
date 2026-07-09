@@ -45,17 +45,33 @@ namespace fluid {
         }
     }
 
+    void simulation_step(Cell environment[]) {
+        // water should drop to the cell below
+        for (int i = 0; i < ROWS; ++i) {
+            for (int j = 0; j < COLUMNS; ++j) {
+                Cell current_cell = environment[j + COLUMNS * i];
+                if (i < ROWS - 1) {
+                    // water can fall down
+                    Cell cell_below = environment[j + COLUMNS * (i + 1)];
+                    double free_space_below = 1 - cell_below.fill_level;
+                    double retain_fill_current = (current_cell.fill_level - free_space_below) < 0 ? 0 : (current_cell.fill_level - free_space_below);
+                }
+            }
+        }
+    }
+
     // logic function for changing the data Structure
     void main_loop() {
         SDL_Surface* surface = window_tool::create_window("Liquid Simulation", SCREEN_WIDTH, SCREEN_HEIGHT);
 
         draw_grid(surface);
-        struct Cell environment[ROWS * COLUMNS];
+        Cell environment[ROWS * COLUMNS];
         initialize_environment(environment);
 
         SDL_Event event;
         bool simulation_running = true;
         int current_type = SOLID_TYPE;
+        bool delete_mode = 0;
         while (simulation_running) {
             while (SDL_PollEvent(&event)) {
                 if (event.type == SDL_QUIT) {
@@ -64,12 +80,14 @@ namespace fluid {
 
                 if (event.type == SDL_MOUSEMOTION) {
                     if (event.motion.state != 0) {
-                        int cell_x = event.motion.x / CELL_SIZE;
-                        int cell_y = event.motion.y / CELL_SIZE;
-                        if (cell_y + COLUMNS * cell_x < ROWS * COLUMNS && cell_y + COLUMNS * cell_x > 0) {
-                            Cell cell = Cell(current_type, 0, cell_x, cell_y);
-                            environment[cell_y + COLUMNS * cell_x] = cell;
+                        int cell_x = event.motion.x / CELL_SIZE; // x表示横轴
+                        int cell_y = event.motion.y / CELL_SIZE; // y表示纵轴
+                        int fill_level = delete_mode ? 0 : 1;
+                        if (delete_mode) {
+                            current_type = WATER_TYPE;
                         }
+                        Cell cell = Cell(current_type, fill_level, cell_x, cell_y);
+                        environment[cell_x + COLUMNS * cell_y] = cell;
                     }
                 }
 
@@ -77,8 +95,15 @@ namespace fluid {
                     if (event.key.keysym.sym == SDLK_SPACE) {
                         current_type = !current_type;
                     }
+                    if (event.key.keysym.sym == SDLK_BACKSPACE) {
+                        delete_mode = !delete_mode;
+                    }
                 }
             }
+
+            // perform simulation stage
+            simulation_step(environment);
+
             draw_environment(surface, environment);
             draw_grid(surface);
             window_tool::update_window();

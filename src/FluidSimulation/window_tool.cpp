@@ -18,8 +18,8 @@ namespace fluid::window_tool {
     }
 
     // 刷新canvas，覆盖前一帧
-    void clear_window(SDL_Surface* surface) {
-        SDL_FillRect(surface, canvas, 0x00000000);
+    void clear_window(SDL_Surface* surface, Uint32 color=0x00000000) {
+        SDL_FillRect(surface, canvas, color);
     }
 
     void update_window() {
