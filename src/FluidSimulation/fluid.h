@@ -24,7 +24,7 @@ namespace fluid {
 
     struct Cell {
         int type;
-        double fill_level;
+        double fill_level; // 0 to 1
         int x;
         int y;
         Cell(){}
