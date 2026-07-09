@@ -1,3 +1,5 @@
-thirdparty
+thirdparty/opengl
+thirdparty/raylib
+thirdparty/SDL2
 .idea
 cmake-build-debug

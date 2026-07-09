@@ -17,11 +17,18 @@ namespace fluid {
         int pixel_x = cell.x * CELL_SIZE;
         int pixel_y = cell.y * CELL_SIZE;
         SDL_Rect cell_rect = SDL_Rect{pixel_x, pixel_y, CELL_SIZE, CELL_SIZE};
-        Uint32 color = WHITE_COLOR;
-        if (cell.type == WATER_TYPE) {
-            color = BLUE_COLOR;
-        }
+        Uint32 color = BLACK_COLOR;
         SDL_FillRect(surface, &cell_rect, color);
+
+        if (cell.type == WATER_TYPE) {
+            int water_height = cell.fill_level * CELL_SIZE;
+            int empty_height = CELL_SIZE - water_height;
+            SDL_Rect water_rect = SDL_Rect{pixel_x, pixel_y + empty_height, CELL_SIZE, water_height};
+            SDL_FillRect(surface, &water_rect, BLUE_COLOR);
+        }
+        if (cell.type == SOLID_TYPE){
+            SDL_FillRect(surface, &cell_rect, WHITE_COLOR);
+        }
     }
 
     void initialize_environment(Cell enviroment[]) {
@@ -32,12 +39,19 @@ namespace fluid {
         }
     }
 
+    void draw_environment(SDL_Surface* surface, Cell environment[]){
+        for (int i = 0; i < ROWS * COLUMNS; ++i){
+            draw_cell(surface, environment[i]);
+        }
+    }
+
     // logic function for changing the data Structure
     void main_loop() {
         SDL_Surface* surface = window_tool::create_window("Liquid Simulation", SCREEN_WIDTH, SCREEN_HEIGHT);
 
         draw_grid(surface);
         struct Cell environment[ROWS * COLUMNS];
+        initialize_environment(environment);
 
         SDL_Event event;
         bool simulation_running = true;
@@ -52,7 +66,10 @@ namespace fluid {
                     if (event.motion.state != 0) {
                         int cell_x = event.motion.x / CELL_SIZE;
                         int cell_y = event.motion.y / CELL_SIZE;
-                        draw_cell(surface, Cell(current_type, 0, cell_x, cell_y));
+                        if (cell_y + COLUMNS * cell_x < ROWS * COLUMNS && cell_y + COLUMNS * cell_x > 0) {
+                            Cell cell = Cell(current_type, 0, cell_x, cell_y);
+                            environment[cell_y + COLUMNS * cell_x] = cell;
+                        }
                     }
                 }
 
@@ -62,6 +79,8 @@ namespace fluid {
                     }
                 }
             }
+            draw_environment(surface, environment);
+            draw_grid(surface);
             window_tool::update_window();
         }
     }
