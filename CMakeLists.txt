@@ -12,6 +12,18 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 add_subdirectory(thirdparty/SDL2/SDL-release-2.32.6 EXCLUDE_FROM_ALL)
 add_subdirectory(thirdparty/raylib)
 
+# imgui
+set(IMGUI_DIR
+        thirdparty/imgui/src/imgui.cpp
+        thirdparty/imgui/src/imgui_demo.cpp
+        thirdparty/imgui/src/imgui_draw.cpp
+        thirdparty/imgui/src/imgui_tables.cpp
+        thirdparty/imgui/src/imgui_widgets.cpp
+        thirdparty/imgui/src/imgui_impl_glfw.cpp
+        thirdparty/imgui/src/imgui_impl_opengl3.cpp)
+# stb_image
+set(STB_IMAGE
+        thirdparty/stb_image/src/stb_image.cpp)
 
 set(COMPILER src/compiler/token.h)
 set(PHONG_GAME src/PongGame/pong_game.cpp src/PongGame/pong_game.h)
@@ -23,7 +35,7 @@ set(FLUID_SIMULATION
         src/FluidSimulation/window_tool.cpp src/FluidSimulation/window_tool.h)
 
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
-set(EXECUTABLE main.cpp main.h)
+set(EXECUTABLE main.cpp main.h ${IMGUI_DIR} ${STB_IMAGE})
 
 add_executable(${PROJECT_NAME}
         ${EXECUTABLE}
@@ -36,6 +48,15 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2)
 
+# imgui + stb_image
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        ${PROJECT_SOURCE_DIR}/thirdparty/imgui/include
+        )
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        ${PROJECT_SOURCE_DIR}/thirdparty/stb_image/include
+        )
 # OpenGL + GLM + assimp
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/thirdparty/opengl/include)
 link_directories(${PROJECT_SOURCE_DIR}/thirdparty/opengl/lib)
