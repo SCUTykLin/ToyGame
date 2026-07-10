@@ -9,10 +9,11 @@
 #define SCREEN_HEIGHT 600
 #define WHITE_COLOR 0xffffffff
 #define BLACK_COLOR 0x00000000
-#define BLUE_COLOR 0x34c3eb
+#define BLUE_COLOR_MAX 0x34c3eb
+#define BLUE_COLOR_MIN 0x001eff
 #define GRAY_COLOR 0x1f1f1f1f
-#define CELL_SIZE 10
-#define LINE_WIDTH 1
+#define CELL_SIZE 8
+#define LINE_WIDTH 0
 #define COLUMNS SCREEN_WIDTH/CELL_SIZE
 #define ROWS SCREEN_HEIGHT/CELL_SIZE
 #define WATER_TYPE 0
@@ -27,22 +28,16 @@ namespace fluid {
         double fill_level; // 0 to 1
         int x;
         int y;
+        int flowing_down; // flag set by simulation routine.
         Cell(){}
         Cell(int type, double fill_level, int x, int y) : type(type), fill_level(fill_level), x(x), y(y){}
-    };
-
-    struct CellFlow{
-        double flow_left;
-        double flow_right;
-        double flow_up;
-        double flow_down;
     };
 
     void start_fluid();
     void main_loop();
     void draw();
     void draw_grid(SDL_Surface* surface);
-    void draw_cell(SDL_Surface* surface, Cell cell);
+    void draw_cell(SDL_Surface* surface, Cell cell, int fill_cell);
 }
 
 #endif //TOYPROJECTS_FLUID_H
