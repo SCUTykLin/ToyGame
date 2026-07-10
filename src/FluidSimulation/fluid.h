@@ -22,7 +22,8 @@
 #include <SDL2/SDL.h>
 
 namespace fluid {
-
+    constexpr double DOWN_FLOW_RATE = 0.1;
+    constexpr double EPSILON = 0.0001;
     struct Cell {
         int type;
         double fill_level; // 0 to 1

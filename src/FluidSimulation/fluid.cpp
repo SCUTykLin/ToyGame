@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <ostream>
-
+#include <algorithm>
 #include "window_tool.h"
 
 namespace fluid {
@@ -21,8 +21,8 @@ namespace fluid {
         unsigned char g2 = (max >> 8) & 0xFF;
         unsigned char b1 = min & 0xFF;
         unsigned char b2 = max & 0xFF;
-
-        return (int)((r2 - r1) * percentage + r1) << 16 | (int)((g2 - g1) * percentage + g1) << 8 | (int)((b2 - b1) * percentage + b1);
+        double ratio = std::clamp(percentage, 0.0, 1.0);
+        return (int)((r2 - r1) * ratio + r1) << 16 | (int)((g2 - g1) * ratio + g1) << 8 | (int)((b2 - b1) * ratio + b1);
     }
 
     void draw_cell(SDL_Surface* surface, Cell cell, int fill_cell) {
@@ -62,26 +62,9 @@ namespace fluid {
         for (int i = 0; i < ROWS * COLUMNS; ++i){
             draw_cell(surface, environment[i], 1);
         }
-
-        // for (int i = 0;i < ROWS; ++i){
-        //       for (int j = 0;j < COLUMNS; ++j){
-        //           Cell cell_above = environment[j + COLUMNS * (i-1)];
-        //           Cell cell_current = environment[j + COLUMNS * i];
-        //           // check cell above
-        //          if (i > 0
-        //              && cell_above.type == WATER_TYPE
-        //              && cell_above.fill_level > 0.02
-        //              && cell_current.fill_level > 0.02
-        //              && cell_current.type == WATER_TYPE) {
-        //              if (cell_above.fill_level > 0 && cell_current.fill_level > 0) {
-        //                  draw_cell(surface, environment[j + COLUMNS * i], 1);
-        //              }
-        //          }
-        //     }
-        // }
     }
 
-    void simulation_phase_rule1(Cell environment[]) {
+    void simulation_phase_rule1(Cell environment[], double delta_time) {
         Cell environment_next[ROWS * COLUMNS];
         for (int i = 0; i < ROWS * COLUMNS; ++i) {
             environment_next[i] = environment[i];
@@ -186,8 +169,8 @@ namespace fluid {
         }
     }
 
-    void simulation_step(Cell environment[]) {
-        simulation_phase_rule1(environment);
+    void simulation_step(Cell environment[], double delta_time) {
+        simulation_phase_rule1(environment, delta_time);
         simulation_phase_rule2(environment);
         simulation_phase_rule3(environment);
     }
@@ -204,7 +187,14 @@ namespace fluid {
         bool simulation_running = true;
         int current_type = SOLID_TYPE;
         bool delete_mode = 0;
+
+        Uint64 previous_time = SDL_GetPerformanceCounter();
         while (simulation_running) {
+            Uint64 current_time = SDL_GetPerformanceCounter();
+            double delta_time = static_cast<double>(current_time - previous_time) / static_cast<double>(SDL_GetPerformanceFrequency());
+
+            previous_time = current_time;
+
             while (SDL_PollEvent(&event)) {
                 if (event.type == SDL_QUIT) {
                     simulation_running = false;
@@ -239,7 +229,7 @@ namespace fluid {
             }
 
             // perform simulation stage
-            simulation_step(environment);
+            simulation_step(environment, delta_time);
 
             draw_environment(surface, environment);
             draw_grid(surface);
@@ -256,10 +246,5 @@ namespace fluid {
             SDL_Rect row = SDL_Rect{0, j * CELL_SIZE, SCREEN_WIDTH, LINE_WIDTH};
             SDL_FillRect(surface, &row, GRAY_COLOR);
         }
-    }
-
-    // draw the canvas
-    void draw() {
-
     }
 }
