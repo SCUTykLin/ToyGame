@@ -18,6 +18,7 @@
 #define ROWS SCREEN_HEIGHT/CELL_SIZE
 #define WATER_TYPE 0
 #define SOLID_TYPE  1
+#define AIR_TYPE 2
 
 #include <SDL2/SDL.h>
 
