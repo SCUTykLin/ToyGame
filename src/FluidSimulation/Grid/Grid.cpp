@@ -123,16 +123,13 @@ void fluid::Grid::balance_horizontal_pair(int row, int column) {
 
     if (difference > 0.0f) {
         // 左边水多，准备从左向右流
-        if (left_type != WATER_TYPE ||
-            !is_supported(row, left_column)) {
+        if (left_type != WATER_TYPE || !is_supported(row, left_column)) {
             return;
         }
 
-        const float desired_transfer =
-            difference * 0.5f * LATERAL_RATE;
+        const float desired_transfer = difference * 0.5f * LATERAL_RATE;
 
-        const float destination_space =
-            1.0f - right_level;
+        const float destination_space = 1.0f - right_level;
 
         const float transfer = std::min({
             desired_transfer,
@@ -155,11 +152,7 @@ void fluid::Grid::balance_horizontal_pair(int row, int column) {
         const float destination_space =
             1.0f - left_level;
 
-        const float transfer = std::min({
-            desired_transfer,
-            right_level,
-            destination_space
-        });
+        const float transfer = std::min({desired_transfer, right_level, destination_space });
 
         fill_level(row, right_column) -= transfer;
         fill_level(row, left_column) += transfer;
@@ -213,8 +206,7 @@ void fluid::Grid::simulation_rules_3() {
                 continue;
                 }
 
-            const float excess =
-                fill_level(row, column) - CAPACITY;
+            const float excess = fill_level(row, column) - CAPACITY;
 
             if (excess <= 0.0f) {
                 continue;

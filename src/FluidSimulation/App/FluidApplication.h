@@ -5,14 +5,12 @@
 #ifndef TOYPROJECTS_FLUIDAPPLICATION_H
 #define TOYPROJECTS_FLUIDAPPLICATION_H
 #include "../Grid/Grid.h"
-#include "../Solver/FluidSolver.h"
 #include "SDL2/SDL.h"
 
 namespace fluid {
 
     class FluidApplication {
     public:
-        FluidApplication();
         void run();
 
     private:
@@ -20,12 +18,7 @@ namespace fluid {
 
         void handle_mouse(int x, int y, std::uint8_t type);
 
-        void update();
-
-        void render();
-
         Grid _grid{ROWS, COLUMNS};
-        FluidSolver _fluidSolver;
         bool _running = true;
         SDL_Event event;
     };

@@ -34,8 +34,7 @@ set(BOUNCY_BALL
 set(FLUID_SIMULATION
         src/FluidSimulation/window_tool.cpp src/FluidSimulation/window_tool.h
         src/FluidSimulation/App/FluidApplication.cpp src/FluidSimulation/App/FluidApplication.h
-        src/FluidSimulation/Grid/Grid.cpp src/FluidSimulation/Grid/Grid.h
-        src/FluidSimulation/Solver/FluidSolver.cpp src/FluidSimulation/Solver/FluidSolver.h)
+        src/FluidSimulation/Grid/Grid.cpp src/FluidSimulation/Grid/Grid.h)
 
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
 set(EXECUTABLE main.cpp main.h ${IMGUI_DIR} ${STB_IMAGE})

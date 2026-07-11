@@ -20,7 +20,7 @@
 #define SOLID_TYPE  1
 #define AIR_TYPE   2
 
-#define HORIZONTAL_SUBSTEPS 5
+#define HORIZONTAL_SUBSTEPS 5 // substeps of rule2
 
 #include <vector>
 

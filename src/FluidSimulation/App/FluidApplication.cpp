@@ -22,6 +22,7 @@ namespace fluid {
             window_tool::draw(surface, _grid);
             window_tool::update_window();
         }
+        window_tool::destroy_window();
     }
 
     void FluidApplication::process_events() {
@@ -61,18 +62,5 @@ namespace fluid {
         }else
             throw std::runtime_error("Unknown type");
         _grid.set_type(cell_row, cell_column, type);
-    }
-
-    FluidApplication::FluidApplication() {
-
-    }
-
-
-    void FluidApplication::update() {
-
-    }
-
-    void FluidApplication::render() {
-
     }
 }

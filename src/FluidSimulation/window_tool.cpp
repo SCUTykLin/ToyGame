@@ -3,6 +3,9 @@
 //
 
 #include "window_tool.h"
+
+#include "../BouncyBall/bouncy_ball.h"
+
 namespace fluid::window_tool {
     SDL_Window* window = nullptr;
     SDL_Rect* canvas = nullptr;
@@ -35,6 +38,11 @@ namespace fluid::window_tool {
         unsigned char b2 = max & 0xFF;
         double ratio = std::clamp(percentage, 0.0, 1.0);
         return (int)((r2 - r1) * ratio + r1) << 16 | (int)((g2 - g1) * ratio + g1) << 8 | (int)((b2 - b1) * ratio + b1);
+    }
+
+    void destroy_window() {
+        delete canvas;
+        SDL_DestroyWindow(window);
     }
 
 }
