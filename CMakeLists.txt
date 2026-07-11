@@ -25,12 +25,19 @@ set(IMGUI_DIR
 set(STB_IMAGE
         thirdparty/stb_image/src/stb_image.cpp)
 
-# projects:
-set(COMPILER "")
-set(PHONG_GAME src/PongGame/pong_game.cpp src/PongGame/pong_game.h)
+# Projects:
+set(COMPILER
+        src/Compiler/app.cpp src/Compiler/app.h
+        src/Compiler/compiler/compiler.cpp src/Compiler/compiler/compiler.h
+        src/Compiler/Lexer/lexer.cpp src/Compiler/Lexer/lexer.h)
+
+set(PHONG_GAME
+        src/PongGame/pong_game.cpp src/PongGame/pong_game.h)
+
 set(BOUNCY_BALL
         src/BouncyBall/bouncy_ball.cpp src/BouncyBall/bouncy_ball.h
         src/BouncyBall/window_tool.cpp src/BouncyBall/window_tool.h)
+
 set(FLUID_SIMULATION
         src/FluidSimulation/window_tool.cpp src/FluidSimulation/window_tool.h
         src/FluidSimulation/App/FluidApplication.cpp src/FluidSimulation/App/FluidApplication.h
@@ -52,17 +59,19 @@ target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2)
 # imgui + stb_image
 target_include_directories(${PROJECT_NAME}
         PUBLIC
-        ${PROJECT_SOURCE_DIR}/thirdparty/imgui/include
-        )
+        ${PROJECT_SOURCE_DIR}/thirdparty/imgui/include)
 target_include_directories(${PROJECT_NAME}
         PUBLIC
-        ${PROJECT_SOURCE_DIR}/thirdparty/stb_image/include
-        )
+        ${PROJECT_SOURCE_DIR}/thirdparty/stb_image/include)
 # OpenGL + GLM + assimp
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/thirdparty/opengl/include)
 link_directories(${PROJECT_SOURCE_DIR}/thirdparty/opengl/lib)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/thirdparty/opengl/lib/glfw3.lib)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/thirdparty/opengl/lib/assimp-vc143-mt.lib)
+target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/thirdparty/opengl/lib/glfw3.lib)
+target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/thirdparty/opengl/lib/assimp-vc143-mt.lib)
 
 # raylib
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
