@@ -43,6 +43,10 @@ set(FLUID_SIMULATION
         src/FluidSimulation/App/FluidApplication.cpp src/FluidSimulation/App/FluidApplication.h
         src/FluidSimulation/Grid/Grid.cpp src/FluidSimulation/Grid/Grid.h)
 
+set(ROGUELIKE
+        src/Roguelike/Renderer/renderer.cpp src/Roguelike/Renderer/renderer.h
+        src/Roguelike/App/app.cpp src/Roguelike/App/app.h)
+
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
 set(EXECUTABLE main.cpp main.h ${IMGUI_DIR} ${STB_IMAGE})
 add_executable(${PROJECT_NAME}
@@ -50,7 +54,8 @@ add_executable(${PROJECT_NAME}
         ${COMPILER}
         ${PHONG_GAME}
         ${BOUNCY_BALL}
-        ${FLUID_SIMULATION})
+        ${FLUID_SIMULATION}
+        ${ROGUELIKE})
 
 # SDL2
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main)

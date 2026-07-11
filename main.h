@@ -9,6 +9,7 @@
 #include "src/BouncyBall/bouncy_ball.h"
 #include "src/FluidSimulation/App/FluidApplication.h"
 #include "src/Compiler/app.h"
+#include "src/Roguelike/App/app.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -54,6 +55,15 @@ public:
     }
 };
 
+class Roguelike : public Base_Command<Roguelike> {
+public:
+    void run_command_Impl() {
+        roguelike::App app;
+        app.start();
+    }
+};
+
+
 void create_commands_set() {
     std::call_once(flag, []() {
         auto pong_command = std::make_shared<Pong_Command>();
@@ -64,6 +74,8 @@ void create_commands_set() {
         commands["Fluid"] = [fluid_command]()->void{fluid_command->run_command();};
         auto compiler_command = std::make_shared<Compiler>();
         commands["Compiler"] = [compiler_command]()->void{compiler_command->run_command();};
+        auto roguelike_command = std::make_shared<Roguelike>();
+        commands["Roguelike"] = [roguelike_command]()->void{roguelike_command->run_command();};
     });
 }
 
