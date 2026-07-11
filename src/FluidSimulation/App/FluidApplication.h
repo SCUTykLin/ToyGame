@@ -12,18 +12,19 @@ namespace fluid {
 
     class FluidApplication {
     public:
+        FluidApplication();
         void run();
 
     private:
         void process_events();
 
-        void handle_mouse(int x, int y);
+        void handle_mouse(int x, int y, std::uint8_t type);
 
         void update();
 
         void render();
 
-        Grid _grid;
+        Grid _grid{ROWS, COLUMNS};
         FluidSolver _fluidSolver;
         bool _running = true;
         SDL_Event event;

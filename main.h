@@ -11,7 +11,7 @@
 #include <mutex>
 #include "src/PongGame/pong_game.h"
 #include "src/BouncyBall/bouncy_ball.h"
-#include "src/FluidSimulation/fluid.h"
+#include "src/FluidSimulation/App/FluidApplication.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -44,7 +44,8 @@ class Fluid_Command : public Base_Command<Fluid_Command> {
 public:
     Fluid_Command() {}
     void run_command_Impl() {
-        fluid::start_fluid();
+        fluid::FluidApplication app;
+        app.run();
     }
 };
 

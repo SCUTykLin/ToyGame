@@ -18,11 +18,23 @@ namespace fluid::window_tool {
     }
 
     // 刷新canvas，覆盖前一帧
-    void clear_window(SDL_Surface* surface, Uint32 color=0x00000000) {
+    void clear_window(SDL_Surface* surface, Uint32 color) {
         SDL_FillRect(surface, canvas, color);
     }
 
     void update_window() {
         SDL_UpdateWindowSurface(window);
     }
+
+    Uint32 get_interpolated_color(Uint32 min, Uint32 max, double percentage) {
+        unsigned char r1 = (min >> 16) & 0xFF;
+        unsigned char r2 = (max >> 16) & 0xFF;
+        unsigned char g1 = (min >> 8) & 0xFF;
+        unsigned char g2 = (max >> 8) & 0xFF;
+        unsigned char b1 = min & 0xFF;
+        unsigned char b2 = max & 0xFF;
+        double ratio = std::clamp(percentage, 0.0, 1.0);
+        return (int)((r2 - r1) * ratio + r1) << 16 | (int)((g2 - g1) * ratio + g1) << 8 | (int)((b2 - b1) * ratio + b1);
+    }
+
 }

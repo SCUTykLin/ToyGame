@@ -26,13 +26,12 @@ set(STB_IMAGE
         thirdparty/stb_image/src/stb_image.cpp)
 
 # projects:
-set(COMPILER src/compiler/token.h)
+set(COMPILER "")
 set(PHONG_GAME src/PongGame/pong_game.cpp src/PongGame/pong_game.h)
 set(BOUNCY_BALL
         src/BouncyBall/bouncy_ball.cpp src/BouncyBall/bouncy_ball.h
         src/BouncyBall/window_tool.cpp src/BouncyBall/window_tool.h)
 set(FLUID_SIMULATION
-        src/FluidSimulation/fluid.cpp src/FluidSimulation/fluid.h
         src/FluidSimulation/window_tool.cpp src/FluidSimulation/window_tool.h
         src/FluidSimulation/App/FluidApplication.cpp src/FluidSimulation/App/FluidApplication.h
         src/FluidSimulation/Grid/Grid.cpp src/FluidSimulation/Grid/Grid.h

@@ -177,8 +177,6 @@ namespace fluid {
 
     // logic function for changing the data Structure
     void main_loop() {
-        SDL_Surface* surface = window_tool::create_window("Liquid Simulation", SCREEN_WIDTH, SCREEN_HEIGHT);
-
         draw_grid(surface);
         Cell environment[ROWS * COLUMNS];
         initialize_environment(environment);
