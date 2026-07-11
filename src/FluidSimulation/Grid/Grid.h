@@ -12,7 +12,7 @@
 #define BLUE_COLOR_MAX 0x34c3eb
 #define BLUE_COLOR_MIN 0x001eff
 #define GRAY_COLOR 0x1f1f1f1f
-#define CELL_SIZE 10
+#define CELL_SIZE 5
 #define LINE_WIDTH 2
 #define COLUMNS SCREEN_WIDTH / CELL_SIZE
 #define ROWS SCREEN_HEIGHT / CELL_SIZE

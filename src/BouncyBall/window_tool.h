@@ -87,7 +87,7 @@ namespace bouncy::window_tool {
         void draw_circle(SDL_Surface* surface, T* circle, Uint32 color, std::optional<double> radius = std::nullopt) {
             if (circle) {
                 if constexpr (U) {
-                    if constexpr (static_cast<bool>(sizeof(decltype(std::declval<T>().v_x + std::declval<T>().v_x)))) {
+                    if constexpr (static_cast<bool>(sizeof(decltype(std::declval<T>().v_x + std::declval<T>().v_y)))) {
                         // 有速度，才能退回上一帧擦除掉
                         for (size_t i = 0; i < circle->circle_primitives->size(); ++i) {
                             circle->circle_primitives->at(i)->x -= circle->v_x;
