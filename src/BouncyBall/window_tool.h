@@ -1,6 +1,3 @@
-//
-// Created by YangKai.Lin on 2026/7/7.
-//
 
 #ifndef TOYPROJECTS_BOUNCYBALL_WINDOW_TOOL_H
 #define TOYPROJECTS_BOUNCYBALL_WINDOW_TOOL_H

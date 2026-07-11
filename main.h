@@ -1,7 +1,3 @@
-//
-// Created by YangKai.Lin on 2026/7/7.
-//
-
 #ifndef TOYPROJECTS_MAIN_H
 #define TOYPROJECTS_MAIN_H
 

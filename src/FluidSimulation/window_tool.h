@@ -1,6 +1,3 @@
-//
-// Created by YangKai.Lin on 2026/7/9.
-//
 
 #ifndef TOYPROJECTS_WINDOW_TOOL_H
 #define TOYPROJECTS_WINDOW_TOOL_H
