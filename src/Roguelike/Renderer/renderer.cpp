@@ -9,6 +9,46 @@ namespace roguelike{
     SDL_Renderer* Renderer::renderer = nullptr;
     std::once_flag Renderer::init_flag;
 
+    void Renderer::create_window(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, bool& isRunning){
+
+        int flags = 0;
+        if (fullscreen) {
+            flags = SDL_WINDOW_FULLSCREEN;
+        }
+
+        std::call_once(init_flag, [&]()->void{
+            if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
+                std::cout << "Subsystems Initialised! ..." << std::endl;
+                window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+                if (window) {
+                    std::cout << "Window created!" << std::endl;
+                }
+                renderer = SDL_CreateRenderer(window, -1, 0);
+                if (renderer) {
+                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                    std::cout << "Renderer created!" << std::endl;
+                }
+                isRunning = true;
+            }
+            else
+                isRunning = false;
+        });
+    }
+
+    void Renderer::render(SDL_Texture* texture) {
+        SDL_RenderClear(renderer);
+        // add stuff to render
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }
+
+    void Renderer::destroy_window() {
+        SDL_DestroyWindow(window);
+        SDL_DestroyRenderer(renderer);
+        SDL_Quit();
+        std::cout << "Game Destroyed!" << std::endl;
+    }
+
     SDL_Renderer* Renderer::get_window_renderer(){
         return renderer;
     }

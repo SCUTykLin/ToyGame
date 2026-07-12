@@ -10,6 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
 add_subdirectory(thirdparty/SDL2/SDL-release-2.32.6 EXCLUDE_FROM_ALL)
+add_subdirectory(thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)
 add_subdirectory(thirdparty/raylib)
 
 # imgui
@@ -45,7 +46,9 @@ set(FLUID_SIMULATION
 
 set(ROGUELIKE
         src/Roguelike/Renderer/renderer.cpp src/Roguelike/Renderer/renderer.h
-        src/Roguelike/App/app.cpp src/Roguelike/App/app.h)
+        src/Roguelike/App/app.cpp src/Roguelike/App/app.h
+        src/Roguelike/Game/game.cpp src/Roguelike/Game/game.h
+        src/Roguelike/TextureManager/textureManager.cpp src/Roguelike/TextureManager/textureManager.h)
 
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
 set(EXECUTABLE main.cpp main.h ${IMGUI_DIR} ${STB_IMAGE})
@@ -57,9 +60,8 @@ add_executable(${PROJECT_NAME}
         ${FLUID_SIMULATION}
         ${ROGUELIKE})
 
-# SDL2
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2)
+# SDL2. SDL2_image must build upon SDL2::SDL2-static, no SDL2::SDL2
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image)
 
 # imgui + stb_image
 target_include_directories(${PROJECT_NAME}

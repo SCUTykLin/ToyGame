@@ -5,7 +5,6 @@
 #ifndef TOYPROJECTS_ROGUELIKE_APP_H
 #define TOYPROJECTS_ROGUELIKE_APP_H
 
-#include "../Renderer/renderer.h"
 #include "SDL2/SDL.h"
 
 #define W 800
@@ -14,9 +13,7 @@
 namespace roguelike {
     class App {
     public:
-        void start();
-    private:
-        Renderer renderer;
+        void run();
     };
 }
 

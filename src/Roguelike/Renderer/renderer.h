@@ -13,17 +13,15 @@ namespace roguelike {
 
     class Renderer {
     public:
-        template<std::size_t W, std::size_t H>
-        void create_window(std::string&& title){
-            std::call_once(init_flag, [](std::string& title)->void{
-                window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W, H, SDL_WINDOW_SHOWN);
-                renderer = SDL_CreateRenderer(window, -1, 0);
-            }, title);
-        }
+        void create_window(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, bool& isRunning);
 
         SDL_Renderer* get_window_renderer();
 
         SDL_Window* get_window();
+
+        void render(SDL_Texture* texture);
+
+        void destroy_window();
 
     private:
         static SDL_Window *window;

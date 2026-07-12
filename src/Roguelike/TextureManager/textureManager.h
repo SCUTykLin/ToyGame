@@ -1,0 +1,18 @@
+//
+// Created by YangKai.Lin on 2026/7/12.
+//
+
+#ifndef TOYPROJECTS_ROGUELIKE_TEXTUREMANAGER_H
+#define TOYPROJECTS_ROGUELIKE_TEXTUREMANAGER_H
+
+#include "../Game/game.h"
+
+namespace roguelike {
+    class TextureManager {
+    public:
+        static SDL_Texture* LoadTexture(const char* filename, SDL_Renderer* renderer);
+    };
+}
+
+
+#endif //TOYPROJECTS_ROGUELIKE_TEXTUREMANAGER_H

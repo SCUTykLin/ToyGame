@@ -24,7 +24,6 @@ public:
 
 class Pong_Command : public Base_Command<Pong_Command> {
 public:
-    Pong_Command() {}
     void run_command_Impl() {
         Pong::startPongGame();
     }
@@ -32,7 +31,6 @@ public:
 
 class Bouncy_Command : public Base_Command<Bouncy_Command> {
 public:
-    Bouncy_Command() {}
     void run_command_Impl() {
         bouncy::start_bouncy();
     }
@@ -40,7 +38,6 @@ public:
 
 class Fluid_Command : public Base_Command<Fluid_Command> {
 public:
-    Fluid_Command() {}
     void run_command_Impl() {
         fluid::FluidApplication app;
         app.run();
@@ -58,24 +55,23 @@ public:
 class Roguelike : public Base_Command<Roguelike> {
 public:
     void run_command_Impl() {
-        roguelike::App app;
-        app.start();
+        roguelike::App{}.run();
     }
 };
 
+template <typename T>
+void add_command(T t, std::string&& name) {
+    auto command = std::make_shared<T>();
+    commands[name] = [command]()->void{command->run_command();};
+}
 
 void create_commands_set() {
     std::call_once(flag, []() {
-        auto pong_command = std::make_shared<Pong_Command>();
-        commands["Pong"] = [pong_command]()->void{pong_command->run_command();};
-        auto bouncy_command = std::make_shared<Bouncy_Command>();
-        commands["Bouncy"] = [bouncy_command]()->void{bouncy_command->run_command();};
-        auto fluid_command = std::make_shared<Fluid_Command>();
-        commands["Fluid"] = [fluid_command]()->void{fluid_command->run_command();};
-        auto compiler_command = std::make_shared<Compiler>();
-        commands["Compiler"] = [compiler_command]()->void{compiler_command->run_command();};
-        auto roguelike_command = std::make_shared<Roguelike>();
-        commands["Roguelike"] = [roguelike_command]()->void{roguelike_command->run_command();};
+        add_command(Pong_Command{}, "Pong");
+        add_command(Bouncy_Command{}, "Bouncy");
+        add_command(Fluid_Command{}, "Fluid");
+        add_command(Compiler{}, "Compiler");
+        add_command(Roguelike{}, "Roguelike");
     });
 }
 
