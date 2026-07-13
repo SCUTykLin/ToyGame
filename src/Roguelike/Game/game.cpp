@@ -5,8 +5,14 @@
 #include "game.h"
 
 #include "../TextureManager/textureManager.h"
+#include "../GameObject/gameObject.h"
+
+roguelike::GameObject* player = nullptr;
 
 namespace roguelike {
+
+    Renderer Game::renderer;
+
     Game::Game() {
 
     }
@@ -17,7 +23,7 @@ namespace roguelike {
 
     void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen) {
         renderer.create_window(title, xpos, ypos, width, height, fullscreen, isRunning);
-        playerTex = TextureManager::LoadTexture("src/Roguelike/Assets/proj.png", renderer.get_window_renderer());
+        player = new roguelike::GameObject("src/Roguelike/Assets/proj.png", 0, 0);
     }
     void Game::handleEvents() {
         SDL_Event event;
@@ -33,10 +39,11 @@ namespace roguelike {
 
 
     void Game::update() {
+        player->Update();
     }
 
     void Game::render() {
-        renderer.render(playerTex);
+        renderer.render(player);
     }
     void Game::clean() {
         renderer.destroy_window();

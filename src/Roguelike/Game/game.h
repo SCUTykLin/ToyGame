@@ -12,6 +12,7 @@
 namespace roguelike {
     class Game {
     public:
+        static Renderer renderer;
         Game();
         ~Game();
 
@@ -27,7 +28,6 @@ namespace roguelike {
     private:
         bool isRunning;
         SDL_Texture* playerTex;
-        Renderer renderer;
     };
 }
 

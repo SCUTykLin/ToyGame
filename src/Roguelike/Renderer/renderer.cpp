@@ -35,13 +35,6 @@ namespace roguelike{
         });
     }
 
-    void Renderer::render(SDL_Texture* texture) {
-        SDL_RenderClear(renderer);
-        // add stuff to render
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
-        SDL_RenderPresent(renderer);
-    }
-
     void Renderer::destroy_window() {
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);

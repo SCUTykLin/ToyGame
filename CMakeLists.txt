@@ -14,41 +14,17 @@ add_subdirectory(thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)
 add_subdirectory(thirdparty/raylib)
 
 # imgui
-set(IMGUI_DIR
-        thirdparty/imgui/src/imgui.cpp
-        thirdparty/imgui/src/imgui_demo.cpp
-        thirdparty/imgui/src/imgui_draw.cpp
-        thirdparty/imgui/src/imgui_tables.cpp
-        thirdparty/imgui/src/imgui_widgets.cpp
-        thirdparty/imgui/src/imgui_impl_glfw.cpp
-        thirdparty/imgui/src/imgui_impl_opengl3.cpp)
+file(GLOB IMGUI_DIR thirdparty/imgui/src/*.cpp)
+
 # stb_image
-set(STB_IMAGE
-        thirdparty/stb_image/src/stb_image.cpp)
+file(GLOB_RECURSE STB_IMAGE thirdparty/stb_image/*.cpp thirdparty/stb_image/*.h)
 
-# Projects:
-set(COMPILER
-        src/Compiler/app.cpp src/Compiler/app.h
-        src/Compiler/compiler/compiler.cpp src/Compiler/compiler/compiler.h
-        src/Compiler/Lexer/lexer.cpp src/Compiler/Lexer/lexer.h)
-
-set(PHONG_GAME
-        src/PongGame/pong_game.cpp src/PongGame/pong_game.h)
-
-set(BOUNCY_BALL
-        src/BouncyBall/bouncy_ball.cpp src/BouncyBall/bouncy_ball.h
-        src/BouncyBall/window_tool.cpp src/BouncyBall/window_tool.h)
-
-set(FLUID_SIMULATION
-        src/FluidSimulation/window_tool.cpp src/FluidSimulation/window_tool.h
-        src/FluidSimulation/App/FluidApplication.cpp src/FluidSimulation/App/FluidApplication.h
-        src/FluidSimulation/Grid/Grid.cpp src/FluidSimulation/Grid/Grid.h)
-
-set(ROGUELIKE
-        src/Roguelike/Renderer/renderer.cpp src/Roguelike/Renderer/renderer.h
-        src/Roguelike/App/app.cpp src/Roguelike/App/app.h
-        src/Roguelike/Game/game.cpp src/Roguelike/Game/game.h
-        src/Roguelike/TextureManager/textureManager.cpp src/Roguelike/TextureManager/textureManager.h)
+# Projects file list:
+file(GLOB_RECURSE COMPILER src/Compiler/*.cpp src/Compiler/*.h)
+file(GLOB_RECURSE PHONG_GAME src/PongGame/*.cpp src/PongGame/*.h)
+file(GLOB_RECURSE BOUNCY_BALL src/BouncyBall/*.cpp src/BouncyBall/*.h)
+file(GLOB_RECURSE FLUID_SIMULATION src/FluidSimulation/*.cpp src/FluidSimulation/*.h)
+file(GLOB_RECURSE ROGUELIKE src/Roguelike/*.cpp src/Roguelike/*.h)
 
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
 set(EXECUTABLE main.cpp main.h ${IMGUI_DIR} ${STB_IMAGE})

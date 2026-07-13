@@ -7,15 +7,24 @@
 
 #include "../Game/game.h"
 
-class GameObject {
-public:
-    GameObject(const char* texturesheet, SDL_Renderer* renderer);
-    ~GameObject();
-private:
-    int xpos;
-    int ypos;
-    SDL_Texture* objTexture;
-    SDL_Rect srcRect, destRect;
-};
+namespace roguelike {
+    class GameObject {
+    public:
+        GameObject(const char* texturesheet, int x, int y);
+        ~GameObject();
+        void Update();
+
+        SDL_Texture* get_objTexture(){return objTexture;}
+
+        SDL_Rect& get_srcRect(){return srcRect;}
+
+        SDL_Rect& get_destRect(){return destRect;}
+    private:
+        int xpos;
+        int ypos;
+        SDL_Texture* objTexture;
+        SDL_Rect srcRect, destRect;
+    };
+}
 
 #endif //TOYPROJECTS_ROGUELIKE_GAMEOBJECT_H

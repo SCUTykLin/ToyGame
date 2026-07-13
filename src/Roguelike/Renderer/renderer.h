@@ -19,7 +19,14 @@ namespace roguelike {
 
         SDL_Window* get_window();
 
-        void render(SDL_Texture* texture);
+        template <typename ... Args>
+        void render(Args&&... gameObjects) {
+            SDL_RenderClear(renderer);
+            // add stuff to render
+            (SDL_RenderCopy(renderer, std::forward<Args>(gameObjects)->get_objTexture(),
+                &std::forward<Args>(gameObjects)->get_srcRect(), &std::forward<Args>(gameObjects)->get_destRect()), ...);
+            SDL_RenderPresent(renderer);
+        }
 
         void destroy_window();
 
