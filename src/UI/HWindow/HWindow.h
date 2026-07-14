@@ -5,6 +5,7 @@
 #ifndef TOYPROJECTS_UI_HWINDOW_H
 #define TOYPROJECTS_UI_HWINDOW_H
 
+
 class HWindow {
 public:
     HWindow();
