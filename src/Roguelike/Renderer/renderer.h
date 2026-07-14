@@ -8,6 +8,7 @@
 #include "SDL2/SDL.h"
 #include <iostream>
 #include <mutex>
+#include "../ECS/SpriteComponent.h"
 
 namespace roguelike {
 
@@ -19,13 +20,26 @@ namespace roguelike {
 
         SDL_Window* get_window();
 
-        template <typename ... Args>
-        void render(Args&&... gameObjects) {
+        template <typename... GameObjects>
+        void render(GameObjects&&... gameObjects) {
             SDL_RenderClear(renderer);
-            // add stuff to render
-            (SDL_RenderCopy(renderer, std::forward<Args>(gameObjects)->get_objTexture(),
-                &std::forward<Args>(gameObjects)->get_srcRect(), &std::forward<Args>(gameObjects)->get_destRect()), ...);
+
+            (renderCopyOne(std::forward<GameObjects>(gameObjects)), ...);
+
             SDL_RenderPresent(renderer);
+        }
+
+        template <typename GameObject>
+        void renderCopyOne(GameObject&& gameObject) {
+            auto& sprite =
+                    std::forward<GameObject>(gameObject).template getComponent<ECS::SpriteComponent>();
+
+            SDL_RenderCopy(
+                    renderer,
+                    sprite.getTexture(),
+                    &sprite.get_srcRect(),
+                    &sprite.get_destRect()
+            );
         }
 
         void destroy_window();

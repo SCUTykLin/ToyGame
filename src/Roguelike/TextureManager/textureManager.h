@@ -5,7 +5,8 @@
 #ifndef TOYPROJECTS_ROGUELIKE_TEXTUREMANAGER_H
 #define TOYPROJECTS_ROGUELIKE_TEXTUREMANAGER_H
 
-#include "../Game/game.h"
+#include "SDL2/SDL.h"
+#include "SDL_image.h"
 
 namespace roguelike {
     class TextureManager {

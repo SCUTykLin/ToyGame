@@ -9,10 +9,20 @@
 #include "../Renderer/renderer.h"
 #include "SDL_image.h"
 
+#define MAP_WIDTH 20
+#define MAP_HEIGHT 25
+
 namespace roguelike {
+
+    namespace ECS {
+        class ColliderComponent;
+    }
+
     class Game {
     public:
         static Renderer renderer;
+        static SDL_Event event;
+        static std::vector<ECS::ColliderComponent*> colliders;
         Game();
         ~Game();
 

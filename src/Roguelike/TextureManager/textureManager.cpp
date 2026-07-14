@@ -3,6 +3,7 @@
 //
 
 #include "textureManager.h"
+#include "../Game/game.h"
 
 namespace roguelike {
     SDL_Texture * TextureManager::LoadTexture(const char *filename) {

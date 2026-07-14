@@ -27,7 +27,9 @@ file(GLOB_RECURSE FLUID_SIMULATION src/FluidSimulation/*.cpp src/FluidSimulation
 file(GLOB_RECURSE ROGUELIKE src/Roguelike/*.cpp src/Roguelike/*.h)
 
 # raylib自带了一个glad，不需要添加 thirdparty/src/glad.c
-set(EXECUTABLE main.cpp main.h ${IMGUI_DIR} ${STB_IMAGE})
+set(EXECUTABLE main.cpp main.h
+        ${IMGUI_DIR}
+        ${STB_IMAGE})
 add_executable(${PROJECT_NAME}
         ${EXECUTABLE}
         ${COMPILER}
