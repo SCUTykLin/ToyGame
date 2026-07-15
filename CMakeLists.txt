@@ -26,8 +26,9 @@ file(GLOB_RECURSE BOUNCY_BALL src/BouncyBall/*.cpp src/BouncyBall/*.h)
 file(GLOB_RECURSE FLUID_SIMULATION src/FluidSimulation/*.cpp src/FluidSimulation/*.h)
 file(GLOB_RECURSE ROGUELIKE src/Roguelike/*.cpp src/Roguelike/*.h)
 
-# raylib自带了一个glad，不需要添加 Thirdparty/src/glad.c
-set(EXECUTABLE Thirdparty/opengl/src/glad.c main.cpp main.h
+# raylib自带了一个glad.c可能不需要添加 Thirdparty/opengl/src/glad.c
+set(EXECUTABLE Thirdparty/opengl/src/glad.c
+        main.cpp main.h
         ${IMGUI_DIR}
         ${STB_IMAGE})
 add_executable(${PROJECT_NAME}
@@ -41,17 +42,6 @@ add_executable(${PROJECT_NAME}
 # SDL2. SDL2_image must build upon SDL2::SDL2-static, no SDL2::SDL2
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui imgui_node_editor)
-
-# imgui + stb_image
-#target_include_directories(${PROJECT_NAME}
-#        PUBLIC
-#        ${PROJECT_SOURCE_DIR}/thirdparty/imgui/include)
-#target_include_directories(${PROJECT_NAME}
-#        PUBLIC
-#        ${PROJECT_SOURCE_DIR}/thirdparty/stb_image/include)
-
-# raylib
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
 # OpenGL + GLM + assimp
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/Thirdparty/opengl/include)
@@ -70,3 +60,6 @@ find_package(stb_image REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 find_package(blueprint-utilities REQUIRED)
 find_package(ScopeGuard REQUIRED)
+
+# raylib
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
