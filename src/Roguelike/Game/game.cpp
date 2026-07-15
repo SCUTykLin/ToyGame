@@ -4,6 +4,8 @@
 #include "game.h"
 #include "../ECS/Components.h"
 #include "../App/Collision.h"
+#include "../ECS/TileComponent.h"
+#include "../Map/map.h"
 
 roguelike::ECS::Manager manager;
 auto& player(manager.addEntity());
@@ -13,9 +15,19 @@ auto& tile1(manager.addEntity());
 auto& tile2(manager.addEntity());
 namespace roguelike {
 
+    Map* map;
+    ECS::Manager manager;
     Renderer Game::renderer;
     SDL_Event Game::event;
-    std::vector<ECS::ColliderComponent*> Game::colliders;
+    SDL_Rect Game::camera = { 0,0,800,640 };
+
+    AssetManager* Game::assets = new AssetManager(&manager);
+
+    void Game::AddTile(int id, int x, int y) {
+        auto& tile(manager.addEntity());
+        tile.addComponent<ECS::TileComponent>(x, y, 32, 32, id);
+    }
+
     Game::Game() {
 
     }

@@ -19,13 +19,8 @@ namespace roguelike::ECS {
         int width = 32;
         int scale = 1;
         int speed = 3;
-        roguelike::calculate::Vector2D& getPos(){
-            return position;
-        }
 
-        roguelike::calculate::Vector2D& getVel(){
-            return velocity;
-        }
+        bool blocked = false;
 
         TransformComponent(){
             position.Zero();
@@ -40,6 +35,14 @@ namespace roguelike::ECS {
             position.x = x;
             position.y = y;
         };
+
+        roguelike::calculate::Vector2D& getPos(){
+            return position;
+        }
+
+        roguelike::calculate::Vector2D& getVel(){
+            return velocity;
+        }
 
         TransformComponent(int x, int y, int h, int w, int sc){
             position.x = x;

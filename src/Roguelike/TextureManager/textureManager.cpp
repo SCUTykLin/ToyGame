@@ -12,4 +12,8 @@ namespace roguelike {
         SDL_FreeSurface(tempSurface);
         return tex;
     }
+
+    void TextureManager::Draw(SDL_Texture *texture, SDL_Rect src, SDL_Rect dst, SDL_RendererFlip flip) {
+        SDL_RenderCopyEx(Game::renderer.get_window_renderer(), texture, &src, &dst, NULL, NULL, flip);
+    }
 }

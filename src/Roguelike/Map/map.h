@@ -8,18 +8,16 @@
 namespace roguelike {
     class Map {
     public:
-        Map();
+        Map(std::string& tID, int ms, int ts);
         ~Map();
 
-        void LoadMap();
-        void DrawMap();
+        void LoadMap(std::string& path, int sizeX, int sizeY);
+        void AddTile(int srcX, int srcY, int xpos, int ypos);
     private:
-        SDL_Rect src, dest;
-        SDL_Texture *dirt;
-        SDL_Texture *grass;
-        SDL_Texture *water;
-
-        int map[20][25];
+        std::string texID;
+        int mapScale;
+        int tileSize;
+        int scaledSize;
     };
 }
 

@@ -15,8 +15,10 @@ int main(int argc, char *argv[]){
              std::cout << "Exiting..." << std::endl;
              return 0;
          }
-         else
+         else {
              std::cout << "error commands!" << std::endl;
+             print_commands();
+         }
          std::cout << "Commands: " << std::endl;
          std::cin >> default_command;
      }

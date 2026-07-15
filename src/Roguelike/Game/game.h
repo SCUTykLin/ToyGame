@@ -13,7 +13,7 @@
 #define MAP_HEIGHT 25
 
 namespace roguelike {
-
+    class AssetManager;
     namespace ECS {
         class ColliderComponent;
     }
@@ -22,7 +22,17 @@ namespace roguelike {
     public:
         static Renderer renderer;
         static SDL_Event event;
-        static std::vector<ECS::ColliderComponent*> colliders;
+
+        static SDL_Rect camera;
+        static AssetManager* assets;
+        enum groupLabels : std::size_t
+        {
+            groupMap,
+            groupPlayers,
+            groupColliders,
+            groupProjectiles
+        };
+
         Game();
         ~Game();
 
@@ -37,7 +47,6 @@ namespace roguelike {
         }
     private:
         bool isRunning;
-        SDL_Texture* playerTex;
     };
 }
 

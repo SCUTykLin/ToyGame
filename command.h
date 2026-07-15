@@ -5,6 +5,7 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <sstream>
 #include "src/PongGame/pong_game.h"
 #include "src/BouncyBall/bouncy_ball.h"
 #include "src/FluidSimulation/App/FluidApplication.h"
@@ -85,16 +86,25 @@ void create_commands_set() {
 
 std::unordered_map<std::string, std::function<void()>>* get_commands_set() {
     create_commands_set();
-    std::cout << "Commands List: [ ";
+    std::cout << "Commands List: [";
     for (const auto& pair : commands) {
-        std::cout << pair.first << " ";  // key
+        std::cout << pair.first << ", ";  // key
     }
     std::cout << "]" << std::endl;
 
     return &commands;
 }
 
-bool is_in_command(std::string& command_str){
+inline void print_commands() {
+    std::stringstream ss;
+    for (const auto& pair : commands) {
+        ss << pair.first << ", ";
+    }
+    std::string_view v = ss.view();
+    std::cout << "Commands List: [" << v << "]" << std::endl;
+}
+
+inline bool is_in_command(std::string& command_str){
     create_commands_set();
     for (const auto& pair : commands) {
         if (pair.first == command_str) {

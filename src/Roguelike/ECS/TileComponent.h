@@ -6,47 +6,42 @@
 #define TOYPROJECTS_ROGUELIKE_TILECOMPONENT_H
 
 #include "ECS.h"
-#include "TransformComponent.h"
-#include "SpriteComponent.h"
+#include "../App/Vector2D.h"
+#include "../Game/game.h"
+#include "../TextureManager/textureManager.h"
 
-namespace roguelike::ECS {
-    class TileComponent : public Component{
+namespace roguelike {
+    class TileComponent : public ECS::Component{
     public:
-        TransformComponent* transform;
-        SpriteComponent* sprite;
-
-        SDL_Rect tileRect;
-        int tileID;
-        char* path;
+        SDL_Texture * texture;
+        SDL_Rect srcRect, destRect;
+        calculate::Vector2D position;
 
         TileComponent() = default;
-        TileComponent(int x, int y, int w, int h, int id){
-            tileRect.x = x;
-            tileRect.y = y;
-            tileRect.h = h;
-            tileRect.w = w;
-            tileID = id;
 
-            switch(tileID){
-                case 0:
-                    path = "src/Roguelike/Assets/water.png";
-                    break;
-                case 1:
-                    path = "src/Roguelike/Assets/water/dirt.png";
-                    break;
-                case 2:
-                    path = "src/Roguelike/Assets/water/grass.png";
-                    break;
-                default:
-                    break;
-            }
+        ~TileComponent()
+        {
+            SDL_DestroyTexture(texture);
         }
 
-        void init() override{
-            entity->addComponent<TransformComponent>(tileRect.x, tileRect.y, tileRect.w, tileRect.h, 1);
-            transform = &entity->getComponent<TransformComponent>();
 
+        TileComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, std::string id)
+        {
+            texture = Game::assets->GetTexture(id);
+
+            srcRect.x = srcX;
+            srcRect.y = srcY;
+            srcRect.w = srcRect.h = tsize;
+            position.x = static_cast<float>(xpos);
+            position.y = static_cast<float>(ypos);
+            destRect.w = destRect.h = tsize * tscale;
         }
+
+        void draw() override
+        {
+            TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+        }
+
     };
 }
 #endif //TOYPROJECTS_ROGUELIKE_TILECOMPONENT_H

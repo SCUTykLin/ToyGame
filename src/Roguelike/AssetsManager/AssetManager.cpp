@@ -1,0 +1,42 @@
+//
+// Created by YangKai.Lin on 2026/7/15.
+//
+
+#include "AssetManager.h"
+#include "../ECS/Components.h"
+
+namespace roguelike {
+    AssetManager::AssetManager(ECS::Manager* man) : manager(man)
+    {}
+
+    AssetManager::~AssetManager()
+    {}
+
+    void AssetManager::CreateProjectile(calculate::Vector2D pos, calculate::Vector2D vel, int range, int speed,
+        std::string id) {
+        auto& projectile(manager->addEntity());
+        projectile.addComponent<ECS::TransformComponent>(pos.x, pos.y, 32, 32, 1);
+        projectile.addComponent<ECS::SpriteComponent>(id, false);
+        projectile.addComponent<ECS::ProjectileComponent>(range, speed, vel);
+        projectile.addComponent<ECS::ColliderComponent>("projectile");
+        projectile.addGroup(Game::groupProjectiles);
+    }
+
+    void AssetManager::AddTexture(std::string id, const char *path) {
+        textures.emplace(id, TextureManager::LoadTexture(path));
+    }
+
+    SDL_Texture * AssetManager::GetTexture(std::string id) {
+        return textures[id];
+    }
+
+    void AssetManager::AddFont(std::string id, std::string path, int fontSize) {
+        fonts.emplace(id, TTF_OpenFont(path.c_str(), fontSize));
+    }
+
+    TTF_Font* GetFont(std::string id) {
+        return fonts[id];
+    }
+}
+
+

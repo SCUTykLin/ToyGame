@@ -17,10 +17,13 @@ namespace roguelike::ECS {
 
     class Entity;
 
-    using ComponentID = std::size_t;
+    class Manager;
 
-    inline ComponentID getComponentTypeID() { // generate component id.
-        static ComponentID lastID = 0;
+    using ComponentID = std::size_t;
+    using Group = std::size_t;
+
+    inline ComponentID getNewComponentTypeID() { // generate component id.
+        static ComponentID lastID = 0u;
         return lastID++;
     }
 
@@ -34,12 +37,13 @@ namespace roguelike::ECS {
     }
 
     constexpr std::size_t maxComponents = 32;
-
+    constexpr std::size_t maxGroups = 32;
 /*
  * 这里ComponentArray和components职责不同。components是负责查找，而ComponentArray是为了管理释放
  * */
 
     using ComponentBitSet = std::bitset<maxComponents>; // 存储组件id
+    using GroupBitSet = std::bitset<maxGroups>;
     using ComponentArray = std::array<Component *, maxComponents>; // 存储组件
 
     class Component { // Component基类
@@ -57,11 +61,14 @@ namespace roguelike::ECS {
 
     class Entity {
     private:
+        Manager& manager;
         bool active = true;
         std::vector<std::unique_ptr<Component>> components;
         ComponentArray componentArray;
         ComponentBitSet componentBitSet;
+        GroupBitSet groupBitSet;
     public:
+        Entity(Manager& manager) : manager(manager) {}
         void update() {
             for (auto &c: components)
                 c->update();
@@ -76,6 +83,18 @@ namespace roguelike::ECS {
 
         void destroy() {
             active = false;
+        }
+
+        bool hasGroup(Group mGroup) {
+            return groupBitSet[mGroup];
+        }
+
+        void addGroup(Group mGroup) {
+
+        }
+
+        void delGroup(Group mGroup) {
+            groupBitSet[mGroup] = false;
         }
 
         template<typename T>
@@ -106,6 +125,7 @@ namespace roguelike::ECS {
     class Manager {
     private:
         std::vector<std::unique_ptr<Entity>> entities;
+        std::array<std::vector<Entity*>, maxGroups> groupedEntities;
     public:
         void update() {
             for (auto &e: entities) {
@@ -120,6 +140,15 @@ namespace roguelike::ECS {
         }
 
         void refresh() {
+
+            for (auto i(0u); i < maxGroups; ++i) {
+                auto& v(groupedEntities[i]);
+                v.erase(std::remove_if(std::begin(v), std::end(v),
+                    [i](Entity *e) {
+                        return !e->isActive() || !e->hasGroup(i);
+                    }), std::end(v));
+            }
+
             entities.erase(std::remove_if(std::begin(entities),
                                           std::end(entities),
                                           [](const std::unique_ptr<Entity> &mEntity) {
@@ -128,7 +157,7 @@ namespace roguelike::ECS {
         }
 
         Entity &addEntity() {
-            Entity *e = new Entity();
+            Entity *e = new Entity(*this);
             std::unique_ptr<Entity> uPtr{e};
             entities.emplace_back(std::move(uPtr));
             return *e;
