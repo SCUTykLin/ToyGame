@@ -2,10 +2,13 @@
 // Created by YangKai.Lin on 2026/7/12.
 //
 #include "game.h"
-#include "../ECS/Components.h"
-#include "../App/Collision.h"
-#include "../ECS/TileComponent.h"
+#include "../TextureManager/textureManager.h"
 #include "../Map/map.h"
+#include "../ECS/Components.h"
+#include "../App/Vector2D.h"
+#include "../App/Collision.h"
+#include "../AssetsManager/AssetManager.h"
+#include <sstream>
 
 roguelike::ECS::Manager manager;
 auto& player(manager.addEntity());
@@ -23,29 +26,21 @@ namespace roguelike {
 
     AssetManager* Game::assets = new AssetManager(&manager);
 
-    void Game::AddTile(int id, int x, int y) {
-        auto& tile(manager.addEntity());
-        tile.addComponent<ECS::TileComponent>(x, y, 32, 32, id);
-    }
+    bool Game::isRunning = false;
 
-    Game::Game() {
+    auto& player(manager.addEntity());
+    auto& label(manager.addEntity());
 
-    }
+    Game::Game() {}
 
-    Game::~Game() {
-
-    }
+    Game::~Game() {}
 
     void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen) {
         renderer.create_window(title, xpos, ypos, width, height, fullscreen, isRunning);
-        player.addComponent<roguelike::ECS::TransformComponent>();
-        player.addComponent<roguelike::ECS::SpriteComponent>("src/Roguelike/Assets/proj.png");
-        player.addComponent<roguelike::ECS::KeyboardController>();
-        player.addComponent<roguelike::ECS::ColliderComponent>("player");
-
-        wall.addComponent<roguelike::ECS::TransformComponent>(300.0f, 300.0f, 200, 20, 1);
-        wall.addComponent<roguelike::ECS::SpriteComponent>("src/Roguelike/Assets/ColTex.png");
-        wall.addComponent<roguelike::ECS::ColliderComponent>("wall");
+        if (TTF_Init() == -1)
+        {
+            std::cout << "Error : SDL_TTF" << std::endl;
+        }
     }
     void Game::handleEvents() {
         SDL_PollEvent(&event);
@@ -71,7 +66,7 @@ namespace roguelike {
     }
 
     void Game::render() {
-        renderer.render(player, wall);
+//        renderer.render(player, wall);
     }
     void Game::clean() {
         renderer.destroy_window();

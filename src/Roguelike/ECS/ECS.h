@@ -30,9 +30,11 @@ namespace roguelike::ECS {
 /*
  * 每一个类型的实体会包含唯一一个id
  * */
-    template<typename T>
-    inline ComponentID getComponentTypeID() noexcept {
-        static ComponentID typeID = getComponentTypeID();
+    template <typename T>
+    inline ComponentID getComponentTypeID() noexcept
+    {
+        static_assert (std::is_base_of<Component, T>::value, "");
+        static ComponentID typeID = getNewComponentTypeID();
         return typeID;
     }
 
@@ -89,9 +91,7 @@ namespace roguelike::ECS {
             return groupBitSet[mGroup];
         }
 
-        void addGroup(Group mGroup) {
-
-        }
+        void addGroup(Group mGroup);
 
         void delGroup(Group mGroup) {
             groupBitSet[mGroup] = false;
@@ -154,6 +154,16 @@ namespace roguelike::ECS {
                                           [](const std::unique_ptr<Entity> &mEntity) {
                                               return !mEntity->isActive();
                                           }), std::end(entities));
+        }
+
+        void AddToGroup(Entity* mEntity, Group mGroup)
+        {
+            groupedEntities[mGroup].emplace_back(mEntity);
+        }
+
+        std::vector<Entity*>& getGroup(Group mGroup)
+        {
+            return groupedEntities[mGroup];
         }
 
         Entity &addEntity() {

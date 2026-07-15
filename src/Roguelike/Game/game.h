@@ -9,9 +9,6 @@
 #include "../Renderer/renderer.h"
 #include "SDL_image.h"
 
-#define MAP_WIDTH 20
-#define MAP_HEIGHT 25
-
 namespace roguelike {
     class AssetManager;
     namespace ECS {
@@ -45,8 +42,8 @@ namespace roguelike {
         bool running() const {
             return isRunning;
         }
-    private:
-        bool isRunning;
+
+        static bool isRunning;
     };
 }
 

@@ -22,7 +22,7 @@ file(GLOB_RECURSE UI src/UI/*.cpp UI src/UI/*.h)
 
 # ==================> executable file <=====================
 set(EXECUTABLE Thirdparty/opengl/src/glad.c
-        main.cpp command.h)
+        main.cpp command.h src/Roguelike/ECS/ProjectileComponent.h)
 add_executable(${PROJECT_NAME}
         ${EXECUTABLE}
         ${COMPILER}

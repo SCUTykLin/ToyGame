@@ -10,8 +10,8 @@
 #include "../Game/game.h"
 #include "../TextureManager/textureManager.h"
 
-namespace roguelike {
-    class TileComponent : public ECS::Component{
+namespace roguelike::ECS {
+    class TileComponent : public Component{
     public:
         SDL_Texture * texture;
         SDL_Rect srcRect, destRect;

@@ -5,17 +5,18 @@
 #ifndef TOYPROJECTS_ROGUELIKE_SPRITECOMPONENT_H
 #define TOYPROJECTS_ROGUELIKE_SPRITECOMPONENT_H
 
-#include <map>
-#include "Animation.h"
-#include "../TextureManager/textureManager.h"
-#include "TransformComponent.h"
+#include "Components.h"
 #include "SDL2/SDL.h"
+#include "../TextureManager/textureManager.h"
+#include "Animation.h"
+#include <map>
+#include "../AssetsManager/AssetManager.h"
 #include "../Game/game.h"
 
 namespace roguelike::ECS {
-    class SpriteComponent : public Component {
+class SpriteComponent : public Component {
     private:
-        TransformComponent *transform;
+        ECS::TransformComponent *transform;
         SDL_Texture *texture;
         SDL_Rect srcRect, destRect;
 
@@ -57,7 +58,7 @@ namespace roguelike::ECS {
         void init() override
         {
 
-            transform = &entity->getComponent<TransformComponent>();
+            transform = &entity->getComponent<ECS::TransformComponent>();
 
             srcRect.x = srcRect.y = 0;
             srcRect.w = transform->width;
@@ -74,8 +75,8 @@ namespace roguelike::ECS {
 
             srcRect.y = animIndex * transform->height;
 
-            destRect.x = static_cast<int>(transform->position.x - Game::camera.x);
-            destRect.y = static_cast<int>(transform->position.y - Game::camera.y);
+            destRect.x = static_cast<int>(transform->getVel().x - Game::camera.x);
+            destRect.y = static_cast<int>(transform->getVel().y - Game::camera.y);
             destRect.w = transform->width * transform->scale;
             destRect.h = transform->height * transform->scale;
         }
