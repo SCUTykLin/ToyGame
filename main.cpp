@@ -1,7 +1,5 @@
 #include "main.h"
 
-# include <imgui.h>
-# include <imgui_node_editor.h>
 int main(int argc, char *argv[]){
     system("chcp 65001");
 //    std::string default_command = "Pong";

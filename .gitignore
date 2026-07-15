@@ -1,6 +1,6 @@
 thirdparty/opengl
 thirdparty/raylib
 thirdparty/SDL2
-thirdparty/imgui-node-editor-docking
+thirdparty/imgui-node-editor
 .idea
 cmake-build-debug
