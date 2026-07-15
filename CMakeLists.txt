@@ -26,7 +26,7 @@ file(GLOB_RECURSE BOUNCY_BALL src/BouncyBall/*.cpp src/BouncyBall/*.h)
 file(GLOB_RECURSE FLUID_SIMULATION src/FluidSimulation/*.cpp src/FluidSimulation/*.h)
 file(GLOB_RECURSE ROGUELIKE src/Roguelike/*.cpp src/Roguelike/*.h)
 
-# raylib自带了一个glad.c可能不需要添加 Thirdparty/opengl/src/glad.c
+# 如果使用raylib自己的窗口，那就不能添加Thirdparty/opengl/src/glad.c
 set(EXECUTABLE Thirdparty/opengl/src/glad.c
         main.cpp main.h
         ${IMGUI_DIR}
@@ -53,9 +53,10 @@ target_link_libraries(${PROJECT_NAME}
         PRIVATE
         ${PROJECT_SOURCE_DIR}/Thirdparty/opengl/lib/assimp-vc143-mt.lib)
 
-# imgui-node-editor-docking
+# imgui-node-editor-docking include: imgui, stb_image, imgui_node_editor
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Thirdparty/imgui-node-editor/Support/CMakeModules)
 find_package(imgui REQUIRED)
+target_compile_definitions(imgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
 find_package(stb_image REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 find_package(blueprint-utilities REQUIRED)
