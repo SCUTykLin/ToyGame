@@ -13,35 +13,30 @@ add_subdirectory(Thirdparty/SDL2/SDL-release-2.32.6 EXCLUDE_FROM_ALL)
 add_subdirectory(Thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)
 add_subdirectory(Thirdparty/raylib)
 
-## imgui
-#file(GLOB IMGUI_DIR Thirdparty/imgui/src/*.cpp)
-#
-## stb_image
-#file(GLOB_RECURSE STB_IMAGE Thirdparty/stb_image/*.cpp Thirdparty/stb_image/*.h)
-
-# Projects file list:
+# ==================> Projects file list <=====================
 file(GLOB_RECURSE COMPILER src/Compiler/*.cpp src/Compiler/*.h)
 file(GLOB_RECURSE PHONG_GAME src/PongGame/*.cpp src/PongGame/*.h)
 file(GLOB_RECURSE BOUNCY_BALL src/BouncyBall/*.cpp src/BouncyBall/*.h)
 file(GLOB_RECURSE FLUID_SIMULATION src/FluidSimulation/*.cpp src/FluidSimulation/*.h)
 file(GLOB_RECURSE ROGUELIKE src/Roguelike/*.cpp src/Roguelike/*.h)
+file(GLOB_RECURSE UI src/UI/*.cpp UI src/UI/*.h)
+# ==================> Projects file list <=====================
 
 # 如果使用raylib自己的窗口，那就不能添加Thirdparty/opengl/src/glad.c
 set(EXECUTABLE Thirdparty/opengl/src/glad.c
-        main.cpp main.h
-        ${IMGUI_DIR}
-        ${STB_IMAGE})
+        main.cpp command.h)
 add_executable(${PROJECT_NAME}
         ${EXECUTABLE}
         ${COMPILER}
         ${PHONG_GAME}
         ${BOUNCY_BALL}
         ${FLUID_SIMULATION}
-        ${ROGUELIKE})
+        ${ROGUELIKE}
+        ${UI})
 
 # SDL2. SDL2_image must build upon SDL2::SDL2-static, no SDL2::SDL2
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image)
-target_link_libraries(${PROJECT_NAME} PRIVATE imgui imgui_node_editor)
+# raylib
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image raylib)
 
 # OpenGL + GLM + assimp
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/Thirdparty/opengl/include)
@@ -59,8 +54,5 @@ find_package(imgui REQUIRED)
 target_compile_definitions(imgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
 find_package(stb_image REQUIRED)
 find_package(imgui_node_editor REQUIRED)
-find_package(blueprint-utilities REQUIRED)
 find_package(ScopeGuard REQUIRED)
-
-# raylib
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
+target_link_libraries(${PROJECT_NAME} PRIVATE imgui stb_image imgui_node_editor ScopeGuard)

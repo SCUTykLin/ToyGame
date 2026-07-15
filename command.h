@@ -44,7 +44,7 @@ public:
     }
 };
 
-class Compiler : public Base_Command<Compiler> {
+class Compiler_Command : public Base_Command<Compiler_Command> {
 public:
     void run_command_Impl() {
         compiler::CompilerApp compilerApp;
@@ -52,10 +52,17 @@ public:
     }
 };
 
-class Roguelike : public Base_Command<Roguelike> {
+class Roguelike_Command : public Base_Command<Roguelike_Command> {
 public:
     void run_command_Impl() {
         roguelike::App{}.run();
+    }
+};
+
+class UI_Command : public Base_Command<UI_Command> {
+public:
+    void run_command_Impl() {
+
     }
 };
 
@@ -70,8 +77,9 @@ void create_commands_set() {
         add_command(Pong_Command{}, "Pong");
         add_command(Bouncy_Command{}, "Bouncy");
         add_command(Fluid_Command{}, "Fluid");
-        add_command(Compiler{}, "Compiler");
-        add_command(Roguelike{}, "Roguelike");
+        add_command(Compiler_Command{}, "Compiler");
+        add_command(Roguelike_Command{}, "Roguelike");
+        add_command(UI_Command{}, "UI");
     });
 }
 
@@ -84,6 +92,16 @@ std::unordered_map<std::string, std::function<void()>>* get_commands_set() {
     std::cout << "]" << std::endl;
 
     return &commands;
+}
+
+bool is_in_command(std::string& command_str){
+    create_commands_set();
+    for (const auto& pair : commands) {
+        if (pair.first == command_str) {
+            return true;
+        }
+    }
+    return false;
 }
 
 #endif //TOYPROJECTS_MAIN_H
