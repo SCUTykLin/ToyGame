@@ -29,9 +29,7 @@ void NAME::run() {
         window.render(grassTexture);
         window.display();
     }
-
     window.clearUp();
-
 }
 
 void NAME::initWindow() {
