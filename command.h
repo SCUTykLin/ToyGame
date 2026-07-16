@@ -11,6 +11,7 @@
 #include "src/FluidSimulation/App/FluidApplication.h"
 #include "src/Compiler/app.h"
 #include "src/Roguelike/App/app.h"
+#include "src/RPG_Platformer/App/App.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -60,6 +61,13 @@ public:
     }
 };
 
+class RPG_Command : public Base_Command<RPG_Command> {
+public:
+    void run_command_Impl() {
+        RPG_Platformer::App{}.run();
+    }
+};
+
 class UI_Command : public Base_Command<UI_Command> {
 public:
     void run_command_Impl() {
@@ -81,6 +89,7 @@ void create_commands_set() {
         add_command(Compiler_Command{}, "Compiler");
         add_command(Roguelike_Command{}, "Roguelike");
         add_command(UI_Command{}, "UI");
+        add_command(RPG_Command{}, "RPG");
     });
 }
 

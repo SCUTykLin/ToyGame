@@ -16,6 +16,7 @@ file(GLOB_RECURSE BOUNCY_BALL src/BouncyBall/*.cpp src/BouncyBall/*.h)
 file(GLOB_RECURSE FLUID_SIMULATION src/FluidSimulation/*.cpp src/FluidSimulation/*.h)
 file(GLOB_RECURSE ROGUELIKE src/Roguelike/*.cpp src/Roguelike/*.h)
 file(GLOB_RECURSE UI src/UI/*.cpp UI src/UI/*.h)
+file(GLOB_RECURSE RPG src/RPG_Platformer/*.cpp src/RPG_Platformer/*.h)
 # ==================> Projects file list <=====================
 
 # 如果使用raylib自己的窗口，那就不能添加Thirdparty/opengl/src/glad.c
@@ -30,6 +31,7 @@ add_executable(${PROJECT_NAME}
         ${BOUNCY_BALL}
         ${FLUID_SIMULATION}
         ${ROGUELIKE}
+        ${RPG}
         ${UI})
 # ==================> executable file <=====================
 
