@@ -34,7 +34,7 @@ namespace roguelike {
         fonts.emplace(id, TTF_OpenFont(path.c_str(), fontSize));
     }
 
-    TTF_Font* GetFont(std::string id) {
+    TTF_Font* AssetManager::GetFont(std::string id) {
         return fonts[id];
     }
 }

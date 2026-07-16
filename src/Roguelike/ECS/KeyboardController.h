@@ -6,13 +6,14 @@
 #define TOYPROJECTS_ROGUELIKE_KEYBOARDCONTROLLER_H
 
 #include "../Game/game.h"
-#include "ECS.h"
-#include "Components.h"
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
 
 namespace roguelike::ECS {
     class KeyboardController : public Component {
     public:
         TransformComponent *transform;
+        SpriteComponent* sprite;
 
         void init() override {
             transform = &entity->getComponent<TransformComponent>();

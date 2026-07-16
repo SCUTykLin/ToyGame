@@ -5,18 +5,17 @@
 #ifndef TOYPROJECTS_ROGUELIKE_SPRITECOMPONENT_H
 #define TOYPROJECTS_ROGUELIKE_SPRITECOMPONENT_H
 
-#include "Components.h"
 #include "SDL2/SDL.h"
 #include "../TextureManager/textureManager.h"
 #include "Animation.h"
 #include <map>
 #include "../AssetsManager/AssetManager.h"
+#include "TransformComponent.h"
 #include "../Game/game.h"
 
 namespace roguelike::ECS {
 class SpriteComponent : public Component {
-    private:
-        ECS::TransformComponent *transform;
+        TransformComponent *transform;
         SDL_Texture *texture;
         SDL_Rect srcRect, destRect;
 
@@ -52,7 +51,7 @@ class SpriteComponent : public Component {
 
         void setTex(std::string id)
         {
-            texture = Game::assets->GetTexture(id);
+            texture = roguelike::Game::assets->GetTexture(id);
         }
 
         void init() override

@@ -35,7 +35,7 @@ namespace roguelike {
 
         void draw() override
         {
-            SDL_RenderCopy(Game::renderer, labelTexture, nullptr, &position);
+            SDL_RenderCopy(Game::renderer.get_window_renderer(), labelTexture, nullptr, &position);
         }
 
         ~UILabel()

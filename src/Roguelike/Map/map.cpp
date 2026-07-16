@@ -11,19 +11,29 @@
 
 namespace roguelike {
 
-    extern Manager manager;
+    extern ECS::Manager manager;
 
     Map::Map(std::string& tID, int ms, int ts) : texID(tID), mapScale(ms), tileSize(ts) {
         scaledSize = ms * ts;
     }
+
+    Map::Map(std::string&& tID, int ms, int ts) : texID(tID), mapScale(ms), tileSize(ts) {
+        scaledSize = ms * ts;
+    }
+
     Map::~Map() {
     }
 
-    void Map::LoadMap(std::string& path, int sizeX, int sizeY)
+    void Map::LoadMap(std::string&& path, int sizeX, int sizeY)
     {
         char c;
         std::fstream mapFile;
         mapFile.open(path);
+
+        if (!mapFile.is_open()) {
+            std::cout << "open file: " << path << " fail!" << std::endl;
+            return;
+        }
 
         int srcX, srcY;
 
@@ -59,5 +69,10 @@ namespace roguelike {
 
         mapFile.close();
     }
-
+    void Map::AddTile(int srcX, int srcY, int xpos, int ypos)
+    {
+        auto& tile(manager.addEntity());
+        tile.addComponent<ECS::TileComponent>(srcX, srcY, xpos, ypos, tileSize, mapScale, texID);
+        tile.addGroup(Game::groupMap);
+    }
 }
