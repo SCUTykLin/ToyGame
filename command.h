@@ -9,7 +9,7 @@
 #include "src/PongGame/pong_game.h"
 #include "src/BouncyBall/bouncy_ball.h"
 #include "src/FluidSimulation/App/FluidApplication.h"
-#include "src/Compiler/app.h"
+#include "src/Compiler/include/app.h"
 #include "src/Roguelike/App/app.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
@@ -48,8 +48,8 @@ public:
 class Compiler_Command : public Base_Command<Compiler_Command> {
 public:
     void run_command_Impl() {
-        compiler::CompilerApp compilerApp;
-        compilerApp.run_compile("test.unn");
+        Compiler::App compilerApp;
+        compilerApp.run_compile("src/Compiler/test.unn");
     }
 };
 

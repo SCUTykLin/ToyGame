@@ -4,6 +4,8 @@
 #include "app.h"
 #include "../Game/game.h"
 #include "../TextureManager/textureManager.h"
+#include "../../Compiler/include/app.h"
+
 
 namespace roguelike {
     void App::run() {
@@ -31,3 +33,4 @@ namespace roguelike {
     }
 
 }
+
