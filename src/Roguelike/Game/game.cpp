@@ -11,11 +11,6 @@
 #include <sstream>
 
 roguelike::ECS::Manager manager;
-auto& player(manager.addEntity());
-auto& wall(manager.addEntity());
-auto& tile0(manager.addEntity());
-auto& tile1(manager.addEntity());
-auto& tile2(manager.addEntity());
 namespace roguelike {
 
     Map* map;
@@ -126,30 +121,7 @@ namespace roguelike {
     }
 
     void Game::render() {
-        SDL_RenderClear(renderer.get_window_renderer());
-        for (auto& t : tiles)
-        {
-            t->draw();
-        }
-
-        for (auto& c : colliders)
-        {
-            c->draw();
-        }
-
-        for (auto& p : players)
-        {
-            p->draw();
-        }
-
-        for (auto& p : projectiles)
-        {
-            p->draw();
-        }
-
-        label.draw();
-
-        SDL_RenderPresent(renderer.get_window_renderer());
+        renderer.render(tiles, colliders, players,projectiles, label);
     }
     void Game::clean() {
         renderer.destroy_window();

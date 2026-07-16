@@ -9,6 +9,12 @@
 #include <iostream>
 #include <mutex>
 
+template<typename T, typename=void>
+struct can_iterate : std::false_type{};
+
+template<typename T>
+struct can_iterate<T, std::void_t<decltype(std::declval<T>().begin()), decltype(std::declval<T>().end())>> : std::true_type{};
+
 namespace roguelike {
 
     class Renderer {
@@ -23,6 +29,16 @@ namespace roguelike {
         void render(GameObjects&&... gameObjects) {
             SDL_RenderClear(renderer);
 
+            ([&]()->void {
+                if constexpr (can_iterate<GameObjects>::value){
+                    for (auto& p : std::forward<GameObjects>(gameObjects))
+                    {
+                        p->draw();
+                    }
+                }
+                else
+                    std::forward<GameObjects>(gameObjects).draw();
+            }(), ...);
 
             SDL_RenderPresent(renderer);
         }
