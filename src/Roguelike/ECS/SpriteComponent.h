@@ -31,8 +31,7 @@ class SpriteComponent : public Component {
             setTex(id);
         }
 
-        SpriteComponent(std::string id, bool isAnimated)
-        {
+        SpriteComponent(std::string id, bool isAnimated){
             animated = isAnimated;
 
             Animation idle = Animation(0, 3, 100);
@@ -45,18 +44,13 @@ class SpriteComponent : public Component {
 
             setTex(id);
         }
-        ~SpriteComponent()
-        {
-        }
+        ~SpriteComponent(){}
 
-        void setTex(std::string id)
-        {
+        void setTex(std::string id){
             texture = roguelike::Game::assets->GetTexture(id);
         }
 
-        void init() override
-        {
-
+        void init() override{
             transform = &entity->getComponent<ECS::TransformComponent>();
 
             srcRect.x = srcRect.y = 0;
@@ -64,29 +58,24 @@ class SpriteComponent : public Component {
             srcRect.h = transform->height;
         }
 
-        void update() override
-        {
-
-            if (animated)
-            {
+        void update() override{
+            if (animated){
                 srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
             }
 
             srcRect.y = animIndex * transform->height;
 
-            destRect.x = static_cast<int>(transform->getVel().x - Game::camera.x);
-            destRect.y = static_cast<int>(transform->getVel().y - Game::camera.y);
+            destRect.x = static_cast<int>(transform->getPos().x - Game::camera.x);
+            destRect.y = static_cast<int>(transform->getPos().y - Game::camera.y);
             destRect.w = transform->width * transform->scale;
             destRect.h = transform->height * transform->scale;
         }
 
-        void draw() override
-        {
+        void draw() override{
             TextureManager::Draw(texture, srcRect, destRect, spriteFlip);
         }
 
-        void Play(const char* animName)
-        {
+        void Play(const char* animName){
             frames = animations[animName].frames;
             animIndex = animations[animName].index;
             speed = animations[animName].speed;

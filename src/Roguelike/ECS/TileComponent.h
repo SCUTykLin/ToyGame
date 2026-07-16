@@ -24,9 +24,7 @@ namespace roguelike::ECS {
             SDL_DestroyTexture(texture);
         }
 
-
-        TileComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, std::string id)
-        {
+        TileComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, std::string id){
             texture = Game::assets->GetTexture(id);
 
             srcRect.x = srcX;
@@ -36,7 +34,11 @@ namespace roguelike::ECS {
             position.y = static_cast<float>(ypos);
             destRect.w = destRect.h = tsize * tscale;
         }
-
+        void update() override
+        {
+            destRect.x = static_cast<int>(position.x - Game::camera.x);
+            destRect.y = static_cast<int>(position.y - Game::camera.y);
+        }
         void draw() override
         {
             TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);

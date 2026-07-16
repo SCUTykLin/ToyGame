@@ -8,6 +8,7 @@
 #include "../ECS/ECS.h"
 #include "../Game/game.h"
 #include "../ECS/Components.h"
+#include <sstream>
 
 namespace roguelike {
 
@@ -24,16 +25,10 @@ namespace roguelike {
     Map::~Map() {
     }
 
-    void Map::LoadMap(std::string&& path, int sizeX, int sizeY)
-    {
+void Map::LoadMap(const std::string&& path, int sizeX, int sizeY){
         char c;
         std::fstream mapFile;
         mapFile.open(path);
-
-        if (!mapFile.is_open()) {
-            std::cout << "open file: " << path << " fail!" << std::endl;
-            return;
-        }
 
         int srcX, srcY;
 
@@ -68,7 +63,7 @@ namespace roguelike {
         }
 
         mapFile.close();
-    }
+}
     void Map::AddTile(int srcX, int srcY, int xpos, int ypos)
     {
         auto& tile(manager.addEntity());
