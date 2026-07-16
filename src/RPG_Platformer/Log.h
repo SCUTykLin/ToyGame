@@ -13,10 +13,11 @@ namespace RPG_Platformer {
     concept is_stream = requires(Args ... args){
         ((std::cout << args), ...);
     };
+
     template <is_stream ... Args>
     void print(Args ... args) {
-        ((std::cout << "RPG PLATFORMER LOG: " << args), ...);
-        std::cout << std::endl;
+        ((std::cout << "[RPG PLATFORMER LOG]===> " << args), ...);
+        std::cout << " <===[RPG PLATFORMER LOG]" << std::endl;
     }
 }
 

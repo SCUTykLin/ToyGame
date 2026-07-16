@@ -11,7 +11,7 @@
 #include "src/FluidSimulation/App/FluidApplication.h"
 #include "src/Compiler/app.h"
 #include "src/Roguelike/App/app.h"
-#include "src/RPG_Platformer/App/App.h"
+#include "src/RPG_Platformer/App/app.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
