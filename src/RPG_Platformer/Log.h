@@ -16,7 +16,8 @@ namespace RPG_Platformer {
 
     template <is_stream ... Args>
     void print(Args ... args) {
-        ((std::cout << "[RPG PLATFORMER LOG]===> " << args), ...);
+        std::cout << "[RPG PLATFORMER LOG]===> ";
+        ((std::cout << args), ...);
         std::cout << " <===[RPG PLATFORMER LOG]" << std::endl;
     }
 }

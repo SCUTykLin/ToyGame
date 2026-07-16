@@ -4,6 +4,8 @@
 
 #include "renderWindow.h"
 #include "../Log.h"
+#include "../../BouncyBall/bouncy_ball.h"
+#include "../Entity/entity.h"
 
 namespace RPG_Platformer {
     RenderWindow::RenderWindow(const char *p_title, int p_w, int p_h) : window(nullptr), renderer(nullptr){
@@ -23,10 +25,29 @@ namespace RPG_Platformer {
 
     void RenderWindow::clear() {
         SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     }
 
-    void RenderWindow::render(SDL_Texture *p_tex) {
-        SDL_RenderCopy(renderer, p_tex, NULL, NULL);
+    int RenderWindow::getRefreshRate() {
+        int displayIndex = SDL_GetWindowDisplayIndex(window);
+        SDL_DisplayMode mode;
+        SDL_GetDisplayMode(displayIndex, 0, &mode);
+        return mode.refresh_rate;
+    }
+
+    void RenderWindow::render(Entity& p_entity) {
+        SDL_Rect src;
+        src.x = p_entity.getCurrentFrame().x;
+        src.y = p_entity.getCurrentFrame().y;
+        src.w = p_entity.getCurrentFrame().w;
+        src.h = p_entity.getCurrentFrame().h;
+
+        SDL_Rect dst;
+        dst.x = p_entity.getPos().x * 4;
+        dst.y = p_entity.getPos().y * 4;
+        dst.w = p_entity.getCurrentFrame().w * 4;
+        dst.h = p_entity.getCurrentFrame().h * 4;
+        SDL_RenderCopy(renderer, p_entity.getTex(), &src, &dst);
     }
 
     void RenderWindow::display() {
