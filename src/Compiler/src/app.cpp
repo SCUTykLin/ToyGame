@@ -3,9 +3,10 @@
 //
 
 #include "../include/app.h"
+#include "../include/tac.h"
 
 namespace Compiler {
         void App::run_compile(const char* filename){
-
+                tac::tac_complie_file(filename);
         }
 }

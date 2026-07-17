@@ -5,11 +5,11 @@
 #include "../include/token.h"
 #include <stdlib.h>
 
-namespace Compiler::token{
-    token_T* init_token(char* value, enum type type){
+namespace Compiler::Token{
+    token_T* init_token(const char* value, TOKEN_STRUCT::TokenType type){
         token_T* token = static_cast<token_T*>(calloc(1, sizeof(struct TOKEN_STRUCT)));
         token->value = value;
-//        token->type = type;
+        token->type = type;
         return token;
     }
 }

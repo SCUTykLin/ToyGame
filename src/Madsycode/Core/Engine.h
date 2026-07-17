@@ -2,8 +2,13 @@
 // Created by 15813 on 2026/7/17.
 //
 
-#ifndef TOYPROJECTS_ENGINE_H
-#define TOYPROJECTS_ENGINE_H
+#ifndef TOYPROJECTS_Madsycode_ENGINE_H
+#define TOYPROJECTS_Madsycode_ENGINE_H
+
+#include <SDL2/SDL.h>
+#include <SDL_image.h>
+#define SCREEN_WIDTH 960
+#define SCREEN_HEIGHT 640
 
 namespace Madsycode::Engine {
     class Engine {
@@ -19,12 +24,16 @@ namespace Madsycode::Engine {
         void Events();
 
         inline bool isRunning(){return m_IsRunning;}
+        inline SDL_Renderer* GetRenderer(){return m_Renderer;}
+        inline SDL_Window* GetWindow(){return m_Window;}
     private:
         Engine(){};
         bool m_IsRunning;
+        SDL_Window* m_Window;
+        SDL_Renderer* m_Renderer;
         static Engine* s_Instance;
     };
 }
 
 
-#endif //TOYPROJECTS_ENGINE_H
+#endif //TOYPROJECTS_Madsycode_ENGINE_H

@@ -11,6 +11,7 @@
 #include "src/FluidSimulation/App/FluidApplication.h"
 #include "src/Compiler/include/app.h"
 #include "src/Roguelike/App/app.h"
+#include "src/Madsycode/App/app.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -49,7 +50,7 @@ class Compiler_Command : public Base_Command<Compiler_Command> {
 public:
     void run_command_Impl() {
         Compiler::App compilerApp;
-        compilerApp.run_compile("src/Compiler/test.unn");
+        compilerApp.run_compile("src/Compiler/examples/main.tac");
     }
 };
 
@@ -60,6 +61,12 @@ public:
     }
 };
 
+class SDL_Engine_Command : public Base_Command<SDL_Engine_Command> {
+public:
+    void run_command_Impl() {
+        Madsycode::App{}.run();
+    }
+};
 
 class UI_Command : public Base_Command<UI_Command> {
 public:
@@ -81,6 +88,7 @@ void create_commands_set() {
         add_command(Fluid_Command{}, "Fluid");
         add_command(Compiler_Command{}, "Compiler");
         add_command(Roguelike_Command{}, "Roguelike");
+        add_command(SDL_Engine_Command{}, "2DEngine");
         add_command(UI_Command{}, "UI");
     });
 }
