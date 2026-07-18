@@ -1,5 +1,4 @@
 #include "command.h"
-#include "opengL_test.h"
 
 int main(int argc, char *argv[]){
      system("chcp 65001");
