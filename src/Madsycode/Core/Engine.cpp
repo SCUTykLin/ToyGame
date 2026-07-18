@@ -3,6 +3,7 @@
 //
 
 #include "Engine.h"
+#include "../Graphics/TextureManager.h"
 
 namespace Madsycode::Engine{
     Engine* Engine::s_Instance = nullptr;
@@ -29,6 +30,11 @@ namespace Madsycode::Engine{
     }
 
     void Engine::Clean() {
+        Texture::TextureManager::GetInstance()->Clean();
+        SDL_DestroyRenderer(m_Renderer);
+        SDL_DestroyWindow(m_Window);
+        IMG_Quit();
+        SDL_Quit();
     }
 
     void Engine::Quit() {

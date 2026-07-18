@@ -20,10 +20,9 @@ file(GLOB_RECURSE UI src/UI/*.cpp UI src/UI/*.h)
 # ==================> Projects file list <=====================
 
 # 如果使用raylib自己的窗口，那就不能添加Thirdparty/opengl/src/glad.c
-
 # ==================> executable file <=====================
 set(EXECUTABLE Thirdparty/opengl/src/glad.c
-        main.cpp command.h src/Roguelike/ECS/ProjectileComponent.h)
+        main.cpp command.h opengL_test.h)
 add_executable(${PROJECT_NAME}
         ${EXECUTABLE}
         ${COMPILER}
@@ -40,8 +39,7 @@ add_executable(${PROJECT_NAME}
 add_subdirectory(Thirdparty/SDL2/SDL-release-2.32.6 EXCLUDE_FROM_ALL)
 add_subdirectory(Thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)
 add_subdirectory(Thirdparty/SDL2/SDL_ttf-release-2.20.0 EXCLUDE_FROM_ALL)
-add_subdirectory(Thirdparty/raylib)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf raylib)
+target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 # =================== link SDL2, SDL2_image and raylib ===================
 
 # =================== OpenGL + GLM + assimp ===================
@@ -56,11 +54,15 @@ target_link_libraries(${PROJECT_NAME}
 # =================== OpenGL + GLM + assimp ===================
 
 # =================== imgui-node-editor-docking include: imgui, stb_image, imgui_node_editor ===================
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Thirdparty/imgui-node-editor/Support/CMakeModules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Thirdparty/imgui-node-editor/misc/cmake-modules)
 find_package(imgui REQUIRED)
-target_compile_definitions(imgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
+target_compile_definitions(imgui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 find_package(stb_image REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 find_package(ScopeGuard REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE imgui stb_image imgui_node_editor ScopeGuard)
+target_link_libraries(${PROJECT_NAME} PUBLIC imgui stb_image imgui_node_editor ScopeGuard)
 # =================== imgui-node-editor-docking include: imgui, stb_image, imgui_node_editor ===================
+
+
+# dll是否需要import
+target_compile_definitions(${PROJECT_NAME} PUBLIC UIPlugin)

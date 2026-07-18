@@ -7,11 +7,11 @@
 
 #include <SDL_render.h>
 #include <string>
+#include <map>
 
 namespace Madsycode::Texture {
     class TextureManager {
     public:
-        TextureManager();
         static TextureManager* GetInstance(){return s_Instance = (s_Instance != nullptr) ? s_Instance : new TextureManager();}
         bool Load(const std::string& id, const std::string& filename);
         void Drop(const std::string& id);
@@ -19,6 +19,7 @@ namespace Madsycode::Texture {
         void Draw(const std::string& id, int x, int y, int width, int height, SDL_RendererFlip flip=SDL_FLIP_NONE);
     private:
         TextureManager(){};
+        std::map<std::string, SDL_Texture*> m_Textures;
         static TextureManager* s_Instance;
     };
 }

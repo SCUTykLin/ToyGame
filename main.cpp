@@ -1,7 +1,9 @@
 #include "command.h"
+#include "opengL_test.h"
 
 int main(int argc, char *argv[]){
      system("chcp 65001");
+
      std::string default_command = "Pong";
      if (argc > 1) {
          default_command = argv[1];
