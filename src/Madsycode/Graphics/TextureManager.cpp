@@ -42,7 +42,17 @@ namespace Madsycode::Texture {
     void TextureManager::Draw(const std::string &id, int x, int y, int width, int height, SDL_RendererFlip flip) {
         SDL_Rect srcRect{0, 0, width, height};
         SDL_Rect dstRect{x, y, width, height};
-        SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[id], &srcRect, &dstRect, 0, nullptr, flip);
+        SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[id],
+            &srcRect, &dstRect, 0,
+            nullptr, flip);
+    }
 
+    void TextureManager::DrawFrame(const std::string &id, int x, int y, int width, int height, int row, int frame,
+        SDL_RendererFlip flip) {
+        SDL_Rect srcRect{width * frame, height * (row-1), width, height};
+        SDL_Rect dstRect{x, y, width, height};
+        SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[id],
+            &srcRect, &dstRect, 0,
+            nullptr, flip);
     }
 }

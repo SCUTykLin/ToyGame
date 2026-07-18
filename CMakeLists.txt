@@ -19,7 +19,6 @@ file(GLOB_RECURSE MADSYCODE src/MADSYCODE/*.cpp src/MADSYCODE/*.h)
 file(GLOB_RECURSE UI src/UI/*.cpp UI src/UI/*.h)
 # ==================> Projects file list <=====================
 
-# 如果使用raylib自己的窗口，那就不能添加Thirdparty/opengl/src/glad.c
 # ==================> executable file <=====================
 set(EXECUTABLE Thirdparty/opengl/src/glad.c
         main.cpp command.h opengL_test.h)
@@ -43,7 +42,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2main SDL2::SDL2-static SD
 # =================== link SDL2, SDL2_image and raylib ===================
 
 # =================== OpenGL + GLM + assimp ===================
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/Thirdparty/opengl/include)
+include_directories(${PROJECT_SOURCE_DIR}/Thirdparty/opengl/include)
 link_directories(${PROJECT_SOURCE_DIR}/Thirdparty/opengl/lib)
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
@@ -56,7 +55,6 @@ target_link_libraries(${PROJECT_NAME}
 # =================== imgui-node-editor-docking include: imgui, stb_image, imgui_node_editor ===================
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Thirdparty/imgui-node-editor/misc/cmake-modules)
 find_package(imgui REQUIRED)
-target_compile_definitions(imgui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 find_package(stb_image REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 find_package(ScopeGuard REQUIRED)
