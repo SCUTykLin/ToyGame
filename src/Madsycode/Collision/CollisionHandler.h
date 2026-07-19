@@ -1,0 +1,16 @@
+//
+// Created by 15813 on 2026/7/19.
+//
+
+#ifndef TOYPROJECTS_COLLISIONHANDLER_H
+#define TOYPROJECTS_COLLISIONHANDLER_H
+
+
+
+class CollisionHandler {
+
+};
+
+
+
+#endif //TOYPROJECTS_COLLISIONHANDLER_H
