@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="60" height="20" tilewidth="17" tileheight="17" infinite="0" nextlayerid="6" nextobjectid="1">
  <tileset firstgid="1" name="Overworld" tilewidth="17" tileheight="17" tilecount="2850" columns="75">
-  <image source="../Tileset/SuperMario/Overworld.png" width="1283" height="654"/>
+  <image source="Overworld.png" width="1283" height="654"/>
  </tileset>
  <tileset firstgid="2851" name="Decorations" tilewidth="17" tileheight="17" tilecount="405" columns="27">
-  <image source="../Tileset/SuperMario/Decorations.png" width="465" height="260"/>
+  <image source="Decorations.png" width="465" height="260"/>
  </tileset>
  <tileset firstgid="3256" name="Blocks" tilewidth="17" tileheight="17" tilecount="480" columns="30">
-  <image source="../Tileset/SuperMario/Blocks.png" width="515" height="275"/>
+  <image source="Blocks.png" width="515" height="275"/>
  </tileset>
  <layer id="2" name="BG" width="60" height="20">
   <data encoding="csv">

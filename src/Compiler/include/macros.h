@@ -5,10 +5,10 @@
 #ifndef TOYPROJECTS_COMPILER_MACROS_H
 #define TOYPROJECTS_COMPILER_MACROS_H
 
-#define MAX(a, b) \
+#define __MAX__(a, b) \
      a > b ? a : b
 
-#define MIN(a, b) \
+#define __MIN__(a, b) \
      a > b ? b : a
 
 #endif //TOYPROJECTS_COMPILER_MACROS_H

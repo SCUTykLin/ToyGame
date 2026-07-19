@@ -10,6 +10,10 @@
 #define UNI_MASS 1.0f
 #define GRAVITY 9.81f
 
+#define FORWARD 1
+#define BACKWARD -1
+#define UPWARD 1
+#define DOWNWARD -1
 
 namespace Madsycode::Physics {
 
@@ -56,6 +60,5 @@ namespace Madsycode::Physics {
         Vector2D<float> m_Acceleration;
     };
 }
-
 
 #endif //TOYPROJECTS_RIGIDBODY_H

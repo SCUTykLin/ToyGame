@@ -1,5 +1,5 @@
 #include "command.h"
-
+#include "_test.h"
 int main(int argc, char *argv[]){
      system("chcp 65001");
 

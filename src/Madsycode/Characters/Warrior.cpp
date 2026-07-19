@@ -3,7 +3,11 @@
 //
 
 #include "Warrior.h"
+
+#include <iostream>
+
 #include "../Graphics/TextureManager.h"
+#include "../Inputs/Inputs.h"
 #include <SDL2/SDL.h>
 
 namespace Madsycode::Character {
@@ -18,9 +22,20 @@ namespace Madsycode::Character {
     }
 
     void Warrior::Update(float dt) {
-        m_RigidBody->Update(1);
+        m_Animation->SetProps("player", 1, 12, 80, SDL_FLIP_NONE);
+        m_RigidBody->UnSetForce();
+        if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A)) {
+            m_RigidBody->ApplyForceX(5 * BACKWARD);
+            m_Animation->SetProps("player_run", 1, 8, 80, SDL_FLIP_HORIZONTAL);
+        }
+        if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_D)) {
+            m_RigidBody->ApplyForceX(5 * FORWARD);
+            m_Animation->SetProps("player_run", 1, 8, 80, SDL_FLIP_NONE);
+        }
+
+        m_RigidBody->Update(dt);
         m_Transform->TranslateX(m_RigidBody->Position().X);
-        m_Transform->TranslateY(m_RigidBody->Position().Y);
+        // m_Transform->TranslateY(m_RigidBody->Position().Y);
         m_Animation->Update();
     }
 

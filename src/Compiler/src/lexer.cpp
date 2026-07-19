@@ -26,7 +26,7 @@ namespace Compiler{
     }
 
     char Lexer::lexer_peek(Lexer::lexer_T* lexer, int offset) {
-        return lexer->src[MIN(lexer->i + offset, lexer->src_size)];
+        return lexer->src[__MIN__(lexer->i + offset, lexer->src_size)];
     }
 
     Token::token_T* Lexer::lexer_advance_with(Lexer::lexer_T* lexer, Token::token_T* token) {

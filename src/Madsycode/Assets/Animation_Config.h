@@ -5,14 +5,10 @@
 #ifndef TOYPROJECTS_Madsycode_ANIMATION_CONFIG_H
 #define TOYPROJECTS_Madsycode_ANIMATION_CONFIG_H
 
-namespace Madsycode::AssetConfig {
-    struct ASSET {
-        const char* path = nullptr;
-        int FrameCount = 0;
-    };
-    struct PLAYER {
+#include <string>
 
-    };
+namespace Madsycode::AssetConfig {
+
 }
 
 #endif //TOYPROJECTS_Madsycode_ANIMATION_CONFIG_H

@@ -7,6 +7,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
+#include "../Map/GameMap.h"
+
 #define SCREEN_WIDTH 960
 #define SCREEN_HEIGHT 640
 
@@ -29,6 +31,8 @@ namespace Madsycode::Engine {
     private:
         Engine(){};
         bool m_IsRunning;
+
+        Map::GameMap* m_LevelMap;
         SDL_Window* m_Window;
         SDL_Renderer* m_Renderer;
         static Engine* s_Instance;

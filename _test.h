@@ -2,12 +2,21 @@
 // Created by 15813 on 2026/7/18.
 //
 
+/*
+ * 该头文件只是为了测试各种库是否正确运行
+ */
+
 #ifndef TOYPROJECTS_OPENGL_TEST_H
 #define TOYPROJECTS_OPENGL_TEST_H
 // 注意：glad.h 必须放在所有 OpenGL 相关头文件之前
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp> // 平移/旋转/缩放变换
+#include <glm/gtc/type_ptr.hpp>         // 矩阵转原生指针（传给Shader用）
+#include <glm/gtc/constants.hpp>        // π 等数学常量
 
 // 窗口大小变化时的回调：自动调整 OpenGL 视口
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -31,15 +40,75 @@ void main()
 
 // 片段着色器源码
 const char* fragmentShaderSource = R"(
-#version 330 core
-in vec3 ourColor;
-out vec4 FragColor;
+    #version 330 core
+    in vec3 ourColor;
+    out vec4 FragColor;
 
-void main()
-{
-    FragColor = vec4(ourColor, 1.0);
+    void main()
+    {
+        FragColor = vec4(ourColor, 1.0);
+    }
+    )";
+
+
+int test_glm() {
+    // ========== 1. 向量与几何运算 ==========
+    glm::vec3 position(100.0f, 200.0f, 0.0f);
+    glm::vec3 direction(1.0f, 0.0f, 0.0f);
+    float moveSpeed = 50.0f;
+    float deltaTime = 0.016f; // 60帧帧间隔
+
+    // 游戏物体位移计算（帧率无关）
+    glm::vec3 newPos = position + direction * moveSpeed * deltaTime;
+    std::cout << "移动后位置: (" << newPos.x << ", " << newPos.y << ")\n";
+
+    // 点积、叉积、归一化（光照、碰撞检测常用）
+    glm::vec3 v1(1.0f, 0.0f, 0.0f);
+    glm::vec3 v2(0.0f, 1.0f, 0.0f);
+    float dotResult = glm::dot(v1, v2);
+    glm::vec3 crossResult = glm::cross(v1, v2);
+    glm::vec3 normalized = glm::normalize(glm::vec3(3.0f, 4.0f, 0.0f));
+
+    std::cout << "点积: " << dotResult << "\n";
+    std::cout << "叉积: (" << crossResult.x << ", " << crossResult.y << ", " << crossResult.z << ")\n";
+    std::cout << "归一化后模长: " << glm::length(normalized) << "\n\n";
+
+    // ========== 2. 模型变换矩阵 ==========
+    glm::mat4 model(1.0f);
+    // 平移
+    model = glm::translate(model, glm::vec3(200.0f, 300.0f, 0.0f));
+    // 旋转：绕Z轴转45度，角度必须转弧度
+    model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    // 缩放
+    model = glm::scale(model, glm::vec3(2.0f, 2.0f, 1.0f));
+
+    // 矩阵乘顶点：计算最终屏幕坐标
+    glm::vec4 localVertex(0.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec4 worldVertex = model * localVertex;
+    std::cout << "变换后顶点: (" << worldVertex.x << ", " << worldVertex.y << ")\n";
+
+    // 转原生float数组，直接传给OpenGL glUniformMatrix4fv
+    const float* matPtr = glm::value_ptr(model);
+    std::cout << "矩阵首元素: " << matPtr[0] << "\n\n";
+
+    // ========== 3. 投影矩阵（相机/视口） ==========
+    // 2D正交投影（像素级坐标，左上原点）
+    glm::mat4 ortho = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
+    // 3D透视投影
+    glm::mat4 perspective = glm::perspective(
+        glm::radians(45.0f),   // 视场角
+        800.0f / 600.0f,       // 宽高比
+        0.1f,                  // 近裁剪面
+        100.0f                 // 远裁剪面
+    );
+
+    std::cout << "正交投影[0][0]: " << ortho[0][0] << "\n";
+    std::cout << "透视投影[0][0]: " << perspective[0][0] << "\n\n";
+
+    std::cout << "GLM 综合功能测试全部通过！\n";
+    return 0;
 }
-)";
+
 int test_opengl(){
     // 1. 初始化 GLFW
     glfwInit();

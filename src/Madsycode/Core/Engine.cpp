@@ -6,6 +6,9 @@
 #include "../Graphics/TextureManager.h"
 #include <iostream>
 #include "../Characters/Warrior.h"
+#include "../Inputs/Inputs.h"
+#include "../Map/MapParser.h"
+#include "../Time/Time.h"
 
 namespace Madsycode::Engine{
     Engine* Engine::s_Instance = nullptr;
@@ -16,9 +19,9 @@ namespace Madsycode::Engine{
             SDL_Log("Failed to initialize SDL_%s", IMG_GetError());
             return false;
         }
-
+        SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
         m_Window = SDL_CreateWindow("Soft Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+            SCREEN_WIDTH, SCREEN_HEIGHT, window_flags);
         if (m_Window == nullptr) {
             SDL_Log("Failed to create window: %s", SDL_GetError());
             return false;
@@ -30,7 +33,15 @@ namespace Madsycode::Engine{
             return false;
         }
 
+        if (Map::MapParser::GetInstance()->Load()) {
+            std::cout << "load map ..." << std::endl;
+        }
+
+        m_LevelMap = Map::MapParser::GetInstance()->GetMaps("MAP");
+
         Texture::TextureManager::GetInstance()->Load("player", "src/Madsycode/Assets/character/anim/idle/spritesheet.png");
+        Texture::TextureManager::GetInstance()->Load("player_run", "src/Madsycode/Assets/character/anim/run/spritesheet.png");
+
         player = new Character::Warrior(new Object::Properties("player", 100, 200, 131, 142));
 
         return m_IsRunning = true;
@@ -52,25 +63,21 @@ namespace Madsycode::Engine{
     }
 
     void Engine::Update() {
-        player->Update(0);
+        auto dt = Time::Timer::GetInstance()->GetDeltaTime();
+        m_LevelMap->Update();
+        player->Update(dt);
     }
 
     void Engine::Render() {
         SDL_SetRenderDrawColor(m_Renderer, 124, 218, 254, 255);
         SDL_RenderClear(m_Renderer);
-
+        m_LevelMap->Render();
         player->Draw();
 
         SDL_RenderPresent(m_Renderer);
     }
 
     void Engine::Events() {
-        SDL_Event event;
-        SDL_PollEvent(&event);
-        switch (event.type) {
-            case SDL_QUIT:
-                Quit();
-                break;
-        }
+        Event::Input::GetInstance()->Listen();
     }
 }

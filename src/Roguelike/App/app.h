@@ -7,8 +7,8 @@
 
 #include "SDL2/SDL.h"
 
-#define W 800
-#define H 600
+#define ROGUELIKE_WIDTH 800
+#define ROGUELIKE_HEIGHT 640
 
 namespace roguelike {
     class App {

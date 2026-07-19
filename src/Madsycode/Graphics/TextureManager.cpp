@@ -47,8 +47,19 @@ namespace Madsycode::Texture {
             nullptr, flip);
     }
 
-    void TextureManager::DrawFrame(const std::string &id, int x, int y, int width, int height, int row, int frame,
+    void TextureManager::DrawTile(const std::string &tilesetID, int tileSize,
+        int x, int y,
+        int row, int frame,
         SDL_RendererFlip flip) {
+        float scale = 32.0f / tileSize;
+        SDL_FRect desRect = {x * scale, y * scale, tileSize * scale, tileSize * scale};
+        SDL_Rect srcRect {tileSize * frame, tileSize * row, tileSize, tileSize};
+        SDL_RenderCopyExF(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[tilesetID],
+            &srcRect, &desRect, 0, 0, flip);
+    }
+
+    void TextureManager::DrawFrame(const std::string &id, int x, int y, int width, int height, int row, int frame,
+                                   SDL_RendererFlip flip) {
         SDL_Rect srcRect{width * frame, height * (row-1), width, height};
         SDL_Rect dstRect{x, y, width, height};
         SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[id],

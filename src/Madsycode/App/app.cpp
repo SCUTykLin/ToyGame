@@ -6,6 +6,7 @@
 #include "SDL2/SDL.h"
 #include <iostream>
 #include "../Core/Engine.h"
+#include "../Time/Time.h"
 
 namespace Madsycode {
     void App::run() {
@@ -14,6 +15,7 @@ namespace Madsycode {
             Engine::Engine::GetInstance()->Events();
             Engine::Engine::GetInstance()->Update();
             Engine::Engine::GetInstance()->Render();
+            Time::Timer::GetInstance()->Tick();
         }
         Engine::Engine::GetInstance()->Clean();
     }
