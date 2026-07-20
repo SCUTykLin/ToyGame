@@ -43,7 +43,6 @@ namespace Madsycode::Texture {
     /*
      * 世界坐标系应该是以画布，也就是背景的左上角为原点。
      * */
-
     void TextureManager::Draw(const std::string &id, int x, int y, int width, int height, SDL_RendererFlip flip) {
         SDL_Rect srcRect{0, 0, width, height};
         Physics::Vector2D<float> cam = Camera::Camera::GetInstance()->GetPosition();
