@@ -10,36 +10,92 @@
 #include "../Inputs/Inputs.h"
 #include <SDL2/SDL.h>
 
+#include "../Camera/Camera.h"
+#include "../Collision/CollisionHandler.h"
+#include "../Core/Engine.h"
+
 namespace Madsycode::Character {
     Warrior::Warrior(Object::Properties* props) : Character(props) {
-        m_Animation = new Animation::Animation();
+
+        m_JumpTime = JUMP_TIME;
+        m_JumpForce = JUMP_FORCE;
+
+        m_Collider = new Physics::Collider();
+        m_Collider->SetBuffer(0, 0, 0, 0);
+
         m_RigidBody = new Physics::RigidBody();
+        m_RigidBody->SetGravity(GRAVITY);
+
+        m_Animation = new Animation::Animation();
         m_Animation->SetProps(m_TextureID, 1, 12, 80, SDL_FLIP_HORIZONTAL);
     }
 
     void Warrior::Draw() {
         m_Animation->Draw(m_Transform->X, m_Transform->Y, m_Width, m_Height);
+
+        Physics::Vector2D<float> cam = Camera::Camera::GetInstance()->GetPosition();
+        SDL_Rect box = m_Collider->Get();
+        box.x -= cam.X;
+        box.y -= cam.Y;
+        SDL_RenderDrawRect(Engine::Engine::GetInstance()->GetRenderer(), &box);
     }
 
     void Warrior::Update(float dt) {
-        m_Animation->SetProps("player", 1, 12, 80, SDL_FLIP_NONE);
+        m_Animation->SetProps("player", 1, 12, 100, SDL_FLIP_NONE);
         m_RigidBody->UnSetForce();
+
         if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A)) {
+            m_Flip = SDL_FLIP_HORIZONTAL;
             m_RigidBody->ApplyForceX(5 * BACKWARD);
-            m_Animation->SetProps("player_run", 1, 8, 80, SDL_FLIP_HORIZONTAL);
+            m_Animation->SetProps("player_run", 1, 8, 100, SDL_FLIP_HORIZONTAL);
         }
         if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_D)) {
+            m_Flip = SDL_FLIP_NONE;
             m_RigidBody->ApplyForceX(5 * FORWARD);
             m_Animation->SetProps("player_run", 1, 8, 80, SDL_FLIP_NONE);
         }
 
+        if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_J) && m_IsGrounded) {
+            m_IsJumping = true;
+            m_IsGrounded = !m_IsGrounded;
+            m_RigidBody->ApplyForceY(UPWARD * m_JumpForce);
+        }
+        if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_J) && m_IsJumping && m_JumpTime > 0) {
+            m_JumpTime -= dt;
+            m_RigidBody->ApplyForceY(UPWARD * m_JumpForce);
+        }else {
+            m_IsJumping = false;
+            m_IsGrounded = !m_IsJumping;
+            m_JumpTime = JUMP_TIME;
+        }
+
         m_RigidBody->Update(dt);
-        m_Transform->TranslateX(m_RigidBody->Position().X);
-        // m_Transform->TranslateY(m_RigidBody->Position().Y);
+        m_LastSafePosition.X = m_Transform->X;
+        m_Transform->X += m_RigidBody->Position().X;
+        m_Collider->Set(m_Transform->X, m_Transform->Y, 131, 142);
+
+        if (Collision::CollisionHandler::GetInstance()->MapCollision(m_Collider->Get())) {
+            m_Transform->X = m_LastSafePosition.X;
+        }
+
+        m_RigidBody->Update(dt);
+        m_LastSafePosition.Y = m_Transform->Y;
+        m_Transform->Y += m_RigidBody->Position().Y;
+        m_Collider->Set(m_Transform->X, m_Transform->Y, 131, 142);
+
+        if (Collision::CollisionHandler::GetInstance()->MapCollision(m_Collider->Get())) {
+            m_IsGrounded = true;
+            m_Transform->Y = m_LastSafePosition.Y;
+        }else {
+            m_IsGrounded = false;
+        }
+
+        if (!m_IsGrounded) m_Animation->SetProps("player_jump", 1, 5, 100, m_Flip);
 
         m_Origin->X = m_Transform->X + m_Width / 2;
         m_Origin->Y = m_Transform->Y + m_Height / 2;
         m_Animation->Update();
+
     }
 
     void Warrior::Clean() {

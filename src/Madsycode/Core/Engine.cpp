@@ -40,9 +40,11 @@ namespace Madsycode::Engine{
 
         m_LevelMap = Map::MapParser::GetInstance()->GetMaps("MAP");
 
-        Texture::TextureManager::GetInstance()->Load("player", "src/Madsycode/Assets/character/anim/idle/spritesheet.png");
-        Texture::TextureManager::GetInstance()->Load("player_run", "src/Madsycode/Assets/character/anim/run/spritesheet.png");
-        Texture::TextureManager::GetInstance()->Load("bg", "src/Madsycode/Assets/Background/Clouds.png");
+        Texture::TextureManager::GetInstance()->Load("player", MADSYCODE_RESOURCE"Assets/character/anim/idle/spritesheet.png");
+        Texture::TextureManager::GetInstance()->Load("player_run", MADSYCODE_RESOURCE"Assets/character/anim/run/spritesheet.png");
+        Texture::TextureManager::GetInstance()->Load("player_jump", MADSYCODE_RESOURCE"Assets/character/anim/jump/spritesheet.png");
+        Texture::TextureManager::GetInstance()->Load("player_fall", MADSYCODE_RESOURCE"Assets/character/anim/fall/spritesheet.png");
+        Texture::TextureManager::GetInstance()->Load("bg", MADSYCODE_RESOURCE"Assets/Background/Clouds.png");
 
         player = new Character::Warrior(new Object::Properties("player", 100, 200, 131, 142));
         Camera::Camera::GetInstance()->SetTarget(player->GetOrigin());

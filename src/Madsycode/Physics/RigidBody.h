@@ -19,7 +19,13 @@ namespace Madsycode::Physics {
 
     class RigidBody {
     public:
-        RigidBody() : m_Mass(UNI_MASS), m_Gravity(GRAVITY) {}
+        RigidBody() : m_Mass(UNI_MASS), m_Gravity(GRAVITY) {
+            m_Force.Zero();
+            m_Friction.Zero();
+            m_Position.Zero();
+            m_Velocity.Zero();
+            m_Acceleration.Zero();
+        }
 
         // Setter Gravity & Mass
         inline void SetMass(float mass) { m_Mass = mass; }

@@ -10,6 +10,9 @@
 #include "../Physics/RigidBody.h"
 #include "../Physics/Collider.h"
 
+#define JUMP_TIME 15.0f
+#define JUMP_FORCE 10.0f
+
 namespace Madsycode::Character {
     class Warrior : public Character {
     public:

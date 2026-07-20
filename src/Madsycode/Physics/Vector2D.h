@@ -16,6 +16,10 @@ namespace Madsycode::Physics {
         Vector2D(T x, T y) : X(x), Y(y) {}
         Vector2D() : X(0.0f), Y(0.0f) {}
 
+        void Zero() {
+            X = 0.0f;
+            Y = 0.0f;
+        }
         template <typename U>
         inline auto operator+(const Vector2D<U>& v2) const -> Vector2D<std::common_type_t<T, U>> {
             using type  = std::common_type_t<T, U>;

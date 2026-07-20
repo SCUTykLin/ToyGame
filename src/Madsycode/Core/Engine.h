@@ -10,6 +10,8 @@
 #include "../Map/GameMap.h"
 #include "../Assets/Animation_Config.h"
 
+#define MADSYCODE_RESOURCE "src/Madsycode/"
+
 namespace Madsycode::Engine {
     class Engine {
     public:

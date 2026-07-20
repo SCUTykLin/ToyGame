@@ -15,7 +15,7 @@ namespace Madsycode::Time {
         inline float GetDeltaTime() const { return m_DeltaTime; }
         inline static Timer* GetInstance() { return s_Instance = (s_Instance != nullptr) ? s_Instance : new Timer(); }
     private:
-        Timer(){};
+        Timer() : m_DeltaTime(0.0f), m_LastTime(0.0f) {};
         static Timer* s_Instance;
         float m_DeltaTime;
         float m_LastTime;
