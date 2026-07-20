@@ -11,6 +11,6 @@ add_library(${PROJECT_NAME} STATIC ${_imgui_Sources})
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC "ImDrawIdx=unsigned int")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "ImDrawIdgx=unsigned int")
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "ThirdParty")
