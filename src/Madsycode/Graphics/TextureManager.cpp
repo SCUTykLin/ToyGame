@@ -59,10 +59,9 @@ namespace Madsycode::Texture {
 
         Physics::Vector2D<float> cam = Camera::Camera::GetInstance()->GetPosition();
 
-        float scalar = 32.0f / tileSize;
-        SDL_Rect desRect = {static_cast<int>(x * scalar - cam.X), static_cast<int>(y * scalar - cam.Y),
-                            static_cast<int>(tileSize * scalar), static_cast<int>(tileSize * scalar)};
-        SDL_Rect srcRect {tileSize * frame, tileSize * row, tileSize, tileSize};
+        SDL_Rect desRect = {static_cast<int>(x - cam.X), static_cast<int>(y - cam.Y),
+                            static_cast<int>(tileSize), static_cast<int>(tileSize)};
+        SDL_Rect srcRect {17 * frame, 17 * row, 17, 17};
 
         SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[tilesetID],
             &srcRect, &desRect, 0, nullptr, flip);

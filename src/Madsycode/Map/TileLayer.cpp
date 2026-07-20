@@ -44,6 +44,7 @@ namespace Madsycode::Map {
                         tileRow --;
                         tileCol = ts.ColCount - 1;
                     }
+                    ts.TileSize = 32;
                     Texture::TextureManager::GetInstance()->DrawTile(ts.Name, ts.TileSize,
                         j * ts.TileSize, i * ts.TileSize,
                         tileRow, tileCol);
