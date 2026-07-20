@@ -8,9 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
 #include "../Map/GameMap.h"
-
-#define SCREEN_WIDTH 960
-#define SCREEN_HEIGHT 640
+#include "../Assets/Animation_Config.h"
 
 namespace Madsycode::Engine {
     class Engine {
@@ -28,6 +26,7 @@ namespace Madsycode::Engine {
         inline bool isRunning(){return m_IsRunning;}
         inline SDL_Renderer* GetRenderer(){return m_Renderer;}
         inline SDL_Window* GetWindow(){return m_Window;}
+        inline Map::GameMap* GetMap() {return m_LevelMap;}
     private:
         Engine(){};
         bool m_IsRunning;

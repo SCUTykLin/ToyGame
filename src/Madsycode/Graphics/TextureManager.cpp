@@ -7,6 +7,7 @@
 #include <SDL_image.h>
 
 #include "../Core/Engine.h"
+#include "../Camera/Camera.h"
 
 namespace Madsycode::Texture {
     TextureManager* TextureManager::s_Instance = nullptr;
@@ -21,7 +22,7 @@ namespace Madsycode::Texture {
             SDL_Log("Failed to create texture from surface: %s", SDL_GetError());
             return false;
         }
-
+        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
         m_Textures[id] = texture;
         return true;
     }
@@ -39,31 +40,40 @@ namespace Madsycode::Texture {
         SDL_Log("Texture map cleaned!");
     }
 
+    /*
+     * 世界坐标系应该是以画布，也就是背景的左上角为原点。
+     * */
+
     void TextureManager::Draw(const std::string &id, int x, int y, int width, int height, SDL_RendererFlip flip) {
         SDL_Rect srcRect{0, 0, width, height};
-        SDL_Rect dstRect{x, y, width, height};
+        Physics::Vector2D<float> cam = Camera::Camera::GetInstance()->GetPosition();
+        SDL_Rect dstRect = {static_cast<int>(x - cam.X), static_cast<int>(y - cam.Y), width, height}; // world to screen coordinate
         SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[id],
-            &srcRect, &dstRect, 0,
-            nullptr, flip);
+            &srcRect, &dstRect, 0,nullptr, flip);
     }
 
     void TextureManager::DrawTile(const std::string &tilesetID, int tileSize,
         int x, int y,
         int row, int frame,
         SDL_RendererFlip flip) {
-        float scale = 32.0f / tileSize;
-        SDL_FRect desRect = {x * scale, y * scale, tileSize * scale, tileSize * scale};
+
+        Physics::Vector2D<float> cam = Camera::Camera::GetInstance()->GetPosition();
+
+        float scalar = 32.0f / tileSize;
+        SDL_Rect desRect = {static_cast<int>(x * scalar - cam.X), static_cast<int>(y * scalar - cam.Y),
+                            static_cast<int>(tileSize * scalar), static_cast<int>(tileSize * scalar)};
         SDL_Rect srcRect {tileSize * frame, tileSize * row, tileSize, tileSize};
-        SDL_RenderCopyExF(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[tilesetID],
-            &srcRect, &desRect, 0, 0, flip);
+
+        SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[tilesetID],
+            &srcRect, &desRect, 0, nullptr, flip);
     }
 
     void TextureManager::DrawFrame(const std::string &id, int x, int y, int width, int height, int row, int frame,
                                    SDL_RendererFlip flip) {
         SDL_Rect srcRect{width * frame, height * (row-1), width, height};
-        SDL_Rect dstRect{x, y, width, height};
+        Physics::Vector2D<float> cam = Camera::Camera::GetInstance()->GetPosition();
+        SDL_Rect dstRect{static_cast<int>(x - cam.X), static_cast<int>(y - cam.Y), width, height};
         SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[id],
-            &srcRect, &dstRect, 0,
-            nullptr, flip);
+            &srcRect, &dstRect, 0,nullptr, flip);
     }
 }

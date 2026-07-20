@@ -8,6 +8,7 @@
 
 #include "IObject.h"
 #include "../Physics/Transform.h"
+#include "../Physics/Point.h"
 
 namespace Madsycode::Object {
 
@@ -24,7 +25,13 @@ namespace Madsycode::Object {
     public:
         GameObject(Properties* properties) : m_TextureID(properties->TextureID), m_Width(properties->Width), m_Height(properties->Height), m_Flip(properties->Flip) {
             m_Transform = new Physics::Transform(properties->X, properties->Y);
+
+            float px = properties->X + properties->Width / 2;
+            float py = properties->Y + properties->Height / 2;
+            m_Origin = new Physics::Point(px, py);
         };
+
+        inline Physics::Point* GetOrigin(){return m_Origin;}
 
         void Draw() override{}
 
@@ -32,7 +39,7 @@ namespace Madsycode::Object {
 
         void Clean() override{}
     protected:
-        using Type = int;
+        Physics::Point* m_Origin;
         Physics::Transform* m_Transform;
         int m_Width, m_Height;
         std::string m_TextureID;

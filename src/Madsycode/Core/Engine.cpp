@@ -9,6 +9,7 @@
 #include "../Inputs/Inputs.h"
 #include "../Map/MapParser.h"
 #include "../Time/Time.h"
+#include "../Camera/Camera.h"
 
 namespace Madsycode::Engine{
     Engine* Engine::s_Instance = nullptr;
@@ -32,7 +33,7 @@ namespace Madsycode::Engine{
             SDL_Log("Failed to create renderer: %s", SDL_GetError());
             return false;
         }
-
+        SDL_SetRenderDrawBlendMode(m_Renderer, SDL_BLENDMODE_BLEND);
         if (Map::MapParser::GetInstance()->Load()) {
             std::cout << "load map ..." << std::endl;
         }
@@ -41,9 +42,10 @@ namespace Madsycode::Engine{
 
         Texture::TextureManager::GetInstance()->Load("player", "src/Madsycode/Assets/character/anim/idle/spritesheet.png");
         Texture::TextureManager::GetInstance()->Load("player_run", "src/Madsycode/Assets/character/anim/run/spritesheet.png");
+        Texture::TextureManager::GetInstance()->Load("bg", "src/Madsycode/Assets/Background/Clouds.png");
 
         player = new Character::Warrior(new Object::Properties("player", 100, 200, 131, 142));
-
+        Camera::Camera::GetInstance()->SetTarget(player->GetOrigin());
         return m_IsRunning = true;
     }
 
@@ -66,14 +68,18 @@ namespace Madsycode::Engine{
         auto dt = Time::Timer::GetInstance()->GetDeltaTime();
         m_LevelMap->Update();
         player->Update(dt);
+        Camera::Camera::GetInstance()->Update(dt);
     }
 
     void Engine::Render() {
         SDL_SetRenderDrawColor(m_Renderer, 124, 218, 254, 255);
         SDL_RenderClear(m_Renderer);
-        m_LevelMap->Render();
-        player->Draw();
 
+        Texture::TextureManager::GetInstance()->Draw("bg", 0, 0, 1920, 1080);
+
+        m_LevelMap->Render();
+
+        player->Draw();
         SDL_RenderPresent(m_Renderer);
     }
 

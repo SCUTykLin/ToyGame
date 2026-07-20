@@ -5,8 +5,8 @@
 #ifndef TOYPROJECTS_Madsycode_ANIMATION_CONFIG_H
 #define TOYPROJECTS_Madsycode_ANIMATION_CONFIG_H
 
-#include <string>
-
+#define SCREEN_WIDTH 960
+#define SCREEN_HEIGHT 640
 namespace Madsycode::AssetConfig {
 
 }

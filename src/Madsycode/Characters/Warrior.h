@@ -8,6 +8,7 @@
 #include "Characters.h"
 #include "../Animation/Animation.h"
 #include "../Physics/RigidBody.h"
+#include "../Physics/Collider.h"
 
 namespace Madsycode::Character {
     class Warrior : public Character {
@@ -20,8 +21,15 @@ namespace Madsycode::Character {
 
         void Clean() override;
     private:
+        bool m_IsJumping;
+        bool m_IsGrounded;
+        float m_JumpTime;
+        float m_JumpForce;
+
+        Physics::Collider* m_Collider;
         Animation::Animation* m_Animation;
         Physics::RigidBody* m_RigidBody;
+        Physics::Vector2D<float> m_LastSafePosition;
     };
 }
 
