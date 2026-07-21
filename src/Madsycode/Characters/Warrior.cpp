@@ -17,6 +17,7 @@
 namespace Madsycode::Character {
     Warrior::Warrior(Object::Properties* props) : Character(props) {
 
+        m_IsWalking = false;
         m_IsRunning = false;
         m_IsJumping = false;
         m_IsFalling = false;
@@ -69,6 +70,7 @@ namespace Madsycode::Character {
 
         // 每帧重置临时状态和外力
         m_IsRunning = false;
+        m_IsWalking = false;
         m_IsCrouching = false;
         m_RigidBody->UnSetForce();
 
@@ -110,14 +112,25 @@ namespace Madsycode::Character {
         // --------------------
         if (!m_IsAttacking && !m_IsCrouching){
             if (horizontal == FORWARD){
-                m_RigidBody->ApplyForceX(FORWARD * RUN_FORCE);
                 m_Flip = SDL_FLIP_NONE;
-                m_IsRunning = m_IsGrounded;
+                if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_LCTRL)) {
+                    m_IsRunning = m_IsGrounded;
+                    m_RigidBody->ApplyForceX(FORWARD * RUN_FORCE);
+                }else {
+                    m_IsWalking = m_IsGrounded;
+                    m_RigidBody->ApplyForceX(FORWARD * WALK_FORCE);
+                }
             }
             else if (horizontal == BACKWARD){
                 m_RigidBody->ApplyForceX(BACKWARD * RUN_FORCE);
                 m_Flip = SDL_FLIP_HORIZONTAL;
-                m_IsRunning = m_IsGrounded;
+                if (Event::Input::GetInstance()->GetKeyDown(SDL_SCANCODE_LCTRL)) {
+                    m_IsRunning = m_IsGrounded;
+                    m_RigidBody->ApplyForceX(BACKWARD * RUN_FORCE);
+                }else {
+                    m_IsWalking = m_IsGrounded;
+                    m_RigidBody->ApplyForceX(BACKWARD * WALK_FORCE);
+                }
             }
         }
 
@@ -155,24 +168,14 @@ namespace Madsycode::Character {
         m_LastSafePosition.X = m_Transform->X;
         m_Transform->X += moveX;
 
-        m_Collider->Set(
-            m_Transform->X,
-            m_Transform->Y,
-            AssetConfig::pixel_width,
-            AssetConfig::pixel_height
-        );
+        m_Collider->Set(m_Transform->X, m_Transform->Y, AssetConfig::pixel_width,AssetConfig::pixel_height);
 
         if (Collision::CollisionHandler::GetInstance()
                 ->MapCollision(m_Collider->Get()))
         {
             m_Transform->X = m_LastSafePosition.X;
 
-            m_Collider->Set(
-                m_Transform->X,
-                m_Transform->Y,
-                AssetConfig::pixel_width,
-                AssetConfig::pixel_height
-            );
+            m_Collider->Set(m_Transform->X, m_Transform->Y,AssetConfig::pixel_width,AssetConfig::pixel_height);
 
             m_RigidBody->UnSetForce();
         }
@@ -183,27 +186,14 @@ namespace Madsycode::Character {
         m_LastSafePosition.Y = m_Transform->Y;
         m_Transform->Y += moveY;
 
-        m_Collider->Set(
-            m_Transform->X,
-            m_Transform->Y,
-            AssetConfig::pixel_width,
-            AssetConfig::pixel_height
-        );
+        m_Collider->Set(m_Transform->X, m_Transform->Y,AssetConfig::pixel_width,AssetConfig::pixel_height);
 
-        const bool verticalCollision =
-            Collision::CollisionHandler::GetInstance()
-                ->MapCollision(m_Collider->Get());
+        const bool verticalCollision = Collision::CollisionHandler::GetInstance()->MapCollision(m_Collider->Get());
 
-        if (verticalCollision)
-        {
+        if (verticalCollision){
             m_Transform->Y = m_LastSafePosition.Y;
 
-            m_Collider->Set(
-                m_Transform->X,
-                m_Transform->Y,
-                AssetConfig::pixel_width,
-                AssetConfig::pixel_height
-            );
+            m_Collider->Set(m_Transform->X, m_Transform->Y,AssetConfig::pixel_width,AssetConfig::pixel_height);
 
             // Y 正方向向下，因此 moveY > 0 表示落地碰撞
             if (moveY > 0.0f)
@@ -355,8 +345,10 @@ namespace Madsycode::Character {
             m_Animation->SetProps("jump", 1, 8, 100);
         }else if (m_IsCrouching) {
             m_Animation->SetProps("crouch", 1, 5, 200);
-        }else if (m_IsRunning) {
+        }else if(m_IsWalking){
             m_Animation->SetProps("walk", 1, 8, 100);
+        }else if (m_IsRunning) {
+            m_Animation->SetProps("run", 1, 8, 100);
         }else if (m_IsFalling) {
             m_Animation->SetProps("fall", 1, 9, 100);
         }else if (m_IsAttacking) {

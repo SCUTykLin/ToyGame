@@ -11,9 +11,10 @@
 #include "../Physics/Collider.h"
 
 #define JUMP_TIME 15.0f
-#define JUMP_FORCE 10.0f
+#define JUMP_FORCE 20.0f
 
-#define RUN_FORCE 4.0f
+#define RUN_FORCE 8.0f
+#define WALK_FORCE 4.0f
 #define ATTACK_TIME 30.0f
 
 namespace Madsycode::Character {
@@ -30,6 +31,7 @@ namespace Madsycode::Character {
 
         void AnimationState();
 
+        bool m_IsWalking;
         bool m_IsRunning;
         bool m_IsJumping;
         bool m_IsFalling;
