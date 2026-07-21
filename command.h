@@ -12,6 +12,7 @@
 #include "src/Compiler/include/app.h"
 #include "src/Roguelike/App/app.h"
 #include "src/Madsycode/App/app.h"
+#include "src/CKong/include/App.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -75,6 +76,13 @@ public:
     }
 };
 
+class CKong_Command : public Base_Command<CKong_Command> {
+public:
+    void run_command_Impl() {
+        CKong::App{}.run();
+    }
+};
+
 template <typename T>
 void add_command(T t, std::string&& name) {
     auto command = std::make_shared<T>();
@@ -90,6 +98,7 @@ void create_commands_set() {
         add_command(Roguelike_Command{}, "Roguelike");
         add_command(SDL_Engine_Command{}, "2DEngine");
         add_command(UI_Command{}, "UI");
+        add_command(CKong_Command{}, "CKong");
     });
 }
 

@@ -17,6 +17,7 @@ file(GLOB_RECURSE FLUID_SIMULATION src/FluidSimulation/*.cpp src/FluidSimulation
 file(GLOB_RECURSE ROGUELIKE src/Roguelike/*.cpp src/Roguelike/*.h)
 file(GLOB_RECURSE MADSYCODE src/MADSYCODE/*.cpp src/MADSYCODE/*.h)
 file(GLOB_RECURSE UI src/UI/*.cpp src/UI/*.h)
+file(GLOB_RECURSE CKONG src/CKong/*.cpp src/CKong/*.h)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -30,7 +31,8 @@ add_executable(${PROJECT_NAME}
         ${FLUID_SIMULATION}
         ${ROGUELIKE}
         ${MADSYCODE}
-        ${UI})
+        ${UI}
+        ${CKONG})
 # ==================> executable file <=====================
 
 # SDL2, SDL2_image must build upon SDL2::SDL2-static, no SDL2::SDL2
@@ -53,7 +55,6 @@ target_link_libraries(${PROJECT_NAME}
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/glm EXCLUDE_FROM_ALL)
 target_link_libraries(${PROJECT_NAME} PUBLIC glm::glm)
-
 # =================== OpenGL + GLM + assimp ===================
 
 # =================== imgui-node-editor-docking include: imgui, stb_image, imgui_node_editor ===================
