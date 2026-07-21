@@ -8,12 +8,12 @@
 #include "Vector2D.h"
 
 #define UNI_MASS 1.0f
-#define GRAVITY 9.81f
+#define GRAVITY 3.0f // 9.81f
 
 #define FORWARD 1
 #define BACKWARD -1
-#define UPWARD 1
-#define DOWNWARD -1
+#define UPWARD -1
+#define DOWNWARD 1
 
 namespace Madsycode::Physics {
 

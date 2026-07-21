@@ -74,4 +74,5 @@ namespace Madsycode::Texture {
         SDL_RenderCopyEx(Engine::Engine::GetInstance()->GetRenderer(), m_Textures[id],
             &srcRect, &dstRect, 0,nullptr, flip);
     }
+
 }

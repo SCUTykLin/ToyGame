@@ -9,7 +9,6 @@
 #include <SDL_image.h>
 #include "../Map/GameMap.h"
 #include "../Assets/Animation_Config.h"
-
 #define MADSYCODE_RESOURCE "src/Madsycode/"
 
 namespace Madsycode::Engine {

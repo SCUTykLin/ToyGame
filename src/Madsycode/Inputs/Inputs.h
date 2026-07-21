@@ -8,6 +8,8 @@
 #include <SDL2/SDL.h>
 
 namespace Madsycode::Event {
+    enum Axis {HORIZONTAL, VERTICAL};
+
     class Input {
     public:
         static Input* GetInstance() {
@@ -16,6 +18,8 @@ namespace Madsycode::Event {
 
         void Listen();
         bool GetKeyDown(SDL_Scancode key);
+
+        int GetAxisKey(Axis axis);
     private:
         Input();
         void KeyUp();

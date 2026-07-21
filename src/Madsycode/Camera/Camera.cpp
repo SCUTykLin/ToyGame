@@ -22,8 +22,8 @@ namespace Madsycode::Camera{
                 m_ViewBox.x = (2 * SCREEN_WIDTH - m_ViewBox.w);
             }
 
-            if (m_ViewBox.y > (2 * SCREEN_HEIGHT - m_ViewBox.h)){
-                m_ViewBox.y = (2 * SCREEN_HEIGHT - m_ViewBox.h);
+            if (m_ViewBox.y > (SCREEN_HEIGHT - m_ViewBox.h)){
+                m_ViewBox.y = (SCREEN_HEIGHT - m_ViewBox.h);
             }
 
             m_Position = Physics::Vector2D<float>(m_ViewBox.x, m_ViewBox.y);

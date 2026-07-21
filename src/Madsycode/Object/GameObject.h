@@ -26,8 +26,8 @@ namespace Madsycode::Object {
         GameObject(Properties* properties) : m_TextureID(properties->TextureID), m_Width(properties->Width), m_Height(properties->Height), m_Flip(properties->Flip) {
             m_Transform = new Physics::Transform(properties->X, properties->Y);
 
-            float px = properties->X + properties->Width / 2;
-            float py = properties->Y + properties->Height / 2;
+            float px = properties->X + m_Width / 2;
+            float py = properties->Y + m_Height / 2;
             m_Origin = new Physics::Point(px, py);
         };
 
