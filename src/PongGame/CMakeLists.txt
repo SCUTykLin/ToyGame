@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(pong)
+add_library(pong)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+target_sources(pong PUBLIC ${SOURCE})
+target_include_directories(pong PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(roguelike)
+add_library(roguelike)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+target_sources(roguelike PUBLIC ${SOURCE})
+target_include_directories(roguelike PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)

@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.25)
+project(tinyxml)
+file(GLOB_RECURSE TINYXML_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+add_library(tinyxml STATIC ${TINYXML_SOURCE})
+target_include_directories(tinyxml INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)

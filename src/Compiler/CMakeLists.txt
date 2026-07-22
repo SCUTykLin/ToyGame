@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(compiler)
+add_library(compiler)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(compiler PUBLIC ${SOURCE})
+target_include_directories(compiler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(madsycode)
+add_library(madsycode)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+target_sources(madsycode PUBLIC ${SOURCE})
+target_include_directories(madsycode PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)

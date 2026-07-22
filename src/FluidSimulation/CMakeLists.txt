@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(fluidsimulation)
+add_library(fluidsimulation)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+target_sources(fluidsimulation PUBLIC ${SOURCE})
+target_include_directories(fluidsimulation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)

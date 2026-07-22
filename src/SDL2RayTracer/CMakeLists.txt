@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(sdl2raytracer)
+add_library(sdl2raytracer)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+target_sources(sdl2raytracer PUBLIC ${SOURCE})
+target_include_directories(sdl2raytracer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)
