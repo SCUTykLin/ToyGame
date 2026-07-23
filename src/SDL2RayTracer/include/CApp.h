@@ -5,7 +5,11 @@
 #ifndef TOYPROJECTS_SDL_RAYTRACING_CAPP_H
 #define TOYPROJECTS_SDL_RAYTRACING_CAPP_H
 
+#define RacTracer_WIDTH 1280
+#define RacTracer_HEIGHT 720
+
 #include "SDL2/SDL.h"
+#include "qbImage.h"
 
 namespace RayTracing {
     class CApp {
@@ -18,6 +22,8 @@ namespace RayTracing {
         void OnRender();
         void OnExit();
     private:
+        qbImage m_image;
+
         bool isRunning;
         SDL_Window* pWindow;
         SDL_Renderer* pRenderer;

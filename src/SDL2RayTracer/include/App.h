@@ -5,9 +5,14 @@
 #ifndef TOYPROJECTS_SDL_RAYTRACING_APP_H
 #define TOYPROJECTS_SDL_RAYTRACING_APP_H
 
+#include "CApp.h"
+
 namespace RayTracing {
     class App {
-        void run();
+    public:
+        inline void run() {
+            CApp{}.OnExecute();
+        }
     };
 }
 

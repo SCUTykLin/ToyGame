@@ -13,6 +13,7 @@
 #include "src/Roguelike/App/app.h"
 #include "src/Madsycode/App/app.h"
 #include "src/CKong/include/App.h"
+#include "src/SDL2RayTracer/include/App.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -76,6 +77,13 @@ public:
     }
 };
 
+class SDLRayTracer_Command : public Base_Command<SDLRayTracer_Command> {
+    public:
+    void run_command_Impl() {
+        RayTracing::App{}.run();
+    }
+};
+
 class CKong_Command : public Base_Command<CKong_Command> {
 public:
     void run_command_Impl() {
@@ -99,6 +107,7 @@ void create_commands_set() {
         add_command(SDL_Engine_Command{}, "2DEngine");
         add_command(UI_Command{}, "UI");
         add_command(CKong_Command{}, "CKong");
+        add_command(SDLRayTracer_Command{}, "SDLRayTracer");
     });
 }
 
