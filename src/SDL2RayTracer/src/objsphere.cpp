@@ -5,12 +5,9 @@
 #include "objsphere.h"
 
 namespace RayTracing {
-    Objsphere::Objsphere() {
+    Objsphere::Objsphere() {}
 
-    }
-
-    Objsphere::~Objsphere() {
-    }
+    Objsphere::~Objsphere() {}
 
     bool Objsphere::TestIntersections(const Ray &castRay, glm::vec3 &intPoint, glm::vec3 &localNormal,
         glm::vec3 &localColor) {
