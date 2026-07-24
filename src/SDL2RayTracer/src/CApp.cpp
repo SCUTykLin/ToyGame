@@ -3,7 +3,8 @@
 //
 
 #include "CApp.h"
-
+#include "camera.h"
+#include <iostream>
 namespace RayTracing {
     CApp::CApp() {
         isRunning = true;
@@ -24,6 +25,7 @@ namespace RayTracing {
             OnRender();
         }
         OnExit();
+        return 1;
     }
 
     bool CApp::OnInit() {
@@ -34,13 +36,6 @@ namespace RayTracing {
         if (pWindow != nullptr) {
             pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
             m_image.Initialize(RacTracer_WIDTH, RacTracer_HEIGHT, pRenderer);
-
-            for (int x = 0; x < RacTracer_WIDTH; ++x)
-                for (int y = 0; y < RacTracer_HEIGHT; ++y) {
-                    double red = (static_cast<double>(x) / 1280.0) * 255.0;
-                    double green = (static_cast<double>(y) / 1280.0) * 255.0;
-                    m_image.SetPixel(x, y, red, green, 0.0);
-                }
         }else {
             return false;
         }
@@ -60,6 +55,9 @@ namespace RayTracing {
         // Set background
         SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
         SDL_RenderClear(pRenderer);
+
+        // Render Scene
+        m_scene.Render(m_image);
 
         // display image
         m_image.Display();

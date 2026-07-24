@@ -8,6 +8,8 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include "qbImage.h"
+#include "camera.h"
+#include "objsphere.h"
 
 namespace RayTracing {
     class Scene {
@@ -20,6 +22,9 @@ namespace RayTracing {
     private:
 
     private:
+        Camera m_camera;
+
+        Objsphere m_testSphere;
     };
 }
 

@@ -61,7 +61,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC fluidsimulation)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC madsycode)
 
-target_link_libraries(pong PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} PUBLIC pong)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC roguelike)

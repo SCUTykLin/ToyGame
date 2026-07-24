@@ -10,6 +10,7 @@
 
 #include "SDL2/SDL.h"
 #include "qbImage.h"
+#include "scene.h"
 
 namespace RayTracing {
     class CApp {
@@ -23,6 +24,7 @@ namespace RayTracing {
         void OnExit();
     private:
         qbImage m_image;
+        Scene m_scene;
 
         bool isRunning;
         SDL_Window* pWindow;

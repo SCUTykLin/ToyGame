@@ -6,19 +6,15 @@
 
 namespace RayTracing {
     Scene::Scene() {
+        m_camera.SetPosition(glm::vec3(0, -10.0, 0));
+        m_camera.SetLookAt(glm::vec3(0, 0, 0));
     }
 
     bool Scene::Render(qbImage &outputImage) {
         int xSize = outputImage.GetXSize();
         int ySize = outputImage.GetYSize();
 
-        for (int x = 0; x < xSize; x++) {
-            for (int y = 0; y < ySize; y++) {
-                double red = (static_cast<double>(x) / static_cast<double>(xSize)) * 255.0;
-                double green = (static_cast<double>(y) / static_cast<double>(ySize)) * 255.0;
-                outputImage.SetPixel(x, y, red, green, 0.0);
-            }
-        }
+
         return true;
     }
 }
