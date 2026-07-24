@@ -18,11 +18,11 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/Roguelike)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Madsycode)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/SDL2RayTracer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/CKong)
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI/ImGUIEdit)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
-set(EXECUTABLE main.cpp command.h _test.h)
+set(EXECUTABLE main.cpp command.h)
 add_executable(${PROJECT_NAME} ${EXECUTABLE})
 # ==================> executable file <=====================
 
@@ -31,13 +31,11 @@ add_executable(${PROJECT_NAME} ${EXECUTABLE})
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL-release-2.32.6 EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL_ttf-release-2.20.0 EXCLUDE_FROM_ALL)
-#target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 # =================== link SDL2, SDL2_image and raylib ===================
 
 # =================== OpenGL + GLM + assimp ===================
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/opengl EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/glm EXCLUDE_FROM_ALL)
-#target_link_libraries(${PROJECT_NAME} PUBLIC glm::glm)
 # =================== OpenGL + GLM + assimp ===================
 
 # =================== imgui-node-editor-docking include: imgui, stb_image, imgui_node_editor ===================
@@ -46,42 +44,31 @@ find_package(imgui REQUIRED)
 find_package(stb_image REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 find_package(ScopeGuard REQUIRED)
-#target_link_libraries(${PROJECT_NAME} PUBLIC imgui stb_image imgui_node_editor ScopeGuard)
 # =================== imgui-node-editor-docking include: imgui, stb_image, imgui_node_editor ===================
 
 # =================== TinyXML ===================
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/tinyxml)
-#target_link_libraries(${PROJECT_NAME} PUBLIC tinyxml)
 # =================== TinyXML ===================
 
 # =================== Link Projects ===================
-target_link_libraries(${PROJECT_NAME} PUBLIC opengl glm::glm)
-
-target_link_libraries(bouncyball PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} PUBLIC bouncyball)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ckong)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC compiler)
 
-target_link_libraries(fluidsimulation PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} PUBLIC fluidsimulation)
 
-target_link_libraries(madsycode PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf tinyxml)
 target_link_libraries(${PROJECT_NAME} PUBLIC madsycode)
 
 target_link_libraries(pong PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} PUBLIC pong)
 
-target_link_libraries(roguelike PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} PUBLIC roguelike)
 
-target_link_libraries(sdl2raytracer PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} PUBLIC sdl2raytracer)
 
 target_link_libraries(imgui PUBLIC opengl)
-target_link_libraries(imguiedit PUBLIC imgui stb_image imgui_node_editor ScopeGuard)
-# dll是否需要import
-target_compile_definitions(imguiedit PUBLIC UIPlugin)
+target_compile_definitions(imguiedit PUBLIC UIPlugin) # dll是否需要import
 target_link_libraries(${PROJECT_NAME} PUBLIC imguiedit)
 # =================== Link Projects ===================

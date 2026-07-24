@@ -2,7 +2,7 @@
 // Created by YangKai.Lin on 2026/7/23.
 //
 
-#include "../include/qbImage.h"
+#include "qbImage.h"
 
 namespace RayTracing {
     qbImage::qbImage() {
@@ -56,6 +56,14 @@ namespace RayTracing {
         srcRect.h = m_ySize;
         bounds = srcRect;
         SDL_RenderCopy(m_pRenderer, m_pTexture, &srcRect, &bounds);
+    }
+
+    int qbImage::GetXSize() const {
+        return m_xSize;
+    }
+
+    int qbImage::GetYSize() const {
+        return m_ySize;
     }
 
     Uint32 qbImage::ConvertColor(const double red, const double green, const double blue) {

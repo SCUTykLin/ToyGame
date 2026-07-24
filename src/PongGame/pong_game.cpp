@@ -4,6 +4,8 @@
 
 #include "pong_game.h"
 
+#include "../BouncyBall/bouncy_ball.h"
+
 namespace Pong {
     Uint32 black_color = 0x00000000;
     Uint32 white_color = 0xffffffff;
@@ -185,4 +187,12 @@ void Pong::main_loop(){
             SDL_Delay(FRAME_TARGET - frame_cost);
         }
     }
+
+    destroy_window(surface, window);
+}
+
+void Pong::destroy_window(SDL_Surface* surface, SDL_Window* window) {
+    SDL_FreeSurface(surface);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }

@@ -60,5 +60,8 @@ namespace Pong {
     SDL_Surface* create_window(std::string title, int height, int width);
 
     void update_window();
+
+    void destroy_window(SDL_Surface* surface, SDL_Window* window);
+
 }
 #endif //TOYPROJECTS_PONG_GAME_H

@@ -130,6 +130,7 @@ namespace bouncy {
             }
             std::cout << "Asset: " << window_tool::Game_Assets_Ptr.size() << std::endl;
         }
+        window_tool::finish_window(surface);
     }
 
 

@@ -57,7 +57,7 @@ namespace RayTracing {
     }
 
     void CApp::OnRender() {
-        // Set  background
+        // Set background
         SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
         SDL_RenderClear(pRenderer);
 

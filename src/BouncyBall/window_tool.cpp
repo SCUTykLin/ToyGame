@@ -77,6 +77,7 @@ namespace bouncy {
         void finish_window(SDL_Surface* surface) {
             SDL_FreeSurface(surface);
             SDL_DestroyWindow(window);
+            SDL_Quit();
         }
 
         void delete_assets() {

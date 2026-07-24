@@ -43,6 +43,7 @@ namespace fluid::window_tool {
     void destroy_window() {
         delete canvas;
         SDL_DestroyWindow(window);
+        SDL_Quit();
     }
 
 }
