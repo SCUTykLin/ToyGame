@@ -84,6 +84,7 @@ namespace RayTracing {
         cameraRay.m_point1 = m_cameraPosition;
         cameraRay.m_point2 = screenWorldCoodinate;
         cameraRay.m_lab = cameraRay.m_point2 - cameraRay.m_point1;
+        return true;
     }
     void Camera::UpdateCameraGeometry() {
         // First, compute up vector from the camera position to the LookAt position.

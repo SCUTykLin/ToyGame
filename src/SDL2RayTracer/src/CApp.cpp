@@ -36,6 +36,16 @@ namespace RayTracing {
         if (pWindow != nullptr) {
             pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
             m_image.Initialize(RacTracer_WIDTH, RacTracer_HEIGHT, pRenderer);
+
+            // Set the background color to white
+            SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
+            SDL_RenderClear(pRenderer);
+
+            // Render the scene
+            m_scene.Render(m_image);
+            m_image.Display();
+            SDL_RenderPresent(pRenderer);
+
         }else {
             return false;
         }
@@ -52,18 +62,18 @@ namespace RayTracing {
     }
 
     void CApp::OnRender() {
-        // Set background
-        SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
-        SDL_RenderClear(pRenderer);
-
-        // Render Scene
-        m_scene.Render(m_image);
-
-        // display image
-        m_image.Display();
-
-        // show result
-        SDL_RenderPresent(pRenderer);
+        // // Set background
+        // SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
+        // SDL_RenderClear(pRenderer);
+        //
+        // // Render Scene
+        // m_scene.Render(m_image);
+        //
+        // // display image
+        // m_image.Display();
+        //
+        // // show result
+        // SDL_RenderPresent(pRenderer);
     }
 
     void CApp::OnExit() {
