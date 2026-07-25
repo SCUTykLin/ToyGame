@@ -17,7 +17,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/FluidSimulation)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Roguelike)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Madsycode)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/SDL2RayTracer)
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/CKong)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
 # ==================> Projects file list <=====================
 

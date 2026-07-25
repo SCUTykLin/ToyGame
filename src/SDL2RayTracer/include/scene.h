@@ -5,11 +5,13 @@
 #ifndef TOYPROJECTS_SDL_RAYTRACING_SCENE_H
 #define TOYPROJECTS_SDL_RAYTRACING_SCENE_H
 
+#include <memory>
 #include <vector>
 #include <SDL2/SDL.h>
 #include "qbImage.h"
 #include "camera.h"
 #include "objsphere.h"
+#include "pointlight.h"
 
 namespace RayTracing {
     class Scene {
@@ -32,7 +34,11 @@ namespace RayTracing {
         float width;
         float height;
         Camera m_camera;
-        Objsphere m_testSphere;
+
+        // List of Objects.
+        std::vector<std::shared_ptr<ObjectBase>> m_objectList;
+        // List of Lights.
+        std::vector<std::shared_ptr<Lightbase>> m_lightList;
     };
 }
 

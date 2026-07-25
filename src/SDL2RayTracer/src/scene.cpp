@@ -18,8 +18,15 @@ namespace RayTracing {
         m_camera.SetAspect(16.0 / 9.0);
         m_camera.UpdateCameraGeometry();
 
-        std::cout << "Camera Setting: " << std::endl;
         std::cout << m_camera.toString();
+
+        // Construct a test sphere
+        m_objectList.push_back(std::make_shared<Objsphere>());
+
+        // Construct a test light
+        m_lightList.push_back(std::make_shared<Pointlight>());
+        m_lightList.at(0)->m_location = glm::vec3(5.0, -10.0, 5.0);
+        m_lightList.at(0)->m_color = glm::vec3(255.0, 255.0, 255.0);
     }
 
     void Scene::SetFOV(float fov){
@@ -72,15 +79,29 @@ namespace RayTracing {
                 // Generate the ray for this pixel.
                 m_camera.GenerateRay(normX, normY, cameraRay);
 
-                // Test
-                bool validInt = m_testSphere.TestIntersections(cameraRay, intPoint, localNormal, localColor);
-                if (validInt) {
-                    double dist = glm::length(intPoint - cameraRay.m_point1);
-                    if (dist > maxDist) maxDist = dist;
-                    if (dist < minDist) minDist = dist;
-                    outputImage.SetPixel(x, y, 255.0 - ((dist - 9.0) / 0.94605) * 255, 0, 0);
-                }else {
-                    outputImage.SetPixel(x, y, 0, 0, 0);
+                for (auto currentObject : m_objectList) {
+                    bool validInt = currentObject->TestIntersections(cameraRay, intPoint, localNormal, localColor);
+                    if (validInt) {
+
+                        // Compute intensity of illumination.
+                        double intensity;
+                        glm::vec3 color{0, 0, 0};
+                        bool validIllum = false;
+                        for (auto currentLight : m_lightList) {
+                            validIllum = currentLight->ComputeIllumination(intPoint, localNormal, m_objectList, currentObject, color, intensity);
+                        }
+
+                        double dist = glm::length(intPoint - cameraRay.m_point1);
+                        if (dist > maxDist) maxDist = dist;
+                        if (dist < minDist) minDist = dist;
+
+                        if (validIllum) {
+                            outputImage.SetPixel(x, y, 255.0 * intensity, 0.0, 0.0);
+                        }else
+                            outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
+                    }else {
+                        outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
+                    }
                 }
             }
         }

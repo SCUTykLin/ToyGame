@@ -32,6 +32,11 @@ namespace RayTracing {
                 }else{
                     intPoint = castRay.m_point1 + vhat * static_cast<float>(t2);
                 }
+
+                // Compute Local normal
+                localNormal = intPoint;
+                localNormal = glm::normalize(localNormal);
+
                 return true;
             }
         }else {

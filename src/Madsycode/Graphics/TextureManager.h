@@ -15,6 +15,7 @@ namespace Madsycode::Texture {
     public:
         static TextureManager* GetInstance(){return s_Instance = (s_Instance != nullptr) ? s_Instance : new TextureManager();}
         bool Load(const std::string& id, const std::string& filename);
+        bool ParseTexture(const std::string&& source);
         void Drop(const std::string& id);
         void Clean();
         void Draw(const std::string& id, int x, int y, int width, int height, SDL_RendererFlip flip=SDL_FLIP_NONE);

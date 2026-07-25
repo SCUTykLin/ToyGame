@@ -21,7 +21,7 @@ namespace RayTracing {
     }
 
     float computeFocus(float width, float fov) {
-        return (width / 2) / (fov / 2.0f);
+        return (width / 2.0f) / (fov / 2.0f);
     }
 
 }
