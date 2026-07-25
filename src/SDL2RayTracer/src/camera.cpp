@@ -112,6 +112,8 @@ namespace RayTracing {
         ss << "Camera Projection Screen U: [" << m_projectionScreenU.x << ", " << m_projectionScreenU.y << ", " << m_projectionScreenU.z << "]" << std::endl;
         ss << "Camera Projection Screen V: [" << m_projectionScreenV.x << ", " << m_projectionScreenV.y << ", " << m_projectionScreenV.z << "]" << std::endl;
         ss << "Camera Projection Screen Centre: [" << m_projectionScreenCenter.x << ", " << m_projectionScreenCenter.y << ", " << m_projectionScreenCenter.z << "]" << std::endl;
+        ss << "Camera Focus: [" << m_cameraLength << "]" << std::endl;
+        ss << "Camera Horize Size: [" << m_cameraHorzSize << "]" << std::endl;
         return ss.str();
     }
 }

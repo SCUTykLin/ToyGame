@@ -17,6 +17,9 @@ namespace RayTracing {
 
         m_camera.SetAspect(16.0 / 9.0);
         m_camera.UpdateCameraGeometry();
+
+        std::cout << "Camera Setting: " << std::endl;
+        std::cout << m_camera.toString();
     }
 
     void Scene::SetFOV(float fov){
