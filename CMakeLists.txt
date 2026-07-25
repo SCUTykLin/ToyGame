@@ -18,6 +18,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/Roguelike)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Madsycode)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/SDL2RayTracer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/Tetris)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -52,8 +53,6 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/tinyxml)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PUBLIC bouncyball)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ckong)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC compiler)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC fluidsimulation)
@@ -66,7 +65,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC roguelike)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC sdl2raytracer)
 
-target_link_libraries(imgui PUBLIC opengl)
+target_link_libraries(imgui PUBLIC opengl SDL2::SDL2-static)
 target_compile_definitions(imguiedit PUBLIC UIPlugin) # dll是否需要import
 target_link_libraries(${PROJECT_NAME} PUBLIC imguiedit)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC imgui_001)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC tetris)
 # =================== Link Projects ===================

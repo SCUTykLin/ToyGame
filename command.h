@@ -13,6 +13,8 @@
 #include "src/Roguelike/App/app.h"
 #include "src/Madsycode/App/app.h"
 #include "src/SDL2RayTracer/include/App.h"
+#include "src/UI/ImGUIDesign/ImGUI_001/include/App.h"
+#include "src/Tetris/include/App.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -69,17 +71,25 @@ public:
     }
 };
 
-class UI_Command : public Base_Command<UI_Command> {
-public:
-    void run_command_Impl() {
-
-    }
-};
 
 class SDLRayTracer_Command : public Base_Command<SDLRayTracer_Command> {
     public:
     void run_command_Impl() {
         RayTracing::App{}.run();
+    }
+};
+
+class ImGUIDesign_001_Command : public Base_Command<ImGUIDesign_001_Command> {
+public:
+    void run_command_Impl() {
+        UI::ImGUI_001::App{}.run();
+    }
+};
+
+class Tetris_Command : public Base_Command<Tetris_Command> {
+public:
+    void run_command_Impl() {
+        Tetris::App{}.run();
     }
 };
 
@@ -98,8 +108,9 @@ void create_commands_set() {
         add_command(Compiler_Command{}, "Compiler");
         add_command(Roguelike_Command{}, "Roguelike");
         add_command(SDL_Engine_Command{}, "2DEngine");
-        add_command(UI_Command{}, "UI");
         add_command(SDLRayTracer_Command{}, "SDLRayTracer");
+        add_command(ImGUIDesign_001_Command{}, "ImGUIDesign_001");
+        add_command(Tetris_Command{}, "Tetris");
     });
 }
 

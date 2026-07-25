@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.25)
+project(imgui_001)
+add_library(imgui_001)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(imgui_001 PRIVATE ${SOURCE})
+target_include_directories(imgui_001 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(imgui_001 PRIVATE imgui SDL2::SDL2-static)
