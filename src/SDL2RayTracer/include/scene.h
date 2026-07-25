@@ -14,16 +14,24 @@
 namespace RayTracing {
     class Scene {
     public:
-        Scene();
+        Scene(float fov, float width, float height);
 
         // Function that perform rendering.
         bool Render(qbImage &outputImage);
-
+        void SetFOV(float fov);
+        float GetFOV();
+        float GetFOVRad();
+        void SetWidth(float Width);
+        float GetWidth();
+        void SetHeight(float Height);
+        float GetHeight();
     private:
 
     private:
+        float fov;
+        float width;
+        float height;
         Camera m_camera;
-
         Objsphere m_testSphere;
     };
 }

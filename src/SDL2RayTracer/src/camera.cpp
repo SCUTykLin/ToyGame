@@ -13,8 +13,7 @@ namespace RayTracing {
     m_cameraUp(0.0, 0.0, 1.0),
     m_cameraLength(1.0),
     m_cameraHorzSize(1.0),
-    m_cameraAspect(1.0){
-    }
+    m_cameraAspect(1.0){}
 
     void Camera::SetPosition(const glm::vec3 &newPosition) {
         m_cameraPosition = newPosition;

@@ -3,15 +3,48 @@
 //
 
 #include "scene.h"
+#include <iostream>
+#include "ray_math.h"
 
 namespace RayTracing {
-    Scene::Scene() {
+    Scene::Scene(float fov, float width, float height) : fov(fov), width(width), height(height) {
         m_camera.SetPosition(glm::vec3(0, -10.0, 0));
         m_camera.SetLookAt(glm::vec3(0, 0, 0));
         m_camera.SetUp(glm::vec3(0, 0, 1.0));
-        m_camera.SetHorzSize(0.25);
+
+        m_camera.SetLength(computeFocus(GetWidth(), GetFOVRad()));
+        m_camera.SetHorzSize(GetWidth() / 2.0f);
+
         m_camera.SetAspect(16.0 / 9.0);
         m_camera.UpdateCameraGeometry();
+    }
+
+    void Scene::SetFOV(float fov){
+        this->fov = fov;
+    }
+
+    float Scene::GetFOV() {
+        return fov;
+    }
+
+    float Scene::GetFOVRad() {
+        return fov * PI<float> / 180.0;
+    }
+
+    void Scene::SetWidth(float Width) {
+        this->width = Width;
+    }
+
+    float Scene::GetWidth() {
+        return width;
+    }
+
+    void Scene::SetHeight(float Height) {
+        this->height = Height;
+    }
+
+    float Scene::GetHeight() {
+        return height;
     }
 
     bool Scene::Render(qbImage &outputImage) {
