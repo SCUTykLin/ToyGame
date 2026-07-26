@@ -44,8 +44,8 @@ namespace Tetris {
 
     /*
      * 每一个方块只是在4x4的格子里面，所以只需要判断当前4x4格子是否能旋转就行。
-     * pi表示旋转之后，对应在4x4格子里面的index，也就是旋转之后(px, py)是什么
-     * fi表示(px, py)在全局下的索引
+     * pi表示旋转之后，对应在4x4格子里面的index，也就是旋转之后(px, py)是什么。
+     * fi表示(px, py)在全局下的索引。
      */
     bool DoesPieceFit(int nTeromino, int nRotation, int nPosX, int nPosY) {
         for (int px = 0; px < 4; px++) {
