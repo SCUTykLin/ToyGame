@@ -19,6 +19,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/Madsycode)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/SDL2RayTracer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Tetris)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/CKong)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
