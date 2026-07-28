@@ -7,6 +7,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/mat2x2.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 #include "ray.h"
 
 namespace RayTracing {
@@ -19,6 +21,11 @@ namespace RayTracing {
         ~GTform();
 
         GTform(const glm::mat4x4& fwd, const glm::mat4x4& bck);
+
+        template <typename T>
+        void SetIdentity(T &m) {
+            m = glm::identity<T>();
+        }
 
         void SetTransform(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale);
 
