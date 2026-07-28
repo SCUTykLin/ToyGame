@@ -36,6 +36,19 @@ namespace RayTracing {
         m_bChannel.at(x).at(y) = blue;
     }
 
+    void qbImage::UpdateTexture() {
+        Uint32* tempPixels = new Uint32[m_xSize * m_ySize];
+        memset(tempPixels, 0, m_xSize * m_ySize * sizeof(Uint32));
+        for (int x = 0; x < m_xSize; x++) {
+            for (int y = 0; y < m_ySize; y++) {
+                tempPixels[y * m_xSize + x] = ConvertColor(m_rChannel.at(x).at(y), m_gChannel.at(x).at(y), m_bChannel.at(x).at(y));
+            }
+        }
+
+        SDL_UpdateTexture(m_pTexture, nullptr, tempPixels, m_xSize * sizeof(Uint32));
+        delete[] tempPixels;
+    }
+
     void qbImage::Display() {
         Uint32* tempPixels = new Uint32[m_xSize * m_ySize];
         memset(tempPixels, 0, m_xSize * m_ySize * sizeof(Uint32));

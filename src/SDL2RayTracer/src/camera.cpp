@@ -4,6 +4,7 @@
 
 #include "camera.h"
 #include <cmath>
+#include <iostream>
 #include <sstream>
 
 namespace RayTracing {

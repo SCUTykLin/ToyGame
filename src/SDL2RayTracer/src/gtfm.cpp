@@ -2,7 +2,7 @@
 // Created by YangKai.Lin on 2026/7/26.
 //
 
-#include "grfm.h"
+#include "gtfm.h"
 
 #include <iomanip>
 #include <glm/ext/matrix_transform.hpp>
@@ -59,6 +59,8 @@ namespace RayTracing {
         rotationMatrixX[2][1] = -glm::sin(rotation.x);
         rotationMatrixX[2][2] = glm::cos(rotation.x);
 
+        scaleMatrix = glm::scale(scaleMatrix, scale);
+
         // Combine to give the final forward transform matrix.
         m_fwdtfm = translationMatrix * scaleMatrix * rotationMatrixX * rotationMatrixY * rotationMatrixZ;
 
@@ -101,12 +103,12 @@ namespace RayTracing {
             // Apply the forward tranform.
             outputRay.m_point1 = this->Apply(inputRay.m_point1, FWDTFORM);
             outputRay.m_point2 = this->Apply(inputRay.m_point2, FWDTFORM);
-            outputRay.m_lab = outputRay.m_point2 - inputRay.m_point1;
+            outputRay.m_lab = outputRay.m_point2 - outputRay.m_point1;
         }else {
             // Apply the backward tranform.
             outputRay.m_point1 = this->Apply(inputRay.m_point1, BCKTFORM);
             outputRay.m_point2 = this->Apply(inputRay.m_point2, BCKTFORM);
-            outputRay.m_lab = outputRay.m_point2 - inputRay.m_point1;
+            outputRay.m_lab = outputRay.m_point2 - outputRay.m_point1;
         }
         return outputRay;
     }

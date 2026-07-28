@@ -22,10 +22,32 @@ namespace RayTracing {
 
         // Construct a test sphere
         m_objectList.push_back(std::make_shared<Objsphere>());
+        m_objectList.push_back(std::make_shared<Objsphere>());
+        m_objectList.push_back(std::make_shared<Objsphere>());
+        //
+        // // Modify the spheres.
+        GTform testMatrix1, testMatrix2, testMatrix3;
+        testMatrix1.SetTransform(glm::vec3{-1.5, 0.0, 0.0},
+            glm::vec3{0.0, 0.0, 0.0},
+            glm::vec3{0.5, 0.5, 0.75});
+        testMatrix2.SetTransform(glm::vec3{0.0, 0.0, 0.0},
+            glm::vec3{0.0, 0.0, 0.0},
+            glm::vec3{0.75, 0.5, 0.5});
+        testMatrix3.SetTransform(glm::vec3{1.5, 0.0, 0.0},
+            glm::vec3{0.0, 0.0, 0.0},
+            glm::vec3{0.75, 0.75, 0.75});
+
+        m_objectList.at(0)->SetTransformMatrix(testMatrix1);
+        m_objectList.at(1)->SetTransformMatrix(testMatrix2);
+        m_objectList.at(2)->SetTransformMatrix(testMatrix3);
+        //
+        m_objectList.at(0)->m_baseColor = glm::vec3{64.0, 128.0, 200.0};
+        m_objectList.at(1)->m_baseColor = glm::vec3{255.0, 128.0, 0.0};
+        m_objectList.at(2)->m_baseColor = glm::vec3{255.0, 200.0, 0.0};
 
         // Construct a test light
         m_lightList.push_back(std::make_shared<Pointlight>());
-        m_lightList.at(0)->m_location = glm::vec3(5.0, -10.0, 5.0);
+        m_lightList.at(0)->m_location = glm::vec3(5.0, -10.0, -5.0);
         m_lightList.at(0)->m_color = glm::vec3(255.0, 255.0, 255.0);
     }
 
@@ -61,6 +83,8 @@ namespace RayTracing {
         int xSize = outputImage.GetXSize();
         int ySize = outputImage.GetYSize();
 
+        std::cout << "Start Rendering ..." << std::endl;
+
         // Loop over each pixel in our image
         Ray cameraRay;
         glm::vec3 intPoint{0, 0, 0};
@@ -84,7 +108,7 @@ namespace RayTracing {
                     if (validInt) {
 
                         // Compute intensity of illumination.
-                        double intensity;
+                        double intensity = 0;
                         glm::vec3 color{0, 0, 0};
                         bool validIllum = false;
                         for (auto currentLight : m_lightList) {
@@ -96,15 +120,19 @@ namespace RayTracing {
                         if (dist < minDist) minDist = dist;
 
                         if (validIllum) {
-                            outputImage.SetPixel(x, y, 255.0 * intensity, 0.0, 0.0);
-                        }else
-                            outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
+                            outputImage.SetPixel(x, y, localColor.x * intensity, localColor.y * intensity, localColor.z * intensity);
+                        }else {
+                            // outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
+                        }
                     }else {
-                        outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
+                        // outputImage.SetPixel(x, y, 0.0, 0.0, 0.0);
                     }
                 }
             }
         }
+        std::cout << "min distance: " << minDist << std::endl;
+        std::cout << "max distance: " << maxDist << std::endl;
+        std::cout << "End Rendering ..." << std::endl;
 
         return true;
     }

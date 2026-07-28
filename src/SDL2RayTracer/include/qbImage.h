@@ -17,7 +17,7 @@ namespace RayTracing {
         void Initialize(const int xSize, const int ySize, SDL_Renderer* pRenderer);
         void SetPixel(const int x, const int y, const double red, const double green, const double blue);
         void Display();
-
+        void UpdateTexture();
         int GetXSize() const;
         int GetYSize() const;
     private:
