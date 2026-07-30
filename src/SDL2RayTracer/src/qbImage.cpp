@@ -50,6 +50,9 @@ namespace RayTracing {
     }
 
     void qbImage::Display() {
+
+        ComputeMaxValues();
+
         Uint32* tempPixels = new Uint32[m_xSize * m_ySize];
         memset(tempPixels, 0, m_xSize * m_ySize * sizeof(Uint32));
         for (int x = 0; x < m_xSize; x++) {
@@ -80,9 +83,13 @@ namespace RayTracing {
     }
 
     Uint32 qbImage::ConvertColor(const double red, const double green, const double blue) {
-        unsigned char r = static_cast<unsigned char>(red);
-        unsigned char g = static_cast<unsigned char>(green);
-        unsigned char b = static_cast<unsigned char>(blue);
+
+        auto scale_fun = [this](double c){ return (c / this->m_overallMax) * 255;};
+
+        // Convert the colors to unsigned integers.
+        unsigned char r = static_cast<unsigned char>(scale_fun(red));
+        unsigned char g = static_cast<unsigned char>(scale_fun(green));
+        unsigned char b = static_cast<unsigned char>(scale_fun(blue));
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
         Uint32 pixelColor = (b << 24) + (g << 16) + (r << 8) + 255;
 #else
@@ -113,5 +120,44 @@ namespace RayTracing {
         SDL_Surface* tempSurface = SDL_CreateRGBSurface(0, m_xSize, m_ySize, 32, rmask, gmask, bmask, amask);
         m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, tempSurface);
         SDL_FreeSurface(tempSurface);
+    }
+
+    void qbImage::ComputeMaxValues() {
+        m_maxRed = 0.0;
+        m_maxGreen = 0.0;
+        m_maxBlue = 0.0;
+        m_overallMax = 0.0;
+        for (int x = 0; x < m_xSize; x++) {
+            for (int y = 0; y < m_ySize; y++) {
+                double redValue = m_rChannel.at(x).at(y);
+                double greenValue = m_gChannel.at(x).at(y);
+                double blueValue = m_bChannel.at(x).at(y);
+
+                if (redValue > m_maxRed) {
+                    m_maxRed = redValue;
+                }
+
+                if (greenValue > m_maxGreen) {
+                    m_maxGreen = greenValue;
+                }
+
+                if (blueValue > m_maxBlue) {
+                    m_maxBlue = blueValue;
+                }
+
+                if (m_maxRed > m_overallMax) {
+                    m_overallMax = m_maxRed;
+                }
+
+                if (m_maxGreen > m_overallMax) {
+                    m_overallMax = m_maxGreen;
+                }
+
+                if (m_maxBlue > m_overallMax) {
+                    m_overallMax = m_maxBlue;
+                }
+
+            }
+        }
     }
 }

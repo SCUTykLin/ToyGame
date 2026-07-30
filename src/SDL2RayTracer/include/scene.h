@@ -11,6 +11,7 @@
 #include "qbImage.h"
 #include "camera.h"
 #include "objsphere.h"
+#include "objplane.h"
 #include "pointlight.h"
 
 namespace RayTracing {
