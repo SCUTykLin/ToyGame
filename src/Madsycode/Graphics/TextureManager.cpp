@@ -27,6 +27,10 @@ namespace Madsycode::Texture {
         return true;
     }
 
+    bool TextureManager::ParseTexture(const std::string &&source) {
+        return false;
+    }
+
     void TextureManager::Drop(const std::string &id) {
         SDL_DestroyTexture(m_Textures[id]);
         m_Textures.erase(id);

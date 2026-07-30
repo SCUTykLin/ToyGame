@@ -6,6 +6,7 @@
 #define TOYPROJECTS_SDL_RAYTRACING_OBJSPHERE_H
 
 #include "objectbase.h"
+#include "gtfm.h"
 
 namespace RayTracing {
     class Objsphere : public ObjectBase {

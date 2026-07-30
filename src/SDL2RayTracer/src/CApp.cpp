@@ -5,6 +5,7 @@
 #include "CApp.h"
 #include "camera.h"
 #include <iostream>
+
 namespace RayTracing {
     CApp::CApp() {
         isRunning = true;
@@ -37,16 +38,14 @@ namespace RayTracing {
             pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
             m_image.Initialize(RacTracer_WIDTH, RacTracer_HEIGHT, pRenderer);
 
-            // Set the background color to white
-            SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
+            SDL_SetRenderDrawColor(pRenderer, 0, 0, 0, 0); // Set the background color to white
             SDL_RenderClear(pRenderer);
 
-            // Render the scene
-            m_scene.Render(m_image);
+            m_scene.Render(m_image); // Render the scene
             m_image.Display();
             SDL_RenderPresent(pRenderer);
-
         }else {
+            std::cout << "window could not be created" << std::endl;
             return false;
         }
         return true;
@@ -70,10 +69,10 @@ namespace RayTracing {
         // m_scene.Render(m_image);
         //
         // // display image
-        // m_image.Display();
-        //
-        // // show result
-        // SDL_RenderPresent(pRenderer);
+        m_image.Display();
+
+        // show result
+        SDL_RenderPresent(pRenderer);
     }
 
     void CApp::OnExit() {

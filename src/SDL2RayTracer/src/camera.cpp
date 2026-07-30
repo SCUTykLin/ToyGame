@@ -4,6 +4,7 @@
 
 #include "camera.h"
 #include <cmath>
+#include <iostream>
 #include <sstream>
 
 namespace RayTracing {
@@ -106,12 +107,14 @@ namespace RayTracing {
 
     std::string Camera::toString() const {
         std::stringstream ss;
-        ss << "Camera Position: [" << m_cameraPosition.x << ", " << m_cameraPosition.y << ", " << m_cameraPosition.z << "]" << std::endl;
+        ss << "Camera Setting ===> " << "Camera Position: [" << m_cameraPosition.x << ", " << m_cameraPosition.y << ", " << m_cameraPosition.z << "]" << std::endl;
         ss << "Camera LookAt: [" << m_cameraLookAt.x << ", " << m_cameraLookAt.y << ", " << m_cameraLookAt.z << "]" << std::endl;
         ss << "Camera Alignment Vector: [" << m_alignmentVector.x << ", " << m_alignmentVector.y << ", " << m_alignmentVector.z << "]" << std::endl;
         ss << "Camera Projection Screen U: [" << m_projectionScreenU.x << ", " << m_projectionScreenU.y << ", " << m_projectionScreenU.z << "]" << std::endl;
         ss << "Camera Projection Screen V: [" << m_projectionScreenV.x << ", " << m_projectionScreenV.y << ", " << m_projectionScreenV.z << "]" << std::endl;
         ss << "Camera Projection Screen Centre: [" << m_projectionScreenCenter.x << ", " << m_projectionScreenCenter.y << ", " << m_projectionScreenCenter.z << "]" << std::endl;
+        ss << "Camera Focus: [" << m_cameraLength << "]" << std::endl;
+        ss << "Camera Horize Size: [" << m_cameraHorzSize << "]" << " <=== Camera Setting" << std::endl;
         return ss.str();
     }
 }

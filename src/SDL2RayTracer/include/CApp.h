@@ -7,6 +7,7 @@
 
 #define RacTracer_WIDTH 1280
 #define RacTracer_HEIGHT 720
+#define FOV 28.075f
 
 #include "SDL2/SDL.h"
 #include "qbImage.h"
@@ -24,7 +25,7 @@ namespace RayTracing {
         void OnExit();
     private:
         qbImage m_image;
-        Scene m_scene;
+        Scene m_scene{FOV, RacTracer_WIDTH, RacTracer_HEIGHT};
 
         bool isRunning;
         SDL_Window* pWindow;
