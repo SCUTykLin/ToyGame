@@ -35,10 +35,25 @@ namespace RayTracing {
             if (validInt) break;
         }
 
+        /* Only continue to compute illumination if the light ray didn't intersect with any objects
+         * in the scene.*/
         if (!validInt){
-            // Compute the angle between the curr
+            // Compute the angle between the local normal and the light ray.
+            double angle = glm::acos(glm::dot(localNormal, lighDir));
+            if (angle > 1.5708){
+                color = m_color;
+                intensity = 0.0;
+                return false;
+            }else{
+                color = m_color;
+                intensity = m_intensity * (1.0 - (angle/1.5708));
+                return true;
+            }
+        }else{
+            // shadow, no illumination
+            color = m_color;
+            intensity = 0.0;
+            return false;
         }
-
-        return true;
     }
 }

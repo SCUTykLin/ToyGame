@@ -59,7 +59,15 @@ namespace RayTracing {
         // Construct a test light
         m_lightList.push_back(std::make_shared<Pointlight>());
         m_lightList.at(0)->m_location = glm::vec3(5.0, -10.0, -5.0);
-        m_lightList.at(0)->m_color = glm::vec3(1.0, 1.0, 1.0);
+        m_lightList.at(0)->m_color = glm::vec3(0.0, 0.0, 1.0);
+
+        m_lightList.push_back(std::make_shared<Pointlight>());
+        m_lightList.at(1)->m_location = glm::vec3(-5.0, -10.0, -5.0);
+        m_lightList.at(1)->m_color = glm::vec3(1.0, 0.0, 0.0);
+
+        m_lightList.push_back(std::make_shared<Pointlight>());
+        m_lightList.at(2)->m_location = glm::vec3(0.0, -10.0, -5.0);
+        m_lightList.at(2)->m_color = glm::vec3(0.0, 1.0, 0.0);
     }
 
     void Scene::SetFOV(float fov){
@@ -103,8 +111,6 @@ namespace RayTracing {
         glm::vec3 localColor{0, 0, 0};
         double xFact = 1.0 / (static_cast<double>(xSize) / 2.0);
         double yFact = 1.0 / (static_cast<double>(ySize) / 2.0);
-        double minDist = 1e6;
-        double maxDist = 0.0;
 
         for (int x = 0; x < xSize; ++x) {
             for (int y = 0; y < ySize; ++y) { // Normalize the x and y coordinates.
@@ -114,15 +120,15 @@ namespace RayTracing {
                 // Generate the ray for this pixel.
                 m_camera.GenerateRay(normX, normY, cameraRay);
 
-                // Test for intersections with all objects in the scene.
+                // Test for intersections with all objects in the scene. 第一个碰撞的物体存储再一下变量
                 std::shared_ptr<ObjectBase> closestObject;
-                glm::vec3 closestPoint{0.0, 0.0, 0.0};
-                glm::vec3 closestIntPoint{0.0, 0.0, 0.0};
-                glm::vec3 closestLocalNormal{0.0, 0.0, 0.0};
-                glm::vec3 closestLocalColor{0.0, 0.0, 0.0};
+                glm::vec3 closestIntPoint{0.0, 0.0, 0.0}; // 碰撞交点
+                glm::vec3 closestLocalNormal{0.0, 0.0, 0.0}; // 碰撞点的法线
+                glm::vec3 closestLocalColor{0.0, 0.0, 0.0}; // 碰撞点的颜色
                 float minDist = 1e6;
                 bool intersectionFound = false;
 
+                // 计算当前射线到底和哪个物体有焦点
                 for (auto currentObject : m_objectList) {
                     bool validInt = currentObject->TestIntersections(cameraRay, intPoint, localNormal, localColor);
                     if (validInt) {
@@ -142,7 +148,7 @@ namespace RayTracing {
                         }
                     }
                 }
-                // Compute the illumination for the closest object, assuming that there was a valid intersection.
+                // 如果有交点，就需要着色
                 if (intersectionFound) {
                     // Compute the intensity of illumination.
                     double intensity;
@@ -154,6 +160,7 @@ namespace RayTracing {
                     bool illumFound = false;
 
                     for (auto currentLight : m_lightList) {
+                        // 当前交点是否能被照亮，只有被照亮的点才能被看到
                         validIllum = currentLight->ComputeIllumination(closestIntPoint, closestLocalNormal, m_objectList, closestObject, color, intensity);
                         if (validIllum) {
                             illumFound = true;
@@ -162,7 +169,7 @@ namespace RayTracing {
                             blue += color.z * intensity;
                         }
                     }
-                    if (illumFound) {
+                    if (illumFound) { // 当前交点被照亮
                         red *= closestLocalColor.x;
                         green *= closestLocalColor.y;
                         blue *= closestLocalColor.z;
