@@ -5,6 +5,7 @@
 #include "game.h"
 #include <iostream>
 #include <windows.h>
+#include <thread>
 
 namespace Tetris {
     std::wstring tetromino[7];
@@ -16,7 +17,7 @@ namespace Tetris {
 
     void generateAssets(std::wstring* _tetromino) {
         _tetromino[0].append(L"..X...X...X...X.");
-        _tetromino[1].append(L"..X..XX...X.....");
+        _tetromino[1].append(L"..X..XX..X......");
         _tetromino[2].append(L".....XX..XX.....");
         _tetromino[3].append(L"..X..XX..X......");
         _tetromino[4].append(L".X...XX...X.....");
@@ -83,20 +84,48 @@ namespace Tetris {
         DWORD dwBytesWritten = 0;
 
         bool bGameOver = false;
+
+        int nCurrentpiece = 1;
+        int nCurrentRotation = 0;
+        int nCurrentX = nFieldWidth / 2;
+        int nCurrentY = 0;
+        bool bKey[4];
+
         while (!bGameOver) {
             // Game Timing
+            Sleep(50);
 
             // Input
+            static constexpr BYTE vkTable[] = {VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN};
+            for (int k = 0; k < 4; k++) {
+                SHORT st = GetAsyncKeyState(vkTable[k]);
+                bKey[k] = (st & 0x8000) != 0;
+            }
 
             // Game Logic
+
+            nCurrentX -= (bKey[0] && DoesPieceFit(nCurrentpiece, nCurrentRotation, nCurrentX-1, nCurrentY)) ? 1 : 0;
+            nCurrentX += (bKey[1] && DoesPieceFit(nCurrentpiece, nCurrentRotation, nCurrentX+1, nCurrentY)) ? 1 : 0;
+            nCurrentY += (bKey[3] && DoesPieceFit(nCurrentpiece, nCurrentRotation, nCurrentX, nCurrentY+1)) ? 1 : 0;
+
 
             // Render Output
 
             for (int x = 0; x < nFieldWidth; ++x) { // Draw Field
                 for (int y = 0; y < nFieldHeight; ++y) {
-                    screen[(y + 2) * nScreenWidth + (x + 2)] = L" ABCDEFG=█"[pField[y * nFieldWidth + x]];
+                    screen[(y + 2) * nScreenWidth + (x + 2)] = L" ABCDEFG=#"[pField[y * nFieldWidth + x]];
                 }
             }
+
+            // Draw Current Piece
+            for (int px = 0; px < 4; px++){
+                for (int py = 0; py < 4; py++){
+                    if (tetromino[nCurrentpiece][Rotate(px, py, nCurrentRotation)] == L'X'){
+                        screen[(nCurrentY + py + 2) * nScreenWidth + (nCurrentX + px + 2)] = nCurrentpiece + 65;
+                    }
+                }
+            }
+
             WriteConsoleOutputCharacterW(hConsole, screen, nScreenWidth * nScreenHeight, {0, 0}, &dwBytesWritten);
         }
     }
