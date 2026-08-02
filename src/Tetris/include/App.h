@@ -9,6 +9,8 @@ namespace Tetris {
     class App {
     public:
         void run();
+    private:
+        static bool is_console;
     };
 }
 
