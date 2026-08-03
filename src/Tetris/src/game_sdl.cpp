@@ -120,11 +120,6 @@ namespace Tetris::SDL_Version {
     }
 
     void gameEvent(SDL_Event& event, Tetris_Even& tetris_even) {
-        tetris_even.left = false;
-        tetris_even.right = false;
-        tetris_even.down = false;
-        tetris_even.rotate = false;
-
         switch (event.type) {
             case SDL_QUIT:
                 isRunning = false;
@@ -132,9 +127,6 @@ namespace Tetris::SDL_Version {
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     isRunning = false;
-                }
-                if (event.key.keysym.sym == SDLK_DOWN) {
-                    tetris_even.down = true;
                 }
                 if (event.key.keysym.sym == SDLK_LEFT) {
                     tetris_even.left = true;
@@ -179,56 +171,116 @@ namespace Tetris::SDL_Version {
         return true;
     }
 
-    void gameLoop(Tetris_Even& tetris_even, Tetris_Current& tetris_current, std::vector<int>& vLine) {
-        SDL_Delay(50);
+    void gameLoop(
+            Tetris_Even& tetris_even,
+            Tetris_Current& tetris_current,
+            std::vector<int>& vLine,
+            bool forceDown=true
+    ) {
         bool bGameOver = false;
-        if (tetris_even.left && DoesPieceFit(tetris_current.nCurrentpiece, tetris_current.nCurrentRotation, tetris_current.nCurrentX - 1, tetris_current.nCurrentY))
-            tetris_current.nCurrentX -= 1;
-        if (tetris_even.right && DoesPieceFit(tetris_current.nCurrentpiece, tetris_current.nCurrentRotation, tetris_current.nCurrentX + 1, tetris_current.nCurrentY))
-            tetris_current.nCurrentX += 1;
-        if (tetris_even.down && DoesPieceFit(tetris_current.nCurrentpiece, tetris_current.nCurrentRotation, tetris_current.nCurrentX, tetris_current.nCurrentY + 1))
-            tetris_current.nCurrentY += 1;
 
-        if (!tetris_current.bRotateHold && tetris_even.rotate && DoesPieceFit(tetris_current.nCurrentpiece, tetris_current.nCurrentRotation + 1, tetris_current.nCurrentX, tetris_current.nCurrentY)) {
-            tetris_current.nCurrentRotation += 1;
-            tetris_current.bRotateHold = true;
-        }else {
+        if (tetris_even.left &&
+            DoesPieceFit(
+                    tetris_current.nCurrentpiece,
+                    tetris_current.nCurrentRotation,
+                    tetris_current.nCurrentX - 1,
+                    tetris_current.nCurrentY
+            )) {
+            tetris_current.nCurrentX -= 1;
+        }
+
+        if (tetris_even.right &&
+            DoesPieceFit(
+                    tetris_current.nCurrentpiece,
+                    tetris_current.nCurrentRotation,
+                    tetris_current.nCurrentX + 1,
+                    tetris_current.nCurrentY
+            )) {
+            tetris_current.nCurrentX += 1;
+        }
+
+        if (tetris_even.rotate) {
+            if (!tetris_current.bRotateHold &&
+                DoesPieceFit(
+                        tetris_current.nCurrentpiece,
+                        tetris_current.nCurrentRotation + 1,
+                        tetris_current.nCurrentX,
+                        tetris_current.nCurrentY
+                )) {
+                tetris_current.nCurrentRotation += 1;
+                tetris_current.bRotateHold = true;
+            }
+        } else {
             tetris_current.bRotateHold = false;
         }
 
-        if (DoesPieceFit(tetris_current.nCurrentpiece, tetris_current.nCurrentRotation, tetris_current.nCurrentX, tetris_current.nCurrentY + 1)) {
-            tetris_current.nCurrentY += speed;
-        }else {
-            for (int px = 0; px < 4; ++px) {
-                for (int py = 0; py < 4; ++py) {
-                    if (tetromino[tetris_current.nCurrentpiece][Rotate(px, py, tetris_current.nCurrentRotation)] == 'X') {
-                        pField[(int(tetris_current.nCurrentY) + py) * nFieldWidth + (int(tetris_current.nCurrentX) + px)] = tetris_current.nCurrentpiece + 1;
-                    }
-                }
-            }
-
-            for (int py = 0; py < 4; ++py) {
-                if (tetris_current.nCurrentY + py < nFieldHeight - 1) {
-                    bool bLine = true;
-                    for (int px = 1; px < nFieldWidth-1; px++) {
-                        bLine &= (pField[(int(tetris_current.nCurrentY) + py) * nFieldWidth + px]) != 0;
-                    }
-                    if (bLine) {
-                        for (int px = 1; px < nFieldWidth-1; px++) {
-                            pField[(int(tetris_current.nCurrentY) + py) * nFieldWidth + px] = 8;
+        // 只有计时器触发，或者按下向下键时，才下落一格
+        if (forceDown || tetris_even.down) {
+            if (DoesPieceFit(
+                    tetris_current.nCurrentpiece,
+                    tetris_current.nCurrentRotation,
+                    tetris_current.nCurrentX,
+                    tetris_current.nCurrentY + 1
+            )) {
+                tetris_current.nCurrentY += 1;
+            } else {
+                // 固定当前方块
+                for (int px = 0; px < 4; ++px) {
+                    for (int py = 0; py < 4; ++py) {
+                        if (tetromino[tetris_current.nCurrentpiece]
+                            [Rotate(px, py, tetris_current.nCurrentRotation)] == 'X') {
+                            pField[
+                                    (int(tetris_current.nCurrentY) + py) * nFieldWidth +
+                                    (int(tetris_current.nCurrentX) + px)
+                            ] = tetris_current.nCurrentpiece + 1;
                         }
-                        vLine.push_back(int(tetris_current.nCurrentY) + py);
                     }
                 }
-            }
-            // Choose next piece
-            tetris_current.nCurrentX = nFieldWidth / 2;
-            tetris_current.nCurrentY = 0;
-            tetris_current.nCurrentRotation = 0;
-            tetris_current.nCurrentpiece = rand() % 7;
 
-            // If piece does not fit
-            bGameOver = !DoesPieceFit(tetris_current.nCurrentpiece, tetris_current.nCurrentRotation, tetris_current.nCurrentX, tetris_current.nCurrentY);
+                // 检查消行
+                for (int py = 0; py < 4; ++py) {
+                    if (tetris_current.nCurrentY + py < nFieldHeight - 1) {
+                        bool bLine = true;
+
+                        for (int px = 1; px < nFieldWidth - 1; ++px) {
+                            bLine &= pField[
+                                             (int(tetris_current.nCurrentY) + py) *
+                                             nFieldWidth + px
+                                     ] != 0;
+                        }
+
+                        if (bLine) {
+                            for (int px = 1; px < nFieldWidth - 1; ++px) {
+                                pField[
+                                        (int(tetris_current.nCurrentY) + py) *
+                                        nFieldWidth + px
+                                ] = 8;
+                            }
+
+                            vLine.push_back(
+                                    int(tetris_current.nCurrentY) + py
+                            );
+                        }
+                    }
+                }
+
+                // 生成下一个方块
+                tetris_current.nCurrentX = nFieldWidth / 2;
+                tetris_current.nCurrentY = 0;
+                tetris_current.nCurrentRotation = 0;
+                tetris_current.nCurrentpiece = rand() % 7;
+
+                bGameOver = !DoesPieceFit(
+                        tetris_current.nCurrentpiece,
+                        tetris_current.nCurrentRotation,
+                        tetris_current.nCurrentX,
+                        tetris_current.nCurrentY
+                );
+
+                if (bGameOver) {
+                    isRunning = false;
+                }
+            }
         }
     }
 
@@ -313,13 +365,56 @@ namespace Tetris::SDL_Version {
         tetris_current.nCurrentY = 0;
         tetris_current.nCurrentpiece = 1;
         std::vector<int> vLine;
+
+        const int FPS = 60;
+        const int frameDelay = 1000 / FPS;
+        Uint32 frameStart;
+        int frameTime;
+        Uint32 lastDropTime = SDL_GetTicks();
+
+        const Uint32 normalDropInterval = 500;
+
+        const Uint32 softDropInterval = 50;
         while (isRunning) {
+            frameStart = SDL_GetTicks();
+
+            // 每帧重置一次输入状态
+            tetris_even.left = false;
+            tetris_even.right = false;
+            tetris_even.rotate = false;
+
             while (SDL_PollEvent(&event)) {
                 gameEvent(event, tetris_even);
             }
-            gameLoop(tetris_even, tetris_current, vLine);
+
+            const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
+            tetris_even.down = keyboardState[SDL_SCANCODE_DOWN];
+
+            Uint32 currentTime = SDL_GetTicks();
+
+            Uint32 currentDropInterval = tetris_even.down ? softDropInterval : normalDropInterval;
+
+            bool forceDown = false;
+
+            if (currentTime - lastDropTime >= currentDropInterval) {
+                forceDown = true;
+                lastDropTime = currentTime;
+            }
+
+            gameLoop(
+                    tetris_even,
+                    tetris_current,
+                    vLine,
+                    forceDown
+            );
 
             gameRender(tetris_current, vLine);
+
+            frameTime = SDL_GetTicks() - frameStart;
+
+            if (frameDelay > frameTime) {
+                SDL_Delay(frameDelay - frameTime);
+            }
         }
         gameExit();
     }
