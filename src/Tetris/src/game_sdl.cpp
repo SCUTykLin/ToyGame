@@ -5,6 +5,7 @@
 #include "game_sdl.h"
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL_ttf.h>
 #include <vector>
 
 namespace Tetris::SDL_Version {
@@ -31,6 +32,8 @@ namespace Tetris::SDL_Version {
 
     static SDL_Window* window = nullptr;
     static SDL_Renderer* renderer = nullptr;
+    static SDL_Texture* scoreTexture = nullptr;
+    static TTF_Font* font = nullptr;
     static bool isRunning = true;
 
     static int Rect_Size = 30;
@@ -101,11 +104,59 @@ namespace Tetris::SDL_Version {
         tetrominoColor[7] = pink;
         tetrominoColor[8] = gray;
     }
+    SDL_Texture *CreateTextTexture(SDL_Renderer *renderer, TTF_Font *font, const char *text, SDL_Color color, int *width, int *height) {
+        SDL_Surface *surface = TTF_RenderUTF8_Blended(font, text, color);
+
+        if (surface == nullptr) {
+            SDL_Log("TTF_RenderUTF8_Blended failed: %s", TTF_GetError());
+            return nullptr;
+        }
+
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+        if (texture == nullptr) {
+            SDL_Log("SDL_CreateTextureFromSurface failed: %s", SDL_GetError());
+            SDL_FreeSurface(surface);
+            return nullptr;
+        }
+
+        *width = surface->w;
+        *height = surface->h;
+
+        SDL_FreeSurface(surface);
+        return texture;
+    }
+
+    int UpdateScoreTexture(SDL_Renderer *renderer, TTF_Font *font, int score, SDL_Color color, SDL_Texture **texture, SDL_Rect *rect) {
+        char text[64];
+
+        snprintf(text, sizeof(text), "Score: %d", score);
+
+        SDL_Texture *newTexture = CreateTextTexture(renderer, font, text, color, &rect->w, &rect->h);
+
+        if (newTexture == NULL) {
+            return 0;
+        }
+
+        /* 新纹理创建成功后，再销毁旧纹理 */
+        if (*texture != NULL) {
+            SDL_DestroyTexture(*texture);
+        }
+
+        *texture = newTexture;
+        return 1;
+    }
 
     bool game_sdl_init() {
         if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
             return false;
         }
+
+        if (TTF_Init() < 0) {
+            fprintf(stderr, "TTF_Init failed: %s\n", TTF_GetError());
+            return false;
+        }
+
         window = SDL_CreateWindow("Tetris", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, TETRIS_WIDTH, TETRIS_HEIGHT, SDL_WINDOW_SHOWN);
         if (window != nullptr) {
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -115,6 +166,11 @@ namespace Tetris::SDL_Version {
         }
 
         generateAssets();
+
+        font = TTF_OpenFont("src/Tetris/assets/arial.ttf",24);
+        if (font == nullptr){
+            SDL_Log("Load font file fail !");
+        }
 
         return true;
     }
@@ -171,42 +227,19 @@ namespace Tetris::SDL_Version {
         return true;
     }
 
-    void gameLoop(
-            Tetris_Even& tetris_even,
-            Tetris_Current& tetris_current,
-            std::vector<int>& vLine,
-            bool forceDown=true
-    ) {
+    void gameLoop(Tetris_Even& tetris_even, Tetris_Current& tetris_current, std::vector<int>& vLine, bool forceDown) {
         bool bGameOver = false;
 
-        if (tetris_even.left &&
-            DoesPieceFit(
-                    tetris_current.nCurrentpiece,
-                    tetris_current.nCurrentRotation,
-                    tetris_current.nCurrentX - 1,
-                    tetris_current.nCurrentY
-            )) {
+        if (tetris_even.left && DoesPieceFit(tetris_current.nCurrentpiece,tetris_current.nCurrentRotation,tetris_current.nCurrentX - 1,tetris_current.nCurrentY)) {
             tetris_current.nCurrentX -= 1;
         }
 
-        if (tetris_even.right &&
-            DoesPieceFit(
-                    tetris_current.nCurrentpiece,
-                    tetris_current.nCurrentRotation,
-                    tetris_current.nCurrentX + 1,
-                    tetris_current.nCurrentY
-            )) {
+        if (tetris_even.right && DoesPieceFit(tetris_current.nCurrentpiece, tetris_current.nCurrentRotation,tetris_current.nCurrentX + 1,tetris_current.nCurrentY)) {
             tetris_current.nCurrentX += 1;
         }
 
         if (tetris_even.rotate) {
-            if (!tetris_current.bRotateHold &&
-                DoesPieceFit(
-                        tetris_current.nCurrentpiece,
-                        tetris_current.nCurrentRotation + 1,
-                        tetris_current.nCurrentX,
-                        tetris_current.nCurrentY
-                )) {
+            if (!tetris_current.bRotateHold && DoesPieceFit( tetris_current.nCurrentpiece,tetris_current.nCurrentRotation + 1,tetris_current.nCurrentX,tetris_current.nCurrentY)) {
                 tetris_current.nCurrentRotation += 1;
                 tetris_current.bRotateHold = true;
             }
@@ -214,25 +247,15 @@ namespace Tetris::SDL_Version {
             tetris_current.bRotateHold = false;
         }
 
-        // 只有计时器触发，或者按下向下键时，才下落一格
         if (forceDown || tetris_even.down) {
-            if (DoesPieceFit(
-                    tetris_current.nCurrentpiece,
-                    tetris_current.nCurrentRotation,
-                    tetris_current.nCurrentX,
-                    tetris_current.nCurrentY + 1
-            )) {
+            if (DoesPieceFit(tetris_current.nCurrentpiece,tetris_current.nCurrentRotation,tetris_current.nCurrentX,tetris_current.nCurrentY + 1)) {
                 tetris_current.nCurrentY += 1;
             } else {
                 // 固定当前方块
                 for (int px = 0; px < 4; ++px) {
                     for (int py = 0; py < 4; ++py) {
-                        if (tetromino[tetris_current.nCurrentpiece]
-                            [Rotate(px, py, tetris_current.nCurrentRotation)] == 'X') {
-                            pField[
-                                    (int(tetris_current.nCurrentY) + py) * nFieldWidth +
-                                    (int(tetris_current.nCurrentX) + px)
-                            ] = tetris_current.nCurrentpiece + 1;
+                        if (tetromino[tetris_current.nCurrentpiece][Rotate(px, py, tetris_current.nCurrentRotation)] == 'X') {
+                            pField[(int(tetris_current.nCurrentY) + py) * nFieldWidth + (int(tetris_current.nCurrentX) + px)] = tetris_current.nCurrentpiece + 1;
                         }
                     }
                 }
@@ -243,23 +266,15 @@ namespace Tetris::SDL_Version {
                         bool bLine = true;
 
                         for (int px = 1; px < nFieldWidth - 1; ++px) {
-                            bLine &= pField[
-                                             (int(tetris_current.nCurrentY) + py) *
-                                             nFieldWidth + px
-                                     ] != 0;
+                            bLine &= pField[(int(tetris_current.nCurrentY) + py) *nFieldWidth + px] != 0;
                         }
 
                         if (bLine) {
                             for (int px = 1; px < nFieldWidth - 1; ++px) {
-                                pField[
-                                        (int(tetris_current.nCurrentY) + py) *
-                                        nFieldWidth + px
-                                ] = 8;
+                                pField[(int(tetris_current.nCurrentY) + py) * nFieldWidth + px] = 8;
                             }
 
-                            vLine.push_back(
-                                    int(tetris_current.nCurrentY) + py
-                            );
+                            vLine.push_back(int(tetris_current.nCurrentY) + py);
                         }
                     }
                 }
@@ -270,12 +285,7 @@ namespace Tetris::SDL_Version {
                 tetris_current.nCurrentRotation = 0;
                 tetris_current.nCurrentpiece = rand() % 7;
 
-                bGameOver = !DoesPieceFit(
-                        tetris_current.nCurrentpiece,
-                        tetris_current.nCurrentRotation,
-                        tetris_current.nCurrentX,
-                        tetris_current.nCurrentY
-                );
+                bGameOver = !DoesPieceFit(tetris_current.nCurrentpiece,tetris_current.nCurrentRotation,tetris_current.nCurrentX,tetris_current.nCurrentY);
 
                 if (bGameOver) {
                     isRunning = false;
@@ -284,7 +294,7 @@ namespace Tetris::SDL_Version {
         }
     }
 
-    void gameRender(Tetris_Current& tetris_current, std::vector<int>& vLine) {
+    void gameRender(Tetris_Current& tetris_current, std::vector<int>& vLine, int& score) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
@@ -321,8 +331,10 @@ namespace Tetris::SDL_Version {
             }
         }
 
+
         // Delete
         if (!vLine.empty()) {
+            score += vLine.size();
             for (auto &v : vLine)
                 for (int px = 1; px < nFieldWidth - 1; px++){
                     for (int py = v; py > 0; py--)
@@ -331,6 +343,11 @@ namespace Tetris::SDL_Version {
                 }
             vLine.clear();
         }
+
+        SDL_Rect scoreRect = {.x = 500, .y = 400, .w = 0, .h = 0};
+        SDL_Color scoreColor = {255, 255, 255, 255};
+        UpdateScoreTexture(renderer, font, score, scoreColor,&scoreTexture, &scoreRect);
+        SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreRect);
 
         SDL_RenderPresent(renderer);
     }
@@ -348,12 +365,18 @@ namespace Tetris::SDL_Version {
             std::cout << "SDL Inited in failure. " << SDL_GetError() << std::endl;
             return;
         }
-
         pField = new unsigned char[nFieldWidth * nFieldHeight];
         for (int x = 0; x < nFieldWidth; x++) {
             for (int y = 0; y < nFieldHeight; y++) {
                 pField[y * nFieldWidth + x] = (x == 0 || x == nFieldWidth - 1 || y == nFieldHeight - 1) ? 9 : 0;
             }
+        }
+
+        int score = 0;
+        SDL_Rect scoreRect = {.x = 500, .y = 500, .w = 0, .h = 0};
+        SDL_Color scoreColor = {255, 255, 255, 255};
+        if (!UpdateScoreTexture(renderer, font, score, scoreColor,&scoreTexture,&scoreRect)) {
+            SDL_Log("Failed to create score texture");
         }
 
         SDL_Event event;
@@ -378,7 +401,6 @@ namespace Tetris::SDL_Version {
         while (isRunning) {
             frameStart = SDL_GetTicks();
 
-            // 每帧重置一次输入状态
             tetris_even.left = false;
             tetris_even.right = false;
             tetris_even.rotate = false;
@@ -401,14 +423,9 @@ namespace Tetris::SDL_Version {
                 lastDropTime = currentTime;
             }
 
-            gameLoop(
-                    tetris_even,
-                    tetris_current,
-                    vLine,
-                    forceDown
-            );
+            gameLoop(tetris_even,tetris_current,vLine,forceDown);
 
-            gameRender(tetris_current, vLine);
+            gameRender(tetris_current, vLine, score);
 
             frameTime = SDL_GetTicks() - frameStart;
 
