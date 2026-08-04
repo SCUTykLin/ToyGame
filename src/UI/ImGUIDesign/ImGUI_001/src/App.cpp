@@ -9,7 +9,7 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_opengl3_loader.h>
-
+#include "GUI.h"
 #include "style.h"
 
 namespace UI::ImGUI_001 {
@@ -64,6 +64,7 @@ namespace UI::ImGUI_001 {
         ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
         ImGui_ImplOpenGL3_Init(glsl_version);
 
+        GUI::begin();
         bool done = false;
         SDL_Event event;
         while (!done) {
@@ -81,7 +82,7 @@ namespace UI::ImGUI_001 {
             ImGui_ImplSDL2_NewFrame(window);
             ImGui::NewFrame();
 
-            ImGui::ShowDemoWindow();
+            GUI::update();
 
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT);

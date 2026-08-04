@@ -15,6 +15,7 @@
 #include "src/SDL2RayTracer/include/App.h"
 #include "src/UI/ImGUIDesign/ImGUI_001/include/App.h"
 #include "src/Tetris/include/App.h"
+#include "src/ConFPS/include/App.h"
 
 static std::unordered_map<std::string, std::function<void()>> commands;
 static std::once_flag flag;
@@ -93,6 +94,13 @@ public:
     }
 };
 
+class ConFPS_Command : public Base_Command<ConFPS_Command> {
+public:
+    void run_command_Impl() {
+        ConFPS::App{}.run();
+    }
+};
+
 
 template <typename T>
 void add_command(T t, std::string&& name) {
@@ -111,6 +119,7 @@ void create_commands_set() {
         add_command(SDLRayTracer_Command{}, "SDLRayTracer");
         add_command(ImGUIDesign_001_Command{}, "ImGUIDesign_001");
         add_command(Tetris_Command{}, "Tetris");
+        add_command(ConFPS_Command{}, "ConFPS");
     });
 }
 

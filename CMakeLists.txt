@@ -19,6 +19,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/Madsycode)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/SDL2RayTracer)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Tetris)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/ConFPS)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -67,8 +68,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC sdl2raytracer)
 
 target_link_libraries(imgui PUBLIC opengl SDL2::SDL2-static) # imgui的后端有SDL2
 target_compile_definitions(imguiedit PUBLIC UIPlugin) # dll是否需要import
+
 target_link_libraries(${PROJECT_NAME} PUBLIC imguiedit)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui_001)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC tetris)
+target_link_libraries(${PROJECT_NAME} PUBLIC confps)
 # =================== Link Projects ===================
