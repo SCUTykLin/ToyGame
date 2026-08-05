@@ -160,9 +160,13 @@ void Pong::main_loop(){
         Uint32 frame_start = SDL_GetTicks();
 
         SDL_PollEvent(&event);
-        if(event.type == SDL_QUIT){
+        if (event.type == SDL_QUIT) {
             is_running = false;
         }
+        if (event.type == SDL_KEYDOWN &&
+            event.key.keysym.sym == SDLK_ESCAPE) {
+            is_running = false;
+            }
         // 玩家1：W上、S下
         if (keystate[SDL_SCANCODE_W]) {
             move_player(surface, &pl1, -1);

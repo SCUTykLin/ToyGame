@@ -2,23 +2,23 @@
 // Created by 15813 on 2026/8/5.
 //
 
-#ifndef TOYPROJECTS_GUI_H
-#define TOYPROJECTS_GUI_H
+#ifndef TOYPROJECTS_UI_IMGUI_001_GUI_H
+#define TOYPROJECTS_UI_IMGUI_001_GUI_H
 
-#include "PictureWall_Item.h"
+#include "PictureWall.h"
 
 namespace GUI{
-    void begin(){
 
+    void begin(){
+        PictureWall::begin();
     }
 
     void update(){
-        static float size_buffer = 600;
-        if (ImGui::Begin("test window")) {
-            PictureWall::PictureItem(0, "test Item", size_buffer);
+        if (ImGui::Begin("Test Window")) {
+            PictureWall::update();
         }
         ImGui::End();
     }
 }
 
-#endif //TOYPROJECTS_GUI_H
+#endif //TOYPROJECTS_UI_IMGUI_001_GUI_H

@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+set(CMAKE_CXX_STANDARD 17)
+project(ImFileDialog)
+add_library(ImFileDialog)
+set(SOURCES ImFileDialog.cpp)
+target_sources(ImFileDialog PRIVATE ${SOURCES})
+target_include_directories(ImFileDialog PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)
+target_link_libraries(ImFileDialog PRIVATE imgui opengl SDL2::SDL2main SDL2::SDL2-static stb_image)

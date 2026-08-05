@@ -5,20 +5,9 @@
 #include <functional>
 #include <memory>
 #include <mutex>
-#include <sstream>
-#include "src/PongGame/pong_game.h"
-#include "src/BouncyBall/bouncy_ball.h"
-#include "src/FluidSimulation/App/FluidApplication.h"
-#include "src/Compiler/include/app.h"
-#include "src/Roguelike/App/app.h"
-#include "src/Madsycode/App/app.h"
-#include "src/SDL2RayTracer/include/App.h"
-#include "src/UI/ImGUIDesign/ImGUI_001/include/App.h"
-#include "src/Tetris/include/App.h"
-#include "src/ConFPS/include/App.h"
 
-static std::unordered_map<std::string, std::function<void()>> commands;
-static std::once_flag flag;
+extern  std::unordered_map<std::string, std::function<void()>> commands;
+extern  std::once_flag flag;
 
 template <typename Derived>
 class Base_Command {
@@ -30,77 +19,59 @@ public:
 
 class Pong_Command : public Base_Command<Pong_Command> {
 public:
-    void run_command_Impl() {
-        Pong::startPongGame();
-    }
+    void run_command_Impl();
 };
 
 class Bouncy_Command : public Base_Command<Bouncy_Command> {
 public:
-    void run_command_Impl() {
-        bouncy::start_bouncy();
-    }
+    void run_command_Impl();
 };
 
 class Fluid_Command : public Base_Command<Fluid_Command> {
 public:
-    void run_command_Impl() {
-        fluid::FluidApplication app;
-        app.run();
-    }
+    void run_command_Impl();
 };
 
 class Compiler_Command : public Base_Command<Compiler_Command> {
 public:
-    void run_command_Impl() {
-        Compiler::App compilerApp;
-        compilerApp.run_compile("src/Compiler/examples/main.tac");
-    }
+    void run_command_Impl();
 };
 
 class Roguelike_Command : public Base_Command<Roguelike_Command> {
 public:
-    void run_command_Impl() {
-        roguelike::App{}.run();
-    }
+    void run_command_Impl();
 };
 
 class SDL_Engine_Command : public Base_Command<SDL_Engine_Command> {
 public:
-    void run_command_Impl() {
-        Madsycode::App{}.run();
-    }
+    void run_command_Impl();
 };
 
 
 class SDLRayTracer_Command : public Base_Command<SDLRayTracer_Command> {
     public:
-    void run_command_Impl() {
-        RayTracing::App{}.run();
-    }
+    void run_command_Impl();
 };
 
 class ImGUIDesign_001_Command : public Base_Command<ImGUIDesign_001_Command> {
 public:
-    void run_command_Impl() {
-        UI::ImGUI_001::App{}.run();
-    }
+    void run_command_Impl();
 };
 
 class Tetris_Command : public Base_Command<Tetris_Command> {
 public:
-    void run_command_Impl() {
-        Tetris::App{}.run();
-    }
+    void run_command_Impl();
 };
 
 class ConFPS_Command : public Base_Command<ConFPS_Command> {
 public:
-    void run_command_Impl() {
-        ConFPS::App{}.run();
-    }
+    void run_command_Impl();
 };
 
+class CloxInterpreter_Command : public Base_Command<CloxInterpreter_Command> {
+public:
+    void run_command_Impl();
+};
 
 template <typename T>
 void add_command(T t, std::string&& name) {
@@ -108,49 +79,14 @@ void add_command(T t, std::string&& name) {
     commands[name] = [command]()->void{command->run_command();};
 }
 
-void create_commands_set() {
-    std::call_once(flag, []() {
-        add_command(Pong_Command{}, "Pong");
-        add_command(Bouncy_Command{}, "Bouncy");
-        add_command(Fluid_Command{}, "Fluid");
-        add_command(Compiler_Command{}, "Compiler");
-        add_command(Roguelike_Command{}, "Roguelike");
-        add_command(SDL_Engine_Command{}, "2DEngine");
-        add_command(SDLRayTracer_Command{}, "SDLRayTracer");
-        add_command(ImGUIDesign_001_Command{}, "ImGUIDesign_001");
-        add_command(Tetris_Command{}, "Tetris");
-        add_command(ConFPS_Command{}, "ConFPS");
-    });
-}
+void create_commands_set();
 
-std::unordered_map<std::string, std::function<void()>>* get_commands_set() {
-    create_commands_set();
-    std::cout << "Commands List: [";
-    for (const auto& pair : commands) {
-        std::cout << pair.first << ", ";  // key
-    }
-    std::cout << "]" << std::endl;
+std::unordered_map<std::string, std::function<void()>>* get_commands_set();
 
-    return &commands;
-}
+void print_commands();
 
-inline void print_commands() {
-    std::stringstream ss;
-    for (const auto& pair : commands) {
-        ss << pair.first << ", ";
-    }
-    std::string_view v = ss.view();
-    std::cout << "Commands List: [" << v << "]" << std::endl;
-}
+bool is_in_command(std::string& command_str);
 
-inline bool is_in_command(std::string& command_str){
-    create_commands_set();
-    for (const auto& pair : commands) {
-        if (pair.first == command_str) {
-            return true;
-        }
-    }
-    return false;
-}
+std::vector<std::string> get_commands_list();
 
 #endif //TOYPROJECTS_MAIN_H

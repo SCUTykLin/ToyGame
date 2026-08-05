@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(cloxInterpreter)
+add_library(cloxInterpreter)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(cloxInterpreter PRIVATE ${SOURCE})
+target_include_directories(cloxInterpreter PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)

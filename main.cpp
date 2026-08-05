@@ -1,5 +1,5 @@
 #include "command.h"
-
+#include <iostream>
 int main(int argc, char *argv[]){
      system("chcp 65001");
 
@@ -23,5 +23,4 @@ int main(int argc, char *argv[]){
          std::cout << "Commands: " << std::endl;
          std::cin >> default_command;
      }
-     return 0;
 }
