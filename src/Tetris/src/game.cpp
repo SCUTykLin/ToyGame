@@ -112,7 +112,6 @@ namespace Tetris {
             }
 
             // Game Logic
-
             nCurrentX -= (bKey[0] && DoesPieceFit(nCurrentpiece, nCurrentRotation, nCurrentX-1, nCurrentY)) ? 1 : 0;
             nCurrentX += (bKey[1] && DoesPieceFit(nCurrentpiece, nCurrentRotation, nCurrentX+1, nCurrentY)) ? 1 : 0;
             nCurrentY += (bKey[3] && DoesPieceFit(nCurrentpiece, nCurrentRotation, nCurrentX, nCurrentY+1)) ? 1 : 0;
@@ -167,7 +166,6 @@ namespace Tetris {
             }
 
             // Render Output
-
             for (int x = 0; x < nFieldWidth; ++x) { // Draw Field
                 for (int y = 0; y < nFieldHeight; ++y) {
                     screen[(y + 2) * nScreenWidth + (x + 2)] = L" ABCDEFG=#"[pField[y * nFieldWidth + x]];

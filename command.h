@@ -95,6 +95,28 @@ std::vector<std::string> get_commands_list();
 
 class FLTK_Window {
 public:
+    static void Set_FLTK_Style(const char* style) {
+        Fl::scheme(style);
+        Fl::box_border_radius_max(8);
+
+        Fl::background(30, 32, 36);
+        Fl::background2(40, 43, 48);
+        Fl::foreground(225, 228, 232);
+    }
+
+    static void Set_Button_Style(Fl_Button* button) {
+        button->box(FL_ROUNDED_BOX);
+
+        button->color(fl_rgb_color(55, 59, 67));
+        button->selection_color(fl_rgb_color(70, 125, 220));
+
+        button->labelcolor(fl_rgb_color(235, 238, 242));
+        button->labelfont(FL_HELVETICA);
+        button->labelsize(14);
+
+        button->clear_visible_focus();
+    }
+
     static void init_window(int w, int h, int Width, int Height) {
         if (win != nullptr) {
             return;
@@ -120,6 +142,8 @@ public:
             const auto& name = *static_cast<std::string*>(data);
             get_commands_set()->at(name)();
         }, callback_name);
+
+        Set_Button_Style(button);
     }
 
     static void add_command_button(int w, int h) {
