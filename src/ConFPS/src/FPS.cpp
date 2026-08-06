@@ -3,6 +3,7 @@
 //
 
 #include "FPS.h"
+#include "SDL_FPS.h"
 #include <chrono>
 
 namespace ConFPS {
@@ -92,6 +93,9 @@ namespace ConFPS {
 
     void mainLoop() {
         bool mKey[4], rKey[2];
+        FPS_Window fps_window_instance;
+        fps_window_instance.init_window(nScreenWidth, nScreenHeight);
+
         createWindowBuffer();
 
         auto tp1 = std::chrono::system_clock::now();
@@ -186,9 +190,9 @@ namespace ConFPS {
             for (int nx = 0; nx < map.nMapWidth; nx++)
                 for (int ny = 0; ny < map.nMapWidth; ny++)
                 {
-                    screen[(ny+1)*nScreenWidth + nx] = map.map[ny * map.nMapWidth + nx];
+                    screen[(ny + 1) * nScreenWidth + nx] = map.map[ny * map.nMapWidth + nx];
                 }
-            screen[((int)player.fPlayerX + 1) * nScreenWidth + (int)player.fPlayerY] = 'P';
+            screen[(int)floor(player.fPlayerY + 1) * nScreenWidth + (int)floor(player.fPlayerX)] = 'P';
 
             empty_screen();
             renderConsole();
