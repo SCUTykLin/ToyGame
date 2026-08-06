@@ -5,6 +5,10 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <iostream>
+#include <FL/Fl.h>
+#include <FL/Fl_Window.h>
+#include <FL/Fl_Button.h>
 
 extern  std::unordered_map<std::string, std::function<void()>> commands;
 extern  std::once_flag flag;
@@ -88,5 +92,61 @@ void print_commands();
 bool is_in_command(std::string& command_str);
 
 std::vector<std::string> get_commands_list();
+
+class FLTK_Window {
+public:
+    static void init_window(int w, int h, int Width, int Height) {
+        if (win != nullptr) {
+            return;
+        }
+
+        win = new Fl_Window(Width, Height, "Commands Window");
+
+        win->begin();
+
+        add_command_button(w, h);
+
+        win->end();
+        win->show();
+    }
+
+    static void add_button(int x, int y, int w, int h, const char* name) {
+        if (win == nullptr) {
+            return;
+        }
+        auto* callback_name = new std::string(name);
+        auto* button = new Fl_Button(x, y, w, h, callback_name->c_str());
+        button->callback([](Fl_Widget*, void* data) {
+            const auto& name = *static_cast<std::string*>(data);
+            get_commands_set()->at(name)();
+        }, callback_name);
+    }
+
+    static void add_command_button(int w, int h) {
+        auto commands = get_commands_list();
+
+        int button_count = commands.size();
+        int rows = 8;
+        int cols = button_count / rows + 1;
+
+        int col_space = (win->w() - cols * w) / (cols + 1);
+        int row_space = (win->h() - rows * h) / (rows + 1);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int index = i * cols + j;
+                if (index < commands.size()) {
+                    add_button(j * w + (j + 1) * col_space, i * h + (i + 1) * row_space, w, h, commands.at(index).c_str());
+                }
+            }
+        }
+    }
+
+    static int run() {
+        return Fl::run();
+    }
+
+private:
+    inline static Fl_Window* win = nullptr;
+};
 
 #endif //TOYPROJECTS_MAIN_H

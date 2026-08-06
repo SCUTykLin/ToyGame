@@ -34,6 +34,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL-release-2.32.6 EXCLUD
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL_ttf-release-2.20.0 EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/ImFileDialog EXCLUDE_FROM_ALL)
+add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/fltk-1.4.5 EXCLUDE_FROM_ALL)
 # =================== link SDL2, SDL2_image and raylib ===================
 
 # =================== OpenGL + GLM + assimp ===================
@@ -79,3 +80,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE confps)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cloxInterpreter)
 # =================== Link Projects ===================
+
+target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)
