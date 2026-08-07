@@ -211,8 +211,12 @@ namespace ConFPS {
                 }
             }
 
-            swprintf_s(screen, 40, L"X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ",
-                player.fPlayerX, player.fPlayerY, player.fPlayerA, 1.0f/fElapsedTime);
+            int len = swprintf_s(screen, 40, L"X=%.2f, Y=%.2f, A=%.2f FPS=%.2f",
+                player.fPlayerX, player.fPlayerY, player.fPlayerA, 1.0f / fElapsedTime);
+
+            if (len >= 0){
+                std::fill(screen + len, screen + nScreenWidth, L' ');
+            }
 
             for (int nx = 0; nx < map.nMapWidth; nx++)
                 for (int ny = 0; ny < map.nMapWidth; ny++){
