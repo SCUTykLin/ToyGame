@@ -95,82 +95,15 @@ std::vector<std::string> get_commands_list();
 
 class FLTK_Window {
 public:
-    static void Set_FLTK_Style(const char* style) {
-        Fl::scheme(style);
-        Fl::box_border_radius_max(8);
-
-        Fl::background(30, 32, 36);
-        Fl::background2(40, 43, 48);
-        Fl::foreground(225, 228, 232);
-    }
-
-    static void Set_Button_Style(Fl_Button* button) {
-        button->box(FL_ROUNDED_BOX);
-
-        button->color(fl_rgb_color(55, 59, 67));
-        button->selection_color(fl_rgb_color(70, 125, 220));
-
-        button->labelcolor(fl_rgb_color(235, 238, 242));
-        button->labelfont(FL_HELVETICA);
-        button->labelsize(14);
-
-        button->clear_visible_focus();
-    }
-
-    static void init_window(int w, int h, int Width, int Height) {
-        if (win != nullptr) {
-            return;
-        }
-
-        win = new Fl_Window(Width, Height, "Commands Window");
-
-        win->begin();
-
-        add_command_button(w, h);
-
-        win->end();
-        win->show();
-    }
-
-    static void add_button(int x, int y, int w, int h, const char* name) {
-        if (win == nullptr) {
-            return;
-        }
-        auto* callback_name = new std::string(name);
-        auto* button = new Fl_Button(x, y, w, h, callback_name->c_str());
-        button->callback([](Fl_Widget*, void* data) {
-            const auto& name = *static_cast<std::string*>(data);
-            get_commands_set()->at(name)();
-        }, callback_name);
-
-        Set_Button_Style(button);
-    }
-
-    static void add_command_button(int w, int h) {
-        auto commands = get_commands_list();
-
-        int button_count = commands.size();
-        int rows = 8;
-        int cols = button_count / rows + 1;
-
-        int col_space = (win->w() - cols * w) / (cols + 1);
-        int row_space = (win->h() - rows * h) / (rows + 1);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                int index = i * cols + j;
-                if (index < commands.size()) {
-                    add_button(j * w + (j + 1) * col_space, i * h + (i + 1) * row_space, w, h, commands.at(index).c_str());
-                }
-            }
-        }
-    }
-
-    static int run() {
-        return Fl::run();
-    }
+    static void Set_FLTK_Style(const char* style);
+    static void Set_Button_Style(Fl_Button* button);
+    static void init_window(int w, int h, int Width, int Height);
+    static void add_button(int x, int y, int w, int h, const char* name);
+    static void add_command_button(int w, int h);
+    static int run();
 
 private:
-    inline static Fl_Window* win = nullptr;
+    static Fl_Window* win;
 };
 
 #endif //TOYPROJECTS_MAIN_H

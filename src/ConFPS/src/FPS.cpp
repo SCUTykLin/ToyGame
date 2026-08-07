@@ -28,7 +28,7 @@ namespace ConFPS {
         map.map += L"#......##......#";
         map.map += L"#......##......#";
         map.map += L"#..............#";
-        map.map += L"###............#";
+        map.map += L"###....#######.#";
         map.map += L"##.............#";
         map.map += L"#......####..###";
         map.map += L"#......#.......#";
@@ -191,7 +191,7 @@ namespace ConFPS {
                         }
                     }else if (y > nCeiling && y <= nFloor) {
                         screen[y * nScreenWidth + x] = nShade;
-                        if (fps_window_instance.run()) {
+                        if (fps_window_instance.run() && nShade != ' ') {
                             fps_window_instance.SetCategory(x, y, FPS_Window::WALL);
                             fps_window_instance.SetDistance(x, y, fDistanceToWall);
                         }
