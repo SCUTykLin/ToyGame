@@ -92,7 +92,7 @@ namespace ConFPS {
     }
 
     void mainLoop() {
-        bool mKey[4], rKey[2];
+        bool mKey[4], rKey[4];
         FPS_Window fps_window_instance;
         fps_window_instance.init_window(nScreenWidth, nScreenHeight);
 
@@ -101,13 +101,23 @@ namespace ConFPS {
         auto tp1 = std::chrono::system_clock::now();
         auto tp2 = tp1;
 
-        while (true) {
+        bool is_running = true;
+        float scale = 5.0f;
+        while (is_running) {
+
+            if (fps_window_instance.run()) {
+                fps_window_instance.ResetBoundary();
+                fps_window_instance.ResetDistance();
+                fps_window_instance.ResetCategory();
+            }
+
             tp2 = std::chrono::system_clock::now();
             std::chrono::duration<float> elapsed = tp2 - tp1;
             tp1 = tp2;
             float fElapsedTime = elapsed.count();
 
             control(mKey, rKey);
+            fps_window_instance.control(is_running, scale);
             move_player(mKey, rKey, fElapsedTime);
 
             for (int x = 0; x < nScreenWidth; x++) {
@@ -165,13 +175,26 @@ namespace ConFPS {
                 else if (fDistanceToWall < player.fDepth) nShade = 0x2591;
                 else nShade = ' ';
 
-                if (bBoundary)		nShade = ' ';
+                if (bBoundary) {
+                    nShade = ' ';
+                    if (fps_window_instance.run()){
+                        for (int y = 0; y < nScreenHeight; y++) fps_window_instance.SetBoundary(x, y, true);
+                    }
+                }
 
                 for (int y = 0; y < nScreenHeight; y++) {
                     if (y <= nCeiling) {
                         screen[y * nScreenWidth + x] = ' ';
+                        if (fps_window_instance.run()) {
+                            fps_window_instance.SetCategory(x, y, FPS_Window::CEILING);
+                            fps_window_instance.SetDistance(x, y, fDistanceToWall);
+                        }
                     }else if (y > nCeiling && y <= nFloor) {
                         screen[y * nScreenWidth + x] = nShade;
+                        if (fps_window_instance.run()) {
+                            fps_window_instance.SetCategory(x, y, FPS_Window::WALL);
+                            fps_window_instance.SetDistance(x, y, fDistanceToWall);
+                        }
                     }else {
                         float b = 1.0f - (((float)y - nScreenHeight/2.0f) / ((float)nScreenHeight / 2.0f));
                         if (b < 0.25)		nShade = '#';
@@ -180,6 +203,10 @@ namespace ConFPS {
                         else if (b < 0.9)	nShade = '-';
                         else				nShade = ' ';
                         screen[y*nScreenWidth + x] = nShade;
+                        if (fps_window_instance.run()) {
+                            fps_window_instance.SetCategory(x, y, FPS_Window::FLOOR);
+                            fps_window_instance.SetDistance(x, y, fDistanceToWall);
+                        }
                     }
                 }
             }
@@ -188,14 +215,17 @@ namespace ConFPS {
                 player.fPlayerX, player.fPlayerY, player.fPlayerA, 1.0f/fElapsedTime);
 
             for (int nx = 0; nx < map.nMapWidth; nx++)
-                for (int ny = 0; ny < map.nMapWidth; ny++)
-                {
+                for (int ny = 0; ny < map.nMapWidth; ny++){
                     screen[(ny + 1) * nScreenWidth + nx] = map.map[ny * map.nMapWidth + nx];
                 }
             screen[(int)floor(player.fPlayerY + 1) * nScreenWidth + (int)floor(player.fPlayerX)] = 'P';
 
             empty_screen();
             renderConsole();
+
+            fps_window_instance.render(&player, &map, scale);
         }
+
+        delete[] screen;
     }
 }
