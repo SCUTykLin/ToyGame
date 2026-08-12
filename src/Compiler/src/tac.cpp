@@ -10,9 +10,8 @@
 namespace Compiler::tac {
     void tac_compile(char* src) {
         Lexer::lexer_T* lexer = Lexer::init_lexer(src);
-        // Parser::parser_T* parser = Parser::init_parser(lexer);
-        // AST::AST_T* root = Parser::parser_parse(parser);
-        // printf("%p\n", root);
+        Parser::parser_T* parser = Parser::init_parser(lexer);
+        AST::AST_T* root = Parser::parser_parse(parser);
         Token::token_T* token = nullptr;
         while ((token = Lexer::lexer_next_token(lexer))->type != Token::TOKEN_STRUCT::TOKEN_EOF) {
             printf("%s", Token::token_to_str(token));

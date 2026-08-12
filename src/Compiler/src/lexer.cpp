@@ -73,7 +73,7 @@ namespace Compiler{
         while (lexer->c != '\0') {
             Lexer::lexer_skip_whitespace(lexer);
             if (isalpha(lexer->c)) {
-                return Lexer::lexer_advance_with(lexer, Lexer::lexer_parse_id(lexer));
+                return Lexer::lexer_parse_id(lexer);
             }
             if (isdigit(lexer->c)) {
                 return Lexer::lexer_advance_with(lexer, Lexer::lexer_parse_number(lexer));

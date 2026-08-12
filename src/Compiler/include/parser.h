@@ -18,6 +18,9 @@ namespace Compiler {
         Token::token_T* parser_eat(parser_T* parser, Token::TOKEN_STRUCT::TokenType type);
         AST::AST_T* parser_parse(parser_T* parser);
         AST::AST_T* parser_parse_compound(parser_T* parser);
+        AST::AST_T* parser_parse_expr(parser_T* parser);
+        AST::AST_T* parser_parse_id(parser_T* parser);
+        AST::AST_T* parser_parse_list(parser_T* parser);
     }
 }
 
