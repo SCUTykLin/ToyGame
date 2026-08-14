@@ -3,7 +3,7 @@
 //
 
 #include "../include/parser.h"
-
+#include "../include/types.h"
 
 namespace Compiler {
     Parser::parser_T* Parser::init_parser(Lexer::lexer_T* lexer) {
@@ -26,22 +26,65 @@ namespace Compiler {
         return parser_parse_compound(parser);
     }
 
+    AST::AST_T* Parser::parser_parse_block(Parser::parser_T* parser){
+        parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_LBRACE);
+        AST::AST_T* ast = AST::init_ast(AST::AST_STRUCT::AST_COMPOUND);
+        while(parser->token->type != Token::TOKEN_STRUCT::TOKEN_RBRACE){
+            list::list_push(ast->children, parser_parse_expr(parser));
+        }
+        parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_RBRACE);
+        return ast;
+    }
+
     AST::AST_T* Parser::parser_parse_list(Parser::parser_T* parser) {
         Parser::parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_LPAREN);
-        AST::AST_T* compound = AST::init_ast(AST::AST_STRUCT::AST_COMPOUND);
-        list::list_push(compound->children, parser_parse_expr(parser));
+        AST::AST_T* ast = AST::init_ast(AST::AST_STRUCT::AST_COMPOUND);
+        list::list_push(ast->children, parser_parse_expr(parser));
         while (parser->token->type == Token::TOKEN_STRUCT::TOKEN_COMMA) {
             Parser::parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_COMMA);
-            list::list_push(compound->children, parser_parse_expr(parser));
+            list::list_push(ast->children, parser_parse_expr(parser));
         }
         Parser::parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_RPAREN);
-        return compound;
+
+        if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_COLON){
+            parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_COLON);
+            while(parser->token->type == Token::TOKEN_STRUCT::TOKEN_ID) {
+                ast->data_type = Types::typename_to_int(parser->token->value);
+                parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_ID);
+                if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_LT){
+                    parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_LT);
+                    ast->data_type += Types::typename_to_int(parser->token->value);
+                    parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_ID);
+                    parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_GT);
+                }
+            }
+        }
+        if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_ARROW_RIGHT){
+            parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_ARROW_RIGHT);
+            ast->type = AST::AST_STRUCT::AST_FUNCTION;
+            ast->value = parser_parse_compound(parser);
+        }
+
+        return ast;
     }
 
     AST::AST_T* Parser::parser_parse_compound(Parser::parser_T* parser) {
+
+        unsigned int should_close = 0;
+        if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_LBRACE){
+            parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_LBRACE);
+            should_close = 1;
+        }
+
         AST::AST_T* compound = AST::init_ast(AST::AST_STRUCT::AST_COMPOUND);
-        while (parser->token->type != Token::TOKEN_STRUCT::TOKEN_EOF) {
+        while (parser->token->type != Token::TOKEN_STRUCT::TOKEN_EOF && parser->token->type != Token::TOKEN_STRUCT::TOKEN_RBRACE) {
             list::list_push(compound->children, parser_parse_expr(parser));
+            if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_SEMI){
+                parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_SEMI);
+            }
+        }
+        if (should_close){
+            parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_RBRACE);
         }
         return compound;
     }
@@ -60,7 +103,33 @@ namespace Compiler {
         // parse variable
         AST::AST_T* ast = AST::init_ast(AST::AST_STRUCT::AST_VARIABLE);
         ast->name = value;
-        printf("%s\n", value);
+
+        if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_COLON){
+            parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_COLON);
+            while(parser->token->type == Token::TOKEN_STRUCT::TOKEN_ID) {
+                ast->data_type = Types::typename_to_int(parser->token->value);
+                parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_ID);
+                if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_LT){
+                    parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_LT);
+                    ast->data_type += Types::typename_to_int(parser->token->value);
+                    parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_ID);
+                    parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_GT);
+                }
+            }
+        }else{
+            if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_LPAREN){
+                ast->type == AST::AST_STRUCT::AST_CALL;
+                ast->value = parser_parse_list(parser);
+            }
+        }
+        return ast;
+    }
+
+    AST::AST_T* Parser::parser_parse_int(Parser::parser_T* parser){
+        int int_value = atoi(parser->token->value);
+        parser_eat(parser, Token::TOKEN_STRUCT::TOKEN_INT);
+        AST::AST_T* ast = AST::init_ast(AST::AST_STRUCT::AST_INT);
+        ast->int_value = int_value;
         return ast;
     }
 
@@ -70,6 +139,8 @@ namespace Compiler {
                 return Parser::parser_parse_id(parser);
             case Token::TOKEN_STRUCT::TOKEN_LPAREN:
                 return Parser::parser_parse_list(parser);
+            case Token::TOKEN_STRUCT::TOKEN_INT:
+                return Parser::parser_parse_int(parser);
             default: {
                 printf("[Parser]: Unexpected token '%s\n'", Token::token_to_str(parser->token));
                 exit(1);

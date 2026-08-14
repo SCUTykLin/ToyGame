@@ -21,6 +21,8 @@ namespace Compiler {
         AST::AST_T* parser_parse_expr(parser_T* parser);
         AST::AST_T* parser_parse_id(parser_T* parser);
         AST::AST_T* parser_parse_list(parser_T* parser);
+        AST::AST_T* parser_parse_block(parser_T* parser);
+        AST::AST_T* parser_parse_int(parser_T* parser);
     }
 }
 

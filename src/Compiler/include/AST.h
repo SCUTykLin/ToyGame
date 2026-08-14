@@ -13,15 +13,19 @@ namespace Compiler {
             enum ASTType{
                 AST_COMPOUND,
                 AST_FUNCTION,
+                AST_CALL,
                 AST_ASSIGNMENT,
                 AST_VARIABLE,
                 AST_STATEMENT,
-                AST_NOOP
+                AST_INT,
+                AST_NOOP,
             };
             ASTType type;
             list::list_T* children;
             char* name;
             struct AST_STRUCT* value;
+            int int_value;
+            int data_type;
         }AST_T;
         AST_T* init_ast(AST_STRUCT::ASTType type);
     }

@@ -76,12 +76,12 @@ namespace Compiler{
                 return Lexer::lexer_parse_id(lexer);
             }
             if (isdigit(lexer->c)) {
-                return Lexer::lexer_advance_with(lexer, Lexer::lexer_parse_number(lexer));
+                return Lexer::lexer_parse_number(lexer);
             }
             switch (lexer->c) {
                 case '=': {
                     if (Lexer::lexer_peek(lexer, 1) == '>')
-                        return Lexer::lexer_advance_with(lexer, Token::init_token("=>", Token::TOKEN_STRUCT::TOKEN_ARROW_RIGHT));
+                        return Lexer::lexer_advance_with(lexer, Lexer::lexer_advance_with(lexer, Token::init_token("=>", Token::TOKEN_STRUCT::TOKEN_ARROW_RIGHT)));
                     return Lexer::lexer_advance_with(lexer, Token::init_token("=", Token::TOKEN_STRUCT::TOKEN_EQUALS));
                 }
                 case '(': {
