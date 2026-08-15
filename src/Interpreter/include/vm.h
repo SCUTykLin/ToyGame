@@ -28,7 +28,7 @@ namespace CLOX::Vm {
 
     void freeVM();
 
-    InterpretResult interpret(Chunk::Chunk* chunk);
+    InterpretResult interpret(const char* source);
 
     void push(Value::Value value);
     Value::Value pop();

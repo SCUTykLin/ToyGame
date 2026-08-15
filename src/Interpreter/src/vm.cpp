@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "vm.h"
+#include "compiler.h"
 #include "debug.h"
 
 namespace CLOX::Vm{
@@ -68,10 +69,9 @@ namespace CLOX::Vm{
     void freeVM() {
     }
 
-    InterpretResult interpret(Chunk::Chunk *chunk) {
-        vm.chunk = chunk;
-        vm.ip = vm.chunk->code;
-        return run();
+    InterpretResult interpret(const char* source) {
+        compile(source);
+        return INTERPRET_OK;
     }
 
     void push(Value::Value value) {

@@ -8,32 +8,37 @@
 #include "vm.h"
 
 namespace CLOX {
+
+    static void repl() {
+        char line[1024];
+        for (;;) {
+            printf("> ");
+
+            if (!fgets(line, sizeof(line), stdin)) {
+                printf("\n");
+                break;
+            }
+
+            Vm::interpret(line);
+        }
+    }
+
+
+
     void App::run() {
         Vm::initVM();
-        Chunk::Chunk chunk;
-        initChunk(&chunk);
-        int constant = addConstant(&chunk, 1.2);
-        writeChunk(&chunk, Chunk::OP_CONSTANT, 123);
-        writeChunk(&chunk, constant, 123);
+        // 替换部分开始
+        if (argc == 1) {
+            repl();
+        } else if (argc == 2) {
+            runFile(argv[1]);
+        } else {
+            fprintf(stderr, "Usage: clox [path]\n");
+            exit(64);
+        }
 
-        constant = addConstant(&chunk, 3.4);
-        writeChunk(&chunk, Chunk::OP_CONSTANT, 123);
-        writeChunk(&chunk, constant, 123);
-
-        writeChunk(&chunk, Chunk::OP_ADD, 123);
-
-        constant = addConstant(&chunk, 5.6);
-        writeChunk(&chunk, Chunk::OP_CONSTANT, 123);
-        writeChunk(&chunk, constant, 123);
-
-        writeChunk(&chunk, Chunk::OP_DIVIDE, 123);
-
-        writeChunk(&chunk, Chunk::OP_NEGATE, 123);
-        writeChunk(&chunk, Chunk::OP_RETURN, 123);
-        Debug::disassembleChunk(&chunk, "test chunk");
-
-        Vm::interpret(&chunk);
         Vm::freeVM();
-        freeChunk(&chunk);
+        // 替换部分结束
+        return 0;
     }
 }
