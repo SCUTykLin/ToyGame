@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.25)
+project(Ghost)
+add_library(Ghost)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(Ghost PRIVATE ${SOURCE})
+target_include_directories(Ghost PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+target_link_libraries(Ghost PUBLIC SDL2::SDL2main SDL2::SDL2-static SDL2_image SDL2_ttf)

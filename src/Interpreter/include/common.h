@@ -9,4 +9,10 @@
 #include <cstddef>
 #include <cstdint>
 
+#define DEBUG_TRACE_EXECUTION
+
+namespace CLOX::Com{
+
+}
+
 #endif //TOYPROJECTS_CLOX_COMMON_H

@@ -21,6 +21,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Tetris)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/ConFPS)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Interpreter)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/Ghost)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -79,6 +80,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE tetris)
 target_link_libraries(${PROJECT_NAME} PRIVATE confps)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cloxInterpreter)
-# =================== Link Projects ===================
 
+target_link_libraries(${PROJECT_NAME} PRIVATE Ghost)
+# =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)

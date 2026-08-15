@@ -15,6 +15,7 @@
 #include "src/Tetris/include/App.h"
 #include "src/ConFPS/include/App.h"
 #include "src/Interpreter/include/App.h"
+#include "src/Ghost/include/App.h"
 
 std::unordered_map<std::string, std::function<void()>> commands;
 std::once_flag flag;
@@ -63,6 +64,10 @@ void CloxInterpreter_Command::run_command_Impl() {
     CLOX::App{}.run();
 }
 
+void Ghost_Command::run_command_Impl() {
+    Ghost::App{}.run();
+}
+
 void create_commands_set() {
     std::call_once(flag, []() {
         add_command(Pong_Command{}, "Pong");
@@ -75,6 +80,8 @@ void create_commands_set() {
         add_command(ImGUIDesign_001_Command{}, "ImGUIDesign_001");
         add_command(Tetris_Command{}, "Tetris");
         add_command(ConFPS_Command{}, "ConFPS");
+        add_command(CloxInterpreter_Command{}, "CloxInterpreter");
+        add_command(Ghost_Command{}, "Ghost");
     });
 }
 
