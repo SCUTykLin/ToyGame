@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 project(pong)
-add_library(pong)
+add_library(pong STATIC)
 file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 target_sources(pong PRIVATE ${SOURCE})
 target_include_directories(pong PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/)

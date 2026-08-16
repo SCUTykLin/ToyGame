@@ -105,6 +105,7 @@ namespace Tetris::SDL_Version {
         tetrominoColor[8] = gray;
     }
     SDL_Texture *CreateTextTexture(SDL_Renderer *renderer, TTF_Font *font, const char *text, SDL_Color color, int *width, int *height) {
+
         SDL_Surface *surface = TTF_RenderUTF8_Blended(font, text, color);
 
         if (surface == nullptr) {
@@ -170,6 +171,7 @@ namespace Tetris::SDL_Version {
         font = TTF_OpenFont("src/Tetris/assets/arial.ttf",24);
         if (font == nullptr){
             SDL_Log("Load font file fail !");
+            exit(1);
         }
 
         return true;

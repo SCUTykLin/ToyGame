@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 project(opengl)
-add_library(opengl)
+add_library(opengl STATIC)
 
 find_package(OpenGL REQUIRED)
 

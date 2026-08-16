@@ -70,7 +70,7 @@ namespace CLOX::Vm{
     }
 
     InterpretResult interpret(const char* source) {
-        compile(source);
+        Compiler::compile(source);
         return INTERPRET_OK;
     }
 

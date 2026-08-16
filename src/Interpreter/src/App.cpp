@@ -3,9 +3,10 @@
 //
 
 #include "App.h"
-#include "chunk.h"
-#include "debug.h"
 #include "vm.h"
+#include "file.h"
+#include <format>
+#include <iostream>
 
 namespace CLOX {
 
@@ -23,22 +24,12 @@ namespace CLOX {
         }
     }
 
-
-
     void App::run() {
         Vm::initVM();
-        // 替换部分开始
-        if (argc == 1) {
-            repl();
-        } else if (argc == 2) {
-            runFile(argv[1]);
-        } else {
-            fprintf(stderr, "Usage: clox [path]\n");
-            exit(64);
-        }
+        const char* filePath = "test.txt";
+        std::cout << std::format("Usage: clox [path]: {}", filePath) << std::endl;
+        File::runFile(filePath);
 
         Vm::freeVM();
-        // 替换部分结束
-        return 0;
     }
 }

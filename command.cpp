@@ -16,6 +16,7 @@
 #include "src/ConFPS/include/App.h"
 #include "src/Interpreter/include/App.h"
 #include "src/Ghost/include/App.h"
+#include "src/UpFPS/include/App.h"
 
 std::unordered_map<std::string, std::function<void()>> commands;
 std::once_flag flag;
@@ -60,6 +61,11 @@ void ConFPS_Command::run_command_Impl() {
     ConFPS::App{}.run();
 }
 
+void UpFPS_Command::run_command_Impl() {
+    UpFPS::App{}.run();
+}
+
+
 void CloxInterpreter_Command::run_command_Impl() {
     CLOX::App{}.run();
 }
@@ -80,6 +86,7 @@ void create_commands_set() {
         add_command(ImGUIDesign_001_Command{}, "ImGUIDesign_001");
         add_command(Tetris_Command{}, "Tetris");
         add_command(ConFPS_Command{}, "ConFPS");
+        add_command(UpFPS_Command{}, "UpFPS");
         add_command(CloxInterpreter_Command{}, "CloxInterpreter");
         add_command(Ghost_Command{}, "Ghost");
     });

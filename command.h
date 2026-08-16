@@ -72,6 +72,11 @@ public:
     void run_command_Impl();
 };
 
+class UpFPS_Command : public Base_Command<UpFPS_Command> {
+public:
+    void run_command_Impl();
+};
+
 class CloxInterpreter_Command : public Base_Command<CloxInterpreter_Command> {
 public:
     void run_command_Impl();

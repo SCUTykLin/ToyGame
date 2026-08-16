@@ -22,6 +22,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/Tetris)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/ConFPS)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Interpreter)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Ghost)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/UpFPS)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -31,6 +32,15 @@ add_executable(${PROJECT_NAME} ${EXECUTABLE})
 
 # SDL2, SDL2_image must build upon SDL2::SDL2-static, no SDL2::SDL2
 # =================== link SDL2, SDL2_image and raylib ===================
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(SDL_SHARED OFF CACHE BOOL "" FORCE)
+set(SDL_STATIC ON CACHE BOOL "" FORCE)
+set(SDL2_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
+set(SDL2IMAGE_INSTALL OFF CACHE BOOL "" FORCE)
+set(SDL2IMAGE_SAMPLES OFF CACHE BOOL "" FORCE)
+set(SDL2TTF_INSTALL OFF CACHE BOOL "" FORCE)
+set(SDL2TTF_SAMPLES OFF CACHE BOOL "" FORCE)
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL-release-2.32.6 EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL_ttf-release-2.20.0 EXCLUDE_FROM_ALL)
@@ -75,12 +85,10 @@ target_compile_definitions(imguiedit PRIVATE UIPlugin) # dll是否需要import
 
 target_link_libraries(${PROJECT_NAME} PRIVATE imguiedit)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui_001)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE tetris)
 target_link_libraries(${PROJECT_NAME} PRIVATE confps)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE cloxInterpreter)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE Ghost)
+target_link_libraries(${PROJECT_NAME} PRIVATE upfps)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)
