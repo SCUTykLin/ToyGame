@@ -418,7 +418,7 @@ public:
             return Error(L"Screen Width / Font Width Too Big");
 
         // Set Physical Console Window Size
-        m_rectWindow = { 0, 0, (short)m_nScreenWidth - 1, (short)m_nScreenHeight - 1 };
+        m_rectWindow = { 0, 0, (short)(m_nScreenWidth - 1), (short)(m_nScreenHeight - 1) };
         if (!SetConsoleWindowInfo(m_hConsole, TRUE, &m_rectWindow))
             return Error(L"SetConsoleWindowInfo");
 
@@ -427,7 +427,7 @@ public:
             return Error(L"SetConsoleMode");
 
         // Allocate memory for screen buffer
-        m_bufScreen = new CHAR_INFO[m_nScreenWidth*m_nScreenHeight];
+        m_bufScreen = new CHAR_INFO[m_nScreenWidth * m_nScreenHeight];
         memset(m_bufScreen, 0, sizeof(CHAR_INFO) * m_nScreenWidth * m_nScreenHeight);
 
         SetConsoleCtrlHandler((PHANDLER_ROUTINE)CloseHandler, TRUE);
@@ -1411,10 +1411,5 @@ protected:
     static std::condition_variable m_cvGameFinished;
     static std::mutex m_muxGame;
 };
-
-// Define our static variables
-std::atomic<bool> olcConsoleGameEngine::m_bAtomActive(false);
-std::condition_variable olcConsoleGameEngine::m_cvGameFinished;
-std::mutex olcConsoleGameEngine::m_muxGame;
 
 #endif //TOYPROJECTS_OLCCONSOLEGAMEENGINE_H

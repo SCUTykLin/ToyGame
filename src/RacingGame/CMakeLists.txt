@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(racing)
+add_library(racing STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(racing PRIVATE ${SOURCE})
+target_include_directories(racing PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(racing PRIVATE olcEngin)
+target_compile_definitions(racing PRIVATE _UNICODE UNICODE)

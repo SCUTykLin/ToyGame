@@ -7,106 +7,140 @@
 #include <cstdio>
 #include <Windows.h>
 
-int nScreenWidth = 120;			// Console Screen Size X (columns)
-int nScreenHeight = 40;			// Console Screen Size Y (rows)
-int nMapWidth = 16;				// World Dimensions
-int nMapHeight = 16;
+#include "olcConsoleGameEngine.h"
 
-float fPlayerX = 14.7f;			// Player Start Position
-float fPlayerY = 5.09f;
-float fPlayerA = 0.0f;			// Player Start Rotation
-float fFOV = 3.14159f / 4.0f;	// Field of View
-float fDepth = 16.0f;			// Maximum rendering distance
-float fSpeed = 5.0f;			// Walking Speed
-
+template <typename T>
+static T pi = 3.1415926535;
 namespace UpFPS {
-    void gameLoop(){
-    // Create Screen Buffer
-    wchar_t *screen = new wchar_t[nScreenWidth*nScreenHeight];
-    HANDLE hConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
-    SetConsoleActiveScreenBuffer(hConsole);
-    DWORD dwBytesWritten = 0;
 
-    // Create Map of world space # = wall block, . = space
-    std::wstring map;
-    map += L"#########.......";
-    map += L"#...............";
-    map += L"#.......########";
-    map += L"#..............#";
-    map += L"#......##......#";
-    map += L"#......##......#";
-    map += L"#..............#";
-    map += L"###............#";
-    map += L"##.............#";
-    map += L"#......####..###";
-    map += L"#......#.......#";
-    map += L"#......#.......#";
-    map += L"#..............#";
-    map += L"#......#########";
-    map += L"#..............#";
-    map += L"################";
+class OneLoneCoder_UltimateFPS : public olcConsoleGameEngine{
+public:
+    OneLoneCoder_UltimateFPS(){
+        m_sAppName = L"Ultimate First Person Shooter";
+    }
+    virtual bool OnUserCreate(){
+        map += L"#########.......#########.......";
+        map += L"#...............#...............";
+        map += L"#.......#########.......########";
+        map += L"#..............##..............#";
+        map += L"#......##......##......##......#";
+        map += L"#......##..............##......#";
+        map += L"#..............##..............#";
+        map += L"###............####............#";
+        map += L"##.............###.............#";
+        map += L"#............####............###";
+        map += L"#..............................#";
+        map += L"#..............##..............#";
+        map += L"#..............##..............#";
+        map += L"#...........#####...........####";
+        map += L"#..............................#";
+        map += L"###..####....########....#######";
+        map += L"####.####.......######..........";
+        map += L"#...............#...............";
+        map += L"#.......#########.......##..####";
+        map += L"#..............##..............#";
+        map += L"#......##......##.......#......#";
+        map += L"#......##......##......##......#";
+        map += L"#..............##..............#";
+        map += L"###............####............#";
+        map += L"##.............###.............#";
+        map += L"#............####............###";
+        map += L"#..............................#";
+        map += L"#..............................#";
+        map += L"#..............##..............#";
+        map += L"#...........##..............####";
+        map += L"#..............##..............#";
+        map += L"################################";
 
-    auto tp1 = std::chrono::system_clock::now();
-    auto tp2 = std::chrono::system_clock::now();
+        spriteWall = new olcSprite(spriteWall_Path);
+        spriteLamp = new olcSprite(spriteLamp_Path);
+        spriteFireBall = new olcSprite(spriteFireBall_Path);
 
-    while (1)
-    {
-        // We'll need time differential per frame to calculate modification
-        // to movement speeds, to ensure consistant movement, as ray-tracing
-        // is non-deterministic
-        tp2 = std::chrono::system_clock::now();
-        std::chrono::duration<float> elapsedTime = tp2 - tp1;
-        tp1 = tp2;
-        float fElapsedTime = elapsedTime.count();
+        fDepthBuffer = new float[ScreenWidth()];
 
+        listObjects = {
+                {8.5f, 8.5f, 0.0f, 0.0f, false, spriteLamp},
+                {7.5f, 7.5f, 0.0f, 0.0f, false, spriteLamp},
+                {10.5f, 3.5f, 0.0f, 0.0f, false, spriteLamp},
+        };
 
+        return true;
+    }
+
+    virtual bool OnUserUpdate(float fElapsedTime) {
         // Handle CCW Rotation
-        if (GetAsyncKeyState((unsigned short)'A') & 0x8000)
+        if (m_keys[L'A'].bHeld)
             fPlayerA -= (fSpeed * 0.75f) * fElapsedTime;
 
         // Handle CW Rotation
-        if (GetAsyncKeyState((unsigned short)'D') & 0x8000)
+        if (m_keys[L'D'].bHeld)
             fPlayerA += (fSpeed * 0.75f) * fElapsedTime;
 
         // Handle Forwards movement & collision
-        if (GetAsyncKeyState((unsigned short)'W') & 0x8000)
-        {
+        if (m_keys[L'W'].bHeld){
             fPlayerX += sinf(fPlayerA) * fSpeed * fElapsedTime;;
             fPlayerY += cosf(fPlayerA) * fSpeed * fElapsedTime;;
-            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#')
-            {
+            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#'){
                 fPlayerX -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
                 fPlayerY -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
             }
         }
 
         // Handle backwards movement & collision
-        if (GetAsyncKeyState((unsigned short)'S') & 0x8000)
-        {
+        if (m_keys[L'S'].bHeld){
             fPlayerX -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
             fPlayerY -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
-            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#')
-            {
+            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#'){
                 fPlayerX += sinf(fPlayerA) * fSpeed * fElapsedTime;;
                 fPlayerY += cosf(fPlayerA) * fSpeed * fElapsedTime;;
             }
         }
 
-        for (int x = 0; x < nScreenWidth; x++)
+        if (m_keys[L'E'].bHeld){
+            fPlayerX += cosf(fPlayerA) * fSpeed * fElapsedTime;;
+            fPlayerY -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
+            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#'){
+                fPlayerX -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
+                fPlayerY += sinf(fPlayerA) * fSpeed * fElapsedTime;;
+            }
+        }
+
+        if (m_keys[L'Q'].bHeld){
+            fPlayerX -= cosf(fPlayerA) * fSpeed * fElapsedTime;;
+            fPlayerY += sinf(fPlayerA) * fSpeed * fElapsedTime;;
+            if (map.c_str()[(int)fPlayerX * nMapWidth + (int)fPlayerY] == '#'){
+                fPlayerX += cosf(fPlayerA) * fSpeed * fElapsedTime;;
+                fPlayerY -= sinf(fPlayerA) * fSpeed * fElapsedTime;;
+            }
+        }
+
+        if (m_keys[VK_SPACE].bReleased){
+            sObject o;
+            o.x = fPlayerX;
+            o.y = fPlayerY;
+            float fNoise = (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.1f;
+            o.vx = sinf(fPlayerA + fNoise) * 8.0f;
+            o.vy = cosf(fPlayerA + fNoise) * 8.0f;
+            o.sprite = spriteFireBall;
+            o.bRemove = false;
+            listObjects.push_back(o);
+        }
+
+        for (int x = 0; x < ScreenWidth(); x++)
         {
             // For each column, calculate the projected ray angle into world space
-            float fRayAngle = (fPlayerA - fFOV/2.0f) + ((float)x / (float)nScreenWidth) * fFOV;
+            float fRayAngle = (fPlayerA - fFOV/2.0f) + ((float)x / (float)ScreenWidth()) * fFOV;
 
             // Find distance to wall
-            float fStepSize = 0.1f;		  // Increment size for ray casting, decrease to increase
+            float fStepSize = 0.01f;		  // Increment size for ray casting, decrease to increase
             float fDistanceToWall = 0.0f; //                                      resolution
 
             bool bHitWall = false;		// Set when ray hits wall block
-            bool bBoundary = false;		// Set when ray hits boundary between two wall blocks
 
             float fEyeX = sinf(fRayAngle); // Unit vector for ray in player space
             float fEyeY = cosf(fRayAngle);
 
+            float fSampleX = 0.0f;
             // Incrementally cast ray from player, along ray angle, testing for
             // intersection with a block
             while (!bHitWall && fDistanceToWall < fDepth)
@@ -116,104 +150,161 @@ namespace UpFPS {
                 int nTestY = (int)(fPlayerY + fEyeY * fDistanceToWall);
 
                 // Test if ray is out of bounds
-                if (nTestX < 0 || nTestX >= nMapWidth || nTestY < 0 || nTestY >= nMapHeight)
-                {
+                if (nTestX < 0 || nTestX >= nMapWidth || nTestY < 0 || nTestY >= nMapHeight){
                     bHitWall = true;			// Just set distance to maximum depth
                     fDistanceToWall = fDepth;
                 }
-                else
-                {
+                else{
                     // Ray is inbounds so test to see if the ray cell is a wall block
                     if (map.c_str()[nTestX * nMapWidth + nTestY] == '#')
                     {
                         // Ray has hit wall
                         bHitWall = true;
 
-                        // To highlight tile boundaries, cast a ray from each corner
-                        // of the tile, to the player. The more coincident this ray
-                        // is to the rendering ray, the closer we are to a tile
-                        // boundary, which we'll shade to add detail to the walls
-                        std::vector<std::pair<float, float>> p;
+                        float fBlockMidX = (float)nTestX + 0.5f;
+                        float fBlockMidY = (float)nTestY + 0.5f;
 
-                        // Test each corner of hit tile, storing the distance from
-                        // the player, and the calculated dot product of the two rays
-                        for (int tx = 0; tx < 2; tx++)
-                            for (int ty = 0; ty < 2; ty++)
-                            {
-                                // Angle of corner to eye
-                                float vy = (float)nTestY + ty - fPlayerY;
-                                float vx = (float)nTestX + tx - fPlayerX;
-                                float d = sqrt(vx*vx + vy*vy);
-                                float dot = (fEyeX * vx / d) + (fEyeY * vy / d);
-                                p.push_back(std::make_pair(d, dot));
-                            }
+                        float fTestPointX = fPlayerX + fEyeX * fDistanceToWall;
+                        float fTestPointY = fPlayerY + fEyeY * fDistanceToWall;
 
-                        // Sort Pairs from closest to farthest
-                        sort(p.begin(), p.end(), [](const std::pair<float, float> &left, const std::pair<float, float> &right) {return left.first < right.first; });
-
-                        // First two/three are closest (we will never see all four)
-                        float fBound = 0.01;
-                        if (acos(p.at(0).second) < fBound) bBoundary = true;
-                        if (acos(p.at(1).second) < fBound) bBoundary = true;
-                        if (acos(p.at(2).second) < fBound) bBoundary = true;
+                        float fTestAngle = atan2f((fTestPointY - fBlockMidY), (fTestPointX - fBlockMidX));
+                        if (fTestAngle >= -pi<float> * 0.25f && fTestAngle < pi<float> * 0.25f){
+                            fSampleX = fTestPointY - (float)nTestY;
+                        }
+                        if (fTestAngle >= pi<float> * 0.25f && fTestAngle < pi<float> * 0.75f){
+                            fSampleX = fTestPointX - (float)nTestX;
+                        }
+                        if (fTestAngle < -pi<float> * 0.25f && fTestAngle >= -pi<float> * 0.75f){
+                            fSampleX = fTestPointX - (float)nTestX;
+                        }
+                        if (fTestAngle >= pi<float> * 0.75f || fTestAngle < -pi<float> * 0.75f){
+                            fSampleX = fTestPointY - (float)nTestY;
+                        }
                     }
                 }
             }
 
             // Calculate distance to ceiling and floor
-            int nCeiling = (float)(nScreenHeight/2.0) - nScreenHeight / ((float)fDistanceToWall);
-            int nFloor = nScreenHeight - nCeiling;
+            int nCeiling = (float)(ScreenHeight() / 2.0) - ScreenHeight() / ((float)fDistanceToWall);
+            int nFloor = ScreenHeight() - nCeiling;
 
-            // Shader walls based on distance
-            short nShade = ' ';
-            if (fDistanceToWall <= fDepth / 4.0f)			nShade = 0x2588;	// Very close
-            else if (fDistanceToWall < fDepth / 3.0f)		nShade = 0x2593;
-            else if (fDistanceToWall < fDepth / 2.0f)		nShade = 0x2592;
-            else if (fDistanceToWall < fDepth)				nShade = 0x2591;
-            else											nShade = ' ';		// Too far away
+            fDepthBuffer[x] = fDistanceToWall;
 
-            if (bBoundary)		nShade = ' '; // Black it out
-
-            for (int y = 0; y < nScreenHeight; y++)
-            {
+            for (int y = 0; y < ScreenHeight(); y++){
                 // Each Row
                 if(y <= nCeiling)
-                    screen[y*nScreenWidth + x] = ' ';
-                else if(y > nCeiling && y <= nFloor)
-                    screen[y*nScreenWidth + x] = nShade;
-                else // Floor
-                {
-                    // Shade floor based on distance
-                    float b = 1.0f - (((float)y -nScreenHeight/2.0f) / ((float)nScreenHeight / 2.0f));
-                    if (b < 0.25)		nShade = '#';
-                    else if (b < 0.5)	nShade = 'x';
-                    else if (b < 0.75)	nShade = '.';
-                    else if (b < 0.9)	nShade = '-';
-                    else				nShade = ' ';
-                    screen[y*nScreenWidth + x] = nShade;
+                    Draw(x, y, L' ');
+                else if(y > nCeiling && y <= nFloor){
+                    if (fDistanceToWall < fDepth){
+                        float fSampleY = ((float)y - (float)nCeiling) / ((float)nFloor - (float)nCeiling);
+                        Draw(x, y, spriteWall->SampleGlyph(fSampleX, fSampleY), spriteWall->SampleColour(fSampleX, fSampleY));
+                    }else{
+                        Draw(x, y, PIXEL_SOLID, 0);
+                    }
+                }
+                else { // floor
+                    Draw(x, y, PIXEL_SOLID, FG_DARK_GREEN);
                 }
             }
         }
 
-        // Display Stats
-        int len = swprintf_s(screen, 40, L"X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", fPlayerX, fPlayerY, fPlayerA, 1.0f/fElapsedTime);
+        for (auto& object : listObjects){
+            object.x += object.vx * fElapsedTime;
+            object.y += object.vy * fElapsedTime;
 
-        if (len >= 0){
-            std::fill(screen + len, screen + nScreenWidth, L' ');
+            if (map.c_str()[(int)object.x * nMapWidth + (int)object.y] == '#')
+                object.bRemove = true;
+
+            float fVecX = object.x - fPlayerX;
+            float fVecY = object.y - fPlayerY;
+            float fDistanceFromPlayer = sqrtf(fVecX * fVecX + fVecY * fVecY);
+
+            float fEyeX = sinf(fPlayerA);
+            float fEyeY = cosf(fPlayerA);
+            float fObjectAngle = atan2f(fEyeY, fEyeX) - atan2f(fVecY, fVecX);
+            if (fObjectAngle < -pi<float>){
+                fObjectAngle += 2.0f * pi<float>;
+            }
+            if (fObjectAngle > pi<float>){
+                fObjectAngle -= 2.0f * pi<float>;
+            }
+            bool bInPlayerFOV = fabs(fObjectAngle) < fFOV / 2.0f;
+
+            if (bInPlayerFOV && fDistanceFromPlayer >= 0.5f && fDistanceFromPlayer < fDepth){
+                float fObjectCeiling = (float)(ScreenHeight() / 2.0f) - ScreenHeight() / (float)fDistanceFromPlayer;
+                float fObjectFloor = ScreenHeight() - fObjectCeiling;
+                float fObjectHeight = fObjectFloor - fObjectCeiling;
+                float fObjectAspectRatio = (float)object.sprite->nHeight / (float)object.sprite->nWidth;
+                float fObjectWidth = fObjectHeight / fObjectAspectRatio;
+                float fMiddleOfObject = (0.5f * (fObjectAngle / (fFOV / 2.0f)) + 0.5f) * (float)ScreenWidth();
+
+                for (float lx = 0; lx < fObjectWidth; ++lx){
+                    for (float ly = 0; ly < fObjectHeight; ++ly){
+                        float fSampleX = lx / fObjectWidth;
+                        float fSampleY = ly / fObjectHeight;
+                        wchar_t c = object.sprite->SampleGlyph(fSampleX, fSampleY);
+                        int nObjectColumn = (int)(fMiddleOfObject + lx - (fObjectWidth / 2.0f));
+                        if (nObjectColumn >= 0 && nObjectColumn < ScreenWidth())
+                            if (c != L' ' && fDepthBuffer[nObjectColumn] >= fDistanceFromPlayer){
+                                Draw(nObjectColumn, fObjectCeiling + ly, c,
+                                     object.sprite->SampleColour(fSampleX, fSampleY));
+                                fDepthBuffer[nObjectColumn] = fDistanceFromPlayer;
+                            }
+                    }
+                }
+            }
         }
+
+        listObjects.remove_if([](sObject& o){return o.bRemove;});
 
         // Display Map
         for (int nx = 0; nx < nMapWidth; nx++)
             for (int ny = 0; ny < nMapWidth; ny++)
             {
-                screen[(ny+1)*nScreenWidth + nx] = map[ny * nMapWidth + nx];
+                Draw(nx + 1, ny + 1, map[ny * nMapWidth + nx]);
             }
-        screen[((int)fPlayerX+1) * nScreenWidth + (int)fPlayerY] = 'P';
-
-        // Display Frame
-        screen[nScreenWidth * nScreenHeight - 1] = '\0';
-        WriteConsoleOutputCharacterW(hConsole, screen, nScreenWidth * nScreenHeight, { 0,0 }, &dwBytesWritten);
+        Draw(1 + (int)fPlayerY, 1 + (int)fPlayerX, L'P');
+        return true;
     }
-}
 
+private:
+    std::wstring map;
+
+    int nMapWidth = 32;				// World Dimensions
+    int nMapHeight = 32;
+
+    float fPlayerX = 14.7f;			// Player Start Position
+    float fPlayerY = 5.09f;
+    float fPlayerA = 0.0f;			// Player Start Rotation
+    float fFOV = 3.14159f / 4.0f;	// Field of View
+    float fDepth = 16.0f;			// Maximum rendering distance
+    float fSpeed = 2.5f;			// Walking Speed
+
+    olcSprite	*spriteWall;
+    olcSprite	*spriteLamp;
+    olcSprite	*spriteFireBall;
+
+    float* fDepthBuffer;
+
+    const wchar_t* spriteWall_Path = L"src/UpFPS/assets/fps_wall1.spr";
+    const wchar_t* spriteLamp_Path = L"src/UpFPS/assets/fps_lamp1.spr";
+    const wchar_t* spriteFireBall_Path = L"src/UpFPS/assets/fps_fireball1.spr";
+
+    struct sObject{
+        float x;
+        float y;
+        float vx;
+        float vy;
+        bool bRemove;
+        olcSprite* sprite;
+    };
+
+    std::list<sObject> listObjects;
+};
+
+    void gameLoop() {
+        OneLoneCoder_UltimateFPS game;
+        game.ConstructConsole(320, 240, 4, 4);
+        game.Start();
+    }
 }

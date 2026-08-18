@@ -5,8 +5,10 @@
 #ifndef TOYPROJECTS_CLOX_COMPILER_H
 #define TOYPROJECTS_CLOX_COMPILER_H
 
+#include "chunk.h"
+
 namespace CLOX::Compiler{
-    void compile(const char* source);
+    bool compile(const char* source, Chunk::Chunk* chunk);
 }
 
 #endif //TOYPROJECTS_CLOX_COMPILER_H

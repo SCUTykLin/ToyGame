@@ -21,8 +21,9 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Tetris)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/ConFPS)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Interpreter)
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/Ghost)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/UpFPS)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/RacingGame)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/olcEngin)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -88,7 +89,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE imgui_001)
 target_link_libraries(${PROJECT_NAME} PRIVATE tetris)
 target_link_libraries(${PROJECT_NAME} PRIVATE confps)
 target_link_libraries(${PROJECT_NAME} PRIVATE cloxInterpreter)
-target_link_libraries(${PROJECT_NAME} PRIVATE Ghost)
 target_link_libraries(${PROJECT_NAME} PRIVATE upfps)
+target_link_libraries(${PROJECT_NAME} PRIVATE racing)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)

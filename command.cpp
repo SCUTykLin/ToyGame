@@ -15,8 +15,8 @@
 #include "src/Tetris/include/App.h"
 #include "src/ConFPS/include/App.h"
 #include "src/Interpreter/include/App.h"
-#include "src/Ghost/include/App.h"
 #include "src/UpFPS/include/App.h"
+#include "src/RacingGame/include/App.h"
 
 std::unordered_map<std::string, std::function<void()>> commands;
 std::once_flag flag;
@@ -70,8 +70,8 @@ void CloxInterpreter_Command::run_command_Impl() {
     CLOX::App{}.run();
 }
 
-void Ghost_Command::run_command_Impl() {
-    Ghost::App{}.run();
+void RacingGame_Command::run_command_Impl() {
+    Racing::App{}.run();
 }
 
 void create_commands_set() {
@@ -88,7 +88,7 @@ void create_commands_set() {
         add_command(ConFPS_Command{}, "ConFPS");
         add_command(UpFPS_Command{}, "UpFPS");
         add_command(CloxInterpreter_Command{}, "CloxInterpreter");
-        add_command(Ghost_Command{}, "Ghost");
+        add_command(RacingGame_Command{}, "RacingGame");
     });
 }
 

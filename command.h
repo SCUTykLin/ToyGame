@@ -82,7 +82,7 @@ public:
     void run_command_Impl();
 };
 
-class Ghost_Command : public Base_Command<Ghost_Command> {
+class RacingGame_Command : public Base_Command<RacingGame_Command> {
 public:
     void run_command_Impl();
 };
