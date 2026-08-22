@@ -9,6 +9,7 @@
 namespace Compiler {
     namespace IO {
         std::string tac_read_file(const char* filename);
+        void tac_write_file(const char* filename, char* outbuffer);
     }
 }
 

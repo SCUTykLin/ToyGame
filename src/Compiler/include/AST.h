@@ -11,7 +11,7 @@ namespace Compiler {
     namespace AST {
         typedef struct AST_STRUCT {
             enum ASTType{
-                AST_COMPOUND,
+                AST_COMPOUND = 0,
                 AST_FUNCTION,
                 AST_CALL,
                 AST_ASSIGNMENT,

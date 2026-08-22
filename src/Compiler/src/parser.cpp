@@ -118,7 +118,7 @@ namespace Compiler {
             }
         }else{
             if (parser->token->type == Token::TOKEN_STRUCT::TOKEN_LPAREN){
-                ast->type == AST::AST_STRUCT::AST_CALL;
+                ast->type = AST::AST_STRUCT::AST_CALL; // 函数参数列表
                 ast->value = parser_parse_list(parser);
             }
         }

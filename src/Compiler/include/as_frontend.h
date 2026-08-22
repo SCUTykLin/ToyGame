@@ -8,6 +8,7 @@
 #include "AST.h"
 
 namespace Compiler::code{
+    char* as_f_root(AST::AST_T* ast);
     char* as_f(AST::AST_T* ast);
 }
 

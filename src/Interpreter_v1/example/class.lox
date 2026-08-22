@@ -1,0 +1,30 @@
+class Breakfast {
+  cook() {
+    print "Eggs a-fryin'!";
+  }
+
+  serve(who) {
+    print "Enjoy your breakfast, " + who + ".";
+  }
+}
+
+breakfast.meat = "sausage";
+breakfast.bread = "sourdough";
+
+class Breakfast2 {
+  init(meat, bread) {
+    this.meat = meat;
+    this.bread = bread;
+  }
+
+  // ...
+}
+
+var baconAndToast = Breakfast2("bacon", "toast");
+baconAndToast.serve("Dear Reader");
+
+class Brunch < Breakfast {
+  drink() {
+    print "How about a Bloody Mary?";
+  }
+}

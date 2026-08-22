@@ -3,6 +3,8 @@
 //
 
 #include "../include/token.h"
+#include "../../Interpreter_v1/include/Token.h"
+
 #include <stdlib.h>
 
 namespace Compiler::Token{

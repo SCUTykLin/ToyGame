@@ -3,6 +3,8 @@
 //
 
 #include "../include/io.h"
+#include "../../Interpreter_v1/include/IO.h"
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -20,6 +22,14 @@ namespace Compiler {
 
             fp.close();
             return buffer;
+        }
+
+        void IO::tac_write_file(const char *filename, char *outbuffer) {
+            if (!filename || !outbuffer) return;
+            std::ofstream ofs(filename, std::ios::binary);
+            if (!ofs) return;
+
+            ofs.write(outbuffer, std::strlen(outbuffer));
         }
     }
 }
