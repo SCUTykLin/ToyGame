@@ -12,7 +12,7 @@ constexpr int ScreenHeight = 720;
 
 namespace Racing {
     void App::run(){
-        if (is_SDL) SDL_gameLoop(1024, 720);
+        if (is_SDL) SDL_gameLoop(2048, 1440);
         else gameLoop();
     }
 }

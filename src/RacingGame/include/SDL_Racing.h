@@ -7,30 +7,38 @@
 
 #include <SDL2/SDL.h>
 #include <array>
+#include <vector>
+#include <list>
+#include "car.h"
+#include <chrono>
+#include "env.h"
 
 namespace Racing{
 
     typedef struct gamePlayer{
-        void PlayerInit(){
+        float x = 0, y = 0;
+        float cell = 1.0f;
 
+        float fCarPos = 0.0f;
+        float fDistance = 0.0f;
+        float fCurvature = 0.0f;
+        float fSpeed = 0.0f;
+
+        float fTrackCurvature = 0.0f;
+        float fPlayerCurvature = 0.0f;
+        float fTrackDistance = 0.0f;
+        float fCurrentLapTime = 0.0f;
+
+        std::list<float> listLapTimes;
+        std::vector<std::pair<float, float>> vecTrack;
+        carGraph_t::CarStatus car_status;
+
+        void PlayerInit(){
+            x = 0.5f, y = 0.75f;
+            cell = 2.0f;
+            car_status = carGraph::NORMAL;
         }
     }gamePlayer_t;
-
-    typedef struct carGraph{
-
-        typedef enum {
-            NORMAL = 0,
-            RIGHT,
-            LEFT
-        }CarStatus;
-
-        std::array<SDL_Rect, 10> normal_graph;
-        std::array<SDL_Rect, 10> right_graph;
-        std::array<SDL_Rect, 10> left_graph;
-        carGraph();
-        std::array<SDL_Rect, 10>& getCarGraph(CarStatus s);
-
-    }carGraph_t;
 
     typedef struct gameScore{
         void ScoreInit(){
@@ -39,37 +47,39 @@ namespace Racing{
     }gameScore_t;
 
     typedef struct gameTime{
-        void TimeInit(){
+        using Clock = std::chrono::steady_clock;
+        Clock::time_point previousTime;
+        float deltaTime = 0.0f;
 
+        void Start(){
+            previousTime = Clock::now();
+            deltaTime = 0.0f;
+        }
+
+        void Tick() {
+            const auto currentTime = Clock::now();
+            deltaTime = std::chrono::duration<float>(currentTime - previousTime).count();
+            previousTime = currentTime;
         }
     }gameTime_t;
-
-    typedef struct gameEvent{
-        bool keys[3] = {false, false, false}; // 前，左，右
-        int wheel = 0;
-
-        void EventInit(){
-            std::fill(keys, keys + 3, false);
-            wheel = 0;
-        }
-    }gameEvent_t;
 
     typedef struct gameData{
         gamePlayer_t* player;
         gameScore_t* scorer;
         gameTime_t* timer;
-        gameEvent_t* evener;
+        carGraph_t* car;
+        Env_t* env;
 
         void DataInit(){
             player = new gamePlayer_t();
             scorer = new gameScore_t();
             timer = new gameTime_t();
-            evener = new gameEvent_t();
+            car = new carGraph_t();
+            env = new Env_t();
 
             player->PlayerInit();
             scorer->ScoreInit();
-            timer->TimeInit();
-            evener->EventInit();
+            timer->Start();
         }
     }gameData_t;
 
