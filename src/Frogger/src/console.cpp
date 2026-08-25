@@ -35,7 +35,8 @@ namespace Frogger::Console{
         virtual bool OnUserUpdate(float fElapsedTime){
             fTimeSinceStart += fElapsedTime;
             for (auto lane : vecLanes){
-
+                // Find offset
+                int nStartPos = (int)(fTimeSinceStart * lane.first) % 64;
             }
         }
     };
