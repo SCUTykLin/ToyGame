@@ -36,11 +36,6 @@ public:
     void run_command_Impl();
 };
 
-class Compiler_Command : public Base_Command<Compiler_Command> {
-public:
-    void run_command_Impl();
-};
-
 class Roguelike_Command : public Base_Command<Roguelike_Command> {
 public:
     void run_command_Impl();
@@ -83,6 +78,16 @@ public:
 };
 
 class RacingGame_Command : public Base_Command<RacingGame_Command> {
+public:
+    void run_command_Impl();
+};
+
+class Frogger_Command : public Base_Command<Frogger_Command> {
+public:
+    void run_command_Impl();
+};
+
+class TextEditor_Command : public Base_Command<TextEditor_Command> {
 public:
     void run_command_Impl();
 };

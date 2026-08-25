@@ -7,7 +7,6 @@
 #include "src/PongGame/pong_game.h"
 #include "src/BouncyBall/bouncy_ball.h"
 #include "src/FluidSimulation/App/FluidApplication.h"
-#include "src/Compiler/include/app.h"
 #include "src/Roguelike/App/app.h"
 #include "src/Madsycode/App/app.h"
 #include "src/SDL2RayTracer/include/App.h"
@@ -17,6 +16,8 @@
 #include "src/Interpreter_v1/include/App.h"
 #include "src/UpFPS/include/App.h"
 #include "src/RacingGame/include/App.h"
+#include "src/Frogger/include/App.h"
+#include "src/TextEditor/include/App.h"
 
 std::unordered_map<std::string, std::function<void()>> commands;
 std::once_flag flag;
@@ -31,10 +32,6 @@ void Bouncy_Command::run_command_Impl() {
 
 void Fluid_Command::run_command_Impl() {
     fluid::FluidApplication{}.run();
-}
-
-void Compiler_Command::run_command_Impl() {
-    Compiler::App{}.run_compile("src/Compiler/examples/main.tac");
 }
 
 void Roguelike_Command::run_command_Impl() {
@@ -65,7 +62,6 @@ void UpFPS_Command::run_command_Impl() {
     UpFPS::App{}.run();
 }
 
-
 void CloxInterpreter_Command::run_command_Impl() {
     CLOX_V1::App{}.run();
 }
@@ -74,12 +70,19 @@ void RacingGame_Command::run_command_Impl() {
     Racing::App{}.run();
 }
 
+void Frogger_Command::run_command_Impl() {
+    Frogger::App{}.run();
+}
+
+void TextEditor_Command::run_command_Impl() {
+    TextEditor::App{}.run();
+}
+
 void create_commands_set() {
     std::call_once(flag, []() {
         add_command(Pong_Command{}, "Pong");
         add_command(Bouncy_Command{}, "Bouncy");
         add_command(Fluid_Command{}, "Fluid");
-        add_command(Compiler_Command{}, "Compiler");
         add_command(Roguelike_Command{}, "Roguelike");
         add_command(SDL_Engine_Command{}, "2DEngine");
         add_command(SDLRayTracer_Command{}, "SDLRayTracer");
@@ -89,6 +92,8 @@ void create_commands_set() {
         add_command(UpFPS_Command{}, "UpFPS");
         add_command(CloxInterpreter_Command{}, "CloxInterpreter");
         add_command(RacingGame_Command{}, "RacingGame");
+        add_command(Frogger_Command{}, "Frogger");
+        add_command(TextEditor_Command{}, "TextEditor");
     });
 }
 

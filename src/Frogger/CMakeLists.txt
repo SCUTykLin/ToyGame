@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(Frogger)
+add_library(Frogger STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(Frogger PRIVATE ${SOURCE})
+target_include_directories(Frogger PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(Frogger PRIVATE olcEngin)
+target_compile_definitions(Frogger PRIVATE _UNICODE UNICODE)

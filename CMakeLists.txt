@@ -12,7 +12,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 # ==================> Projects file list <=====================
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/BouncyBall)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/PongGame)
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/Compiler)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/FluidSimulation)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Roguelike)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Madsycode)
@@ -24,6 +23,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/Interpreter_v1)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/UpFPS)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/RacingGame)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/olcEngin)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/Frogger)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/TextEditor)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -69,8 +70,6 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/tinyxml)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE bouncyball)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE compiler)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE fluidsimulation)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE madsycode)
@@ -91,5 +90,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE confps)
 target_link_libraries(${PROJECT_NAME} PRIVATE Interpreter_v1)
 target_link_libraries(${PROJECT_NAME} PRIVATE upfps)
 target_link_libraries(${PROJECT_NAME} PRIVATE racing)
+target_link_libraries(${PROJECT_NAME} PRIVATE Frogger)
+target_link_libraries(${PROJECT_NAME} PRIVATE texteditor)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)
