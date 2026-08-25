@@ -25,13 +25,18 @@ namespace Frogger::Console{
                 {2.0f,  L"..ty.....ty.......ty.....ty......ty..ty.ty.......ty....ty......."},
                 {0.0f,  L"pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"}
         };
+        float fTimeSinceStart = 0.0f;
+        int nCellSize = 8;
     protected:
         virtual bool OnUserCreate(){
             return true;
         }
 
         virtual bool OnUserUpdate(float fElapsedTime){
-            return true;
+            fTimeSinceStart += fElapsedTime;
+            for (auto lane : vecLanes){
+
+            }
         }
     };
 
