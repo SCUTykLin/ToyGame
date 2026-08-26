@@ -34,16 +34,25 @@ namespace Frogger::Console{
 
         virtual bool OnUserUpdate(float fElapsedTime){
             fTimeSinceStart += fElapsedTime;
+            int x = -1, y = 0;
             for (auto lane : vecLanes){
                 // Find offset
                 int nStartPos = (int)(fTimeSinceStart * lane.first) % 64;
+                int nCellOffset = (int)((float)nCellSize * fTimeSinceStart * lane.first) % nCellSize; // 在格子内移动了多少
+                for (int i = 0; i < ScreenWidth() / nCellSize + 2; ++i){
+                    wchar_t graphic = lane.second[(nStartPos + i + 64) % 64];
+                    Fill((x + i) * nCellSize - nCellOffset, y * nCellSize,
+                         (x + i + 1) * nCellSize - nCellOffset, (y + 1) * nCellSize, graphic);
+                }
+                y++;
             }
+            return true;
         }
     };
 
     void run_console_game() {
         OneLoneCoder_Frogger game;
-        game.ConstructConsole(128, 80, 12, 12);
+        game.ConstructConsole(132, 96, 8, 8);
         game.Start();
     }
 }
