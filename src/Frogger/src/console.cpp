@@ -27,6 +27,9 @@ namespace Frogger::Console{
         };
         float fTimeSinceStart = 0.0f;
         int nCellSize = 8;
+
+        olcSprite* spriteCar2 = nullptr;
+
     protected:
         virtual bool OnUserCreate(){
             return true;
