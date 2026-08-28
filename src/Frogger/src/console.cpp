@@ -28,10 +28,29 @@ namespace Frogger::Console{
         float fTimeSinceStart = 0.0f;
         int nCellSize = 8;
 
-        olcSprite* spriteCar2 = nullptr;
+        bool *bufDanger = nullptr;
+
+        olcSprite *spriteBus = nullptr;
+        olcSprite *spriteLog = nullptr;
+        olcSprite *spriteWater = nullptr;
+        olcSprite *spriteFrog = nullptr;
+        olcSprite *spritePavement = nullptr;
+        olcSprite *spriteCar1 = nullptr;
+        olcSprite *spriteCar2 = nullptr;
+        olcSprite *spriteWall = nullptr;
+        olcSprite *spriteHome = nullptr;
 
     protected:
         virtual bool OnUserCreate(){
+            spriteBus = new olcSprite(L"src/Frogger/assets/bus.spr");
+            spriteLog = new olcSprite(L"src/Frogger/assets/log.spr");
+            spriteWater = new olcSprite(L"src/Frogger/assets/water.spr");
+            spriteFrog = new olcSprite(L"src/Frogger/assets/frog.spr");
+            spritePavement = new olcSprite(L"src/Frogger/assets/pavement.spr");
+            spriteWall = new olcSprite(L"src/Frogger/assets/wall.spr");
+            spriteHome = new olcSprite(L"src/Frogger/assets/home.spr");
+            spriteCar1 = new olcSprite(L"src/Frogger/assets/car1.spr");
+            spriteCar2 = new olcSprite(L"src/Frogger/assets/car2.spr");
             return true;
         }
 
@@ -44,8 +63,12 @@ namespace Frogger::Console{
                 int nCellOffset = (int)((float)nCellSize * fTimeSinceStart * lane.first) % nCellSize; // 在格子内移动了多少
                 for (int i = 0; i < ScreenWidth() / nCellSize + 2; ++i){
                     wchar_t graphic = lane.second[(nStartPos + i + 64) % 64];
-                    Fill((x + i) * nCellSize - nCellOffset, y * nCellSize,
-                         (x + i + 1) * nCellSize - nCellOffset, (y + 1) * nCellSize, graphic);
+                    // Fill((x + i) * nCellSize - nCellOffset, y * nCellSize,
+                    //      (x + i + 1) * nCellSize - nCellOffset, (y + 1) * nCellSize, graphic);
+                    switch (graphic) {
+                        case L'z': DrawPartialSprite((x + i) * nCellSize - nCellOffset, y * nCellSize, spriteCar2, 0, 0, 8, 8); break;
+                        case L'x': DrawPartialSprite((x + i) * nCellSize - nCellOffset, y * nCellSize, spriteCar2, 8, 0, 8, 8); break;
+                    }
                 }
                 y++;
             }
