@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.25)
+project(sdl2math)
+add_library(sdl2math STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+target_sources(sdl2math PRIVATE ${SOURCE})
+target_include_directories(sdl2math PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(sdl2math PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image)

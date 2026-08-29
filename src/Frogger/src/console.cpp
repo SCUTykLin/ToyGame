@@ -28,6 +28,9 @@ namespace Frogger::Console{
         float fTimeSinceStart = 0.0f;
         int nCellSize = 8;
 
+        float fFrogX = 8.0f;
+        float fFrogY = 9.0f;
+
         bool *bufDanger = nullptr;
 
         olcSprite *spriteBus = nullptr;
@@ -51,11 +54,35 @@ namespace Frogger::Console{
             spriteHome = new olcSprite(L"src/Frogger/assets/home.spr");
             spriteCar1 = new olcSprite(L"src/Frogger/assets/car1.spr");
             spriteCar2 = new olcSprite(L"src/Frogger/assets/car2.spr");
+
+            bufDanger = new bool[ScreenWidth() * ScreenHeight()];
+            memset(bufDanger, 0, ScreenWidth() * ScreenHeight() * sizeof(bool));
             return true;
         }
 
         virtual bool OnUserUpdate(float fElapsedTime){
             fTimeSinceStart += fElapsedTime;
+
+            if (m_keys[VK_UP].bReleased) fFrogY -= 1.0f;
+            if (m_keys[VK_DOWN].bReleased) fFrogY += 1.0f;
+            if (m_keys[VK_LEFT].bReleased) fFrogX -= 1.0f;
+            if (m_keys[VK_RIGHT].bReleased) fFrogX += 1.0f;
+
+            if (fFrogY <= 3) fFrogX -= fElapsedTime * vecLanes[(int)fFrogY].first;
+
+            bool tl = bufDanger[(int)(fFrogY*nCellSize + 1) * ScreenWidth() + (int)(fFrogX*nCellSize + 1)];
+            bool tr = bufDanger[(int)(fFrogY*nCellSize + 1) * ScreenWidth() + (int)((fFrogX+1)*nCellSize - 1)];
+            bool bl = bufDanger[(int)((fFrogY+1)*nCellSize - 1) * ScreenWidth() + (int)(fFrogX*nCellSize + 1)];
+            bool br = bufDanger[(int)((fFrogY+1)*nCellSize - 1) * ScreenWidth() + (int)((fFrogX+1)*nCellSize - 1)];
+
+            if (tl || tr || bl || br)
+            {
+                // Frogs been hit :-(
+                fFrogX = 8.0f;
+                fFrogY = 9.0f;
+            }
+
+
             int x = -1, y = 0;
             for (auto lane : vecLanes){
                 // Find offset
@@ -66,12 +93,38 @@ namespace Frogger::Console{
                     // Fill((x + i) * nCellSize - nCellOffset, y * nCellSize,
                     //      (x + i + 1) * nCellSize - nCellOffset, (y + 1) * nCellSize, graphic);
                     switch (graphic) {
-                        case L'z': DrawPartialSprite((x + i) * nCellSize - nCellOffset, y * nCellSize, spriteCar2, 0, 0, 8, 8); break;
-                        case L'x': DrawPartialSprite((x + i) * nCellSize - nCellOffset, y * nCellSize, spriteCar2, 8, 0, 8, 8); break;
+					    case L'a':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteBus, 0, 0, 8, 8);		break; // Bus 1
+					    case L's':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteBus, 8, 0, 8, 8);		break; // Bus 2
+					    case L'd':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteBus, 16, 0, 8, 8);	break; // Bus 3
+					    case L'f':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteBus, 24, 0, 8, 8);	break; // Bus 4
+
+					    case L'j':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteLog, 0, 0, 8, 8);		break; // Log Start
+					    case L'l':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteLog, 8, 0, 8, 8);		break; // Log Middle
+					    case L'k':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteLog, 16, 0, 8, 8);	break; // Log End
+
+					    case L'z': 	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteCar1, 0, 0, 8, 8);	break; // Car1 Back
+					    case L'x':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteCar1, 8, 0, 8, 8);	break; // Car1 Front
+
+					    case L't': 	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteCar2, 0, 0, 8, 8);	break; // Car2 Back
+					    case L'y': 	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteCar2, 8, 0, 8, 8);	break; // Car2 Front
+
+					    case L'w': 	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteWall, 0, 0, 8, 8);	break; // Wall
+					    case L'h':	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteHome, 0, 0, 8, 8);	break; // Home
+					    case L',': 	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spriteWater, 0, 0, 8, 8);	break; // Water
+					    case L'p': 	DrawPartialSprite((x + i)*nCellSize - nCellOffset, y*nCellSize, spritePavement, 0, 0, 8, 8); break; // Pavement
+					    case L'.': 	Fill((x + i)*nCellSize - nCellOffset, y*nCellSize, (x + i + 1)*nCellSize - nCellOffset, (y + 1)*nCellSize, L' ');	break; // Road
                     }
+
+                    for (int j = (x + i)*nCellSize - nCellOffset; j < (x + i + 1)*nCellSize - nCellOffset; j++)
+                        for (int k = y*nCellSize; k < (y + 1)*nCellSize; k++)
+                            if (j >= 0 && j < ScreenWidth() && k >= 0 && k < ScreenHeight())
+                                bufDanger[k*ScreenWidth() + j] = !(graphic == L'.' || graphic == L'j' || graphic == L'k' || graphic == L'l' || graphic == L'p' || graphic == L'h');
                 }
                 y++;
             }
+
+            DrawSprite(fFrogX * nCellSize, fFrogY * nCellSize, spriteFrog);
+
             return true;
         }
     };

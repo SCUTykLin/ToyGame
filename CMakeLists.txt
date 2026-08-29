@@ -15,7 +15,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/PongGame)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/FluidSimulation)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Roguelike)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Madsycode)
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/SDL2RayTracer)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/SDL2Math)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/UI)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Tetris)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/ConFPS)
@@ -25,6 +25,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/RacingGame)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/olcEngin)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Frogger)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/TextEditor)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/Asteroids)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -78,7 +79,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE pong)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE roguelike)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE sdl2raytracer)
+target_link_libraries(${PROJECT_NAME} PRIVATE sdl2math)
 
 target_link_libraries(imgui PRIVATE opengl SDL2::SDL2-static) # imgui的后端有SDL2
 target_compile_definitions(imguiedit PRIVATE UIPlugin) # dll是否需要import
@@ -92,5 +93,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE upfps)
 target_link_libraries(${PROJECT_NAME} PRIVATE racing)
 target_link_libraries(${PROJECT_NAME} PRIVATE Frogger)
 target_link_libraries(${PROJECT_NAME} PRIVATE texteditor)
+target_link_libraries(${PROJECT_NAME} PRIVATE asteroids)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)

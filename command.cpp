@@ -9,7 +9,7 @@
 #include "src/FluidSimulation/App/FluidApplication.h"
 #include "src/Roguelike/App/app.h"
 #include "src/Madsycode/App/app.h"
-#include "src/SDL2RayTracer/include/App.h"
+#include "src/SDL2Math/include/App.h"
 #include "src/UI/ImGUIDesign/ImGUI_001/include/App.h"
 #include "src/Tetris/include/App.h"
 #include "src/ConFPS/include/App.h"
@@ -43,7 +43,7 @@ void SDL_Engine_Command::run_command_Impl() {
 }
 
 void SDLRayTracer_Command::run_command_Impl() {
-    RayTracing::App{}.run();
+    Math::App{}.run();
 }
 
 void ImGUIDesign_001_Command::run_command_Impl() {
@@ -85,7 +85,7 @@ void create_commands_set() {
         add_command(Fluid_Command{}, "Fluid");
         add_command(Roguelike_Command{}, "Roguelike");
         add_command(SDL_Engine_Command{}, "2DEngine");
-        add_command(SDLRayTracer_Command{}, "SDLRayTracer");
+        add_command(SDLRayTracer_Command{}, "Math");
         add_command(ImGUIDesign_001_Command{}, "ImGUIDesign_001");
         add_command(Tetris_Command{}, "Tetris");
         add_command(ConFPS_Command{}, "ConFPS");
