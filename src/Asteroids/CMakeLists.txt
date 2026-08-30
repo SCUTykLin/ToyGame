@@ -4,5 +4,5 @@ add_library(asteroids STATIC)
 file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 target_sources(asteroids PRIVATE ${SOURCE})
 target_include_directories(asteroids PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-target_link_libraries(asteroids PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image)
+target_compile_definitions(asteroids PRIVATE _UNICODE UNICODE)
+target_link_libraries(asteroids PRIVATE SDL2::SDL2main SDL2::SDL2-static SDL2_image olcEngin)

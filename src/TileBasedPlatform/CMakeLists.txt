@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(tilebased)
+add_library(tilebased STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(tilebased PRIVATE ${SOURCE})
+target_include_directories(tilebased PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(tilebased PRIVATE olcEngin)
+target_compile_definitions(tilebased PRIVATE _UNICODE UNICODE)

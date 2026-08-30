@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(worms)
+add_library(worms STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(worms PRIVATE ${SOURCE})
+target_include_directories(worms PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(worms PRIVATE olcEngin)
+target_compile_definitions(worms PRIVATE _UNICODE UNICODE)

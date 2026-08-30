@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(rolegame)
+add_library(rolegame STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(rolegame PRIVATE ${SOURCE})
+target_include_directories(rolegame PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(rolegame PRIVATE olcEngin)
+target_compile_definitions(rolegame PRIVATE _UNICODE UNICODE)

@@ -26,6 +26,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/olcEngin)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Frogger)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/TextEditor)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Asteroids)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/Worms)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -94,5 +95,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE racing)
 target_link_libraries(${PROJECT_NAME} PRIVATE Frogger)
 target_link_libraries(${PROJECT_NAME} PRIVATE texteditor)
 target_link_libraries(${PROJECT_NAME} PRIVATE asteroids)
+target_link_libraries(${PROJECT_NAME} PRIVATE worms)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)
