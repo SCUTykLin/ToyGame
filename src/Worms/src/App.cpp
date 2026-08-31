@@ -3,9 +3,10 @@
 //
 
 #include "App.h"
+#include "gameLoop.h"
 
 namespace Worms {
     void App::run() {
-
+        gameLoop();
     }
 }

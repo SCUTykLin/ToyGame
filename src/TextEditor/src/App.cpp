@@ -7,7 +7,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include "vec.h"
-#define STB_IMAGE_IMPLEMENTATION
 #include <iterator>
 
 #include "stb_image.h"
@@ -85,7 +84,6 @@ namespace TextEditor {
             scc(SDL_RenderClear(renderer));
             SDL_RenderPresent(renderer);
         }
-
 
         SDL_Quit();
     }
