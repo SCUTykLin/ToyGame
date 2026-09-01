@@ -2,6 +2,7 @@
 // Created by YangKai.Lin on 2026/8/30.
 //
 #include <complex>
+#include <variant>
 
 #include "olcConsoleGameEngine.h"
 
@@ -20,12 +21,16 @@ namespace Worms {
         bool bStable = false;
         float fFriction = 0.8f;
 
+        int nBounceBeforeDeath = -1;
+        bool bDead = false;
+
         cPhysicsObject(float x = 0.0f, float y = 0.0f) {
             px = x;
             py = y;
         }
 
         virtual void Draw(olcConsoleGameEngine* engine, float fOffsetX, float fOffsetY) = 0;
+        virtual int BounceDeathAction() = 0;
     };
 
     class cDummy : public cPhysicsObject {
@@ -36,6 +41,10 @@ namespace Worms {
 
         void Draw(olcConsoleGameEngine *engine, float fOffsetX, float fOffsetY) override {
             engine->DrawWireFrameModel(vecModel, px - fOffsetX, py - fOffsetY, atan2f(vy, vx), radius, FG_WHITE);
+        }
+
+        int BounceDeathAction() override {
+            return 0;
         }
     private:
         static std::vector<std::pair<float, float>> vecModel;
@@ -65,7 +74,7 @@ namespace Worms {
             engine->DrawWireFrameModel(vecModel, px - fOffsetX, py - fOffsetY, atan2f(vy, vx), radius, FG_DARK_GREEN);
         }
 
-        virtual int BounceDeathAction(){
+        virtual int BounceDeathAction() override{
             return 0; // Nothing, just fade
         }
     private:
@@ -83,6 +92,77 @@ namespace Worms {
 
     std::vector<std::pair<float, float>> cDebris::vecModel = DefineDebris();
 
+    class cMissile : public cPhysicsObject{
+        public:
+	        cMissile(float x = 0.0f, float y = 0.0f, float _vx = 0.0f, float _vy = 0.0f) : cPhysicsObject(x, y){
+		        radius = 2.5f;
+		        fFriction = 0.5f;
+		        vx = _vx;
+		        vy = _vy;
+		        bDead = false;
+		        nBounceBeforeDeath = 1;
+	        }
+
+	        virtual void Draw(olcConsoleGameEngine *engine, float fOffsetX, float fOffsetY){
+		        engine->DrawWireFrameModel(vecModel, px - fOffsetX, py - fOffsetY, atan2f(vy, vx), radius, FG_YELLOW);
+	        }
+
+	        virtual int BounceDeathAction(){
+		        return 20;
+	        }
+
+    private:
+	    static std::vector<std::pair<float, float>> vecModel;
+    };
+
+    std::vector<std::pair<float, float>> DefineMissile(){
+        std::vector<std::pair<float, float>> vecModel;
+        vecModel.push_back({ 0.0f, 0.0f });
+        vecModel.push_back({ 1.0f, 1.0f });
+        vecModel.push_back({ 2.0f, 1.0f });
+        vecModel.push_back({ 2.5f, 0.0f });
+        vecModel.push_back({ 2.0f, -1.0f });
+        vecModel.push_back({ 1.0f, -1.0f });
+        vecModel.push_back({ 0.0f, 0.0f });
+        vecModel.push_back({ -1.0f, -1.0f });
+        vecModel.push_back({ -2.5f, -1.0f });
+        vecModel.push_back({ -2.0f, 0.0f });
+        vecModel.push_back({ -2.5f, 1.0f });
+        vecModel.push_back({ -1.0f, 1.0f });
+
+        for (auto &v : vecModel){
+            v.first /= 2.5f; v.second /= 2.5f;
+        }
+        return vecModel;
+    }
+    std::vector<std::pair<float, float>> cMissile::vecModel = DefineMissile();
+
+    class cWorm : public cPhysicsObject {
+    public:
+        cWorm(float x = 0.0f, float y = 0.0f) : cPhysicsObject(x, y) {
+            radius = 3.5f;
+            fFriction = 0.2f;
+            bDead = false;
+            nBounceBeforeDeath = -1;
+
+            if (sprWorm == nullptr) {
+                sprWorm = new olcSprite(L"src/Worms/assets/worms.spr");
+            }
+        }
+
+        virtual void Draw(olcConsoleGameEngine *engine, float fOffsetX, float fOffsetY){
+            engine->DrawPartialSprite(px - fOffsetX - radius, py - fOffsetY - radius, sprWorm, 0, 0, 8, 8);
+        }
+
+        virtual int BounceDeathAction(){
+            return 0; // Nothing
+        }
+    private:
+        static olcSprite *sprWorm;
+    };
+
+    olcSprite* cWorm::sprWorm = nullptr;
+
     class OneLoneCoder_Worms : public olcConsoleGameEngine {
     public:
         OneLoneCoder_Worms() {
@@ -96,7 +176,7 @@ namespace Worms {
         float fCameraPosX = 0.0f;
         float fCameraPosY = 0.0f;
 
-        std::list<cPhysicsObject*> listObjects;
+        std::list<std::unique_ptr<cPhysicsObject>> listObjects;
 
         bool OnUserCreate() override {
             map = new unsigned char[nMapWidth * nMapHeight];
@@ -110,9 +190,15 @@ namespace Worms {
                 CreateMap();
             }
 
-            if (m_mouse[2].bReleased) {
-                cDummy* p = new cDummy(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY);
-                listObjects.push_back(p);
+            if (m_mouse[0].bReleased) {
+                Boom(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY, 10.0f);
+            }
+
+            if (m_mouse[2].bReleased)
+                listObjects.push_back(std::make_unique<cWorm>(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY));
+
+            if (m_mouse[1].bReleased) {
+                listObjects.push_back(std::unique_ptr<cMissile>(new cMissile(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY)));
             }
 
             float fMapScrollSpeed = 400.0f;
@@ -126,7 +212,7 @@ namespace Worms {
             if (fCameraPosY < 0) fCameraPosY = 0;
             if (fCameraPosY >= nMapHeight - ScreenHeight()) fCameraPosY = nMapHeight - ScreenHeight();
 
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < 10; ++i) {
                 for (auto& p : listObjects) {
                     p->ay += 2.0f;
                     p->vx += p->ax * fElapsedTime;
@@ -167,6 +253,17 @@ namespace Worms {
                         float dot = p->vx * (fResponseX / fMagRespone) + p->vy * (fResponseY / fMagRespone);
                         p->vx = p->fFriction * (-2.0f * dot * (fResponseX / fMagRespone) + p->vx);
                         p->vy = p->fFriction * (-2.0f * dot * (fResponseY / fMagRespone) + p->vy);
+
+                        if (p->nBounceBeforeDeath > 0) {
+                            p->bDead = (--p->nBounceBeforeDeath == 0);
+
+                            if (p->bDead) {
+                                int nResponse = p->BounceDeathAction();
+                                if (nResponse > 0) {
+                                    Boom(p->px, p->py, nResponse);
+                                }
+                            }
+                        }
                     }else{
                         p->px = fPotentialX;
                         p->py = fPotentialY;
@@ -174,6 +271,9 @@ namespace Worms {
 
                     if (fMagVelocity < 0.1f) p->bStable = true;
                 }
+
+                listObjects.remove_if([](auto& c){return c->bDead;});
+            }
 
             for (int x = 0; x < ScreenWidth(); ++x) {
                 for (int y = 0; y < ScreenHeight(); ++y) {
@@ -195,9 +295,56 @@ namespace Worms {
             return true;
         }
 
+        void Boom(float fWorldX, float fWorldY, float fRadius) {
+            auto CircleBresenham = [&](int xc, int yc, int r)
+            {
+                // Taken from wikipedia
+                int x = 0;
+                int y = r;
+                int p = 3 - 2 * r;
+                if (!r) return;
+
+                auto drawline = [&](int sx, int ex, int ny)
+                {
+                    for (int i = sx; i < ex; i++)
+                        if (ny >= 0 && ny < nMapHeight && i >= 0 && i < nMapWidth)
+                            map[ny*nMapWidth + i] = 0;
+                };
+
+                while (y >= x)
+                {
+                    // Modified to draw scan-lines instead of edges
+                    drawline(xc - x, xc + x, yc - y);
+                    drawline(xc - y, xc + y, yc - x);
+                    drawline(xc - x, xc + x, yc + y);
+                    drawline(xc - y, xc + y, yc + x);
+                    if (p < 0) p += 4 * x++ + 6;
+                    else p += 4 * (x++ - y--) + 10;
+                }
+            };
+
+            CircleBresenham(fWorldX, fWorldY, fRadius);
+
+            for (auto& p : listObjects) {
+                float dx = p->px - fWorldX;
+                float dy = p->py - fWorldY;
+                float fDist = sqrtf(dx * dx + dy * dy);
+                if (fDist < 0.0001f) fDist = 0.0001f;
+                if (fDist < fRadius) {
+                    p->vx = (dx / fDist) * fRadius;
+                    p->vy = (dy / fDist) * fRadius;
+                    p->bStable = false;
+                }
+            }
+
+            for (int i = 0; i < (int)fRadius; ++i) {
+                listObjects.push_back(std::make_unique<cDebris>(fWorldX, fWorldY));
+            }
+        }
+
         void CreateMap() {
-            float* fSurface = new float[nMapWidth];
-            float* fNoiseSeed = new float[nMapWidth];
+            auto* fSurface = new float[nMapWidth];
+            auto* fNoiseSeed = new float[nMapWidth];
 
             for (int i = 0; i < nMapWidth; i++) {
                 fNoiseSeed[i] = (float)rand() / (float)RAND_MAX;
