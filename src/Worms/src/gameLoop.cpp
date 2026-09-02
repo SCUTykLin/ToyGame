@@ -146,7 +146,7 @@ namespace Worms {
             nBounceBeforeDeath = -1;
 
             if (sprWorm == nullptr) {
-                sprWorm = new olcSprite(L"src/Worms/assets/worms.spr");
+                sprWorm = new olcSprite(L"src/Worms/assets/worms1.spr");
             }
         }
 
@@ -157,6 +157,10 @@ namespace Worms {
         virtual int BounceDeathAction(){
             return 0; // Nothing
         }
+
+    public:
+        float fShootAngle = 0.0f;
+
     private:
         static olcSprite *sprWorm;
     };
@@ -173,10 +177,17 @@ namespace Worms {
         int nMapHeight = 512;
         unsigned char* map = nullptr;
 
-        float fCameraPosX = 0.0f;
+        float fCameraPosX = 0.0f; // 相机左上角
         float fCameraPosY = 0.0f;
+        float fCameraPosXTarget = 0.0f;
+        float fCameraPosYTarget = 0.0f;
 
         std::list<std::unique_ptr<cPhysicsObject>> listObjects;
+        cPhysicsObject* pObjectUnderControl = nullptr;
+        cPhysicsObject* pCameraTrackingObject = nullptr;
+        bool bEnergising = false;
+        float fEnergyLevel = 0.0f;
+        bool bFireWeapon = false;
 
         bool OnUserCreate() override {
             map = new unsigned char[nMapWidth * nMapHeight];
@@ -194,11 +205,15 @@ namespace Worms {
                 Boom(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY, 10.0f);
             }
 
-            if (m_mouse[2].bReleased)
-                listObjects.push_back(std::make_unique<cWorm>(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY));
+            if (m_mouse[2].bReleased) {
+                cWorm* worm = new cWorm(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY);
+                pObjectUnderControl = worm;
+                pCameraTrackingObject = worm;
+                listObjects.push_back(std::unique_ptr<cPhysicsObject>(worm));
+            }
 
             if (m_mouse[1].bReleased) {
-                listObjects.push_back(std::unique_ptr<cMissile>(new cMissile(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY)));
+                listObjects.push_back(std::make_unique<cMissile>(m_mousePosX + fCameraPosX, m_mousePosY + fCameraPosY));
             }
 
             float fMapScrollSpeed = 400.0f;
@@ -206,6 +221,77 @@ namespace Worms {
             if (m_mousePosX > ScreenWidth() - 5) fCameraPosX += fMapScrollSpeed * fElapsedTime;
             if (m_mousePosY < 5) fCameraPosY -= fMapScrollSpeed * fElapsedTime;
             if (m_mousePosY > ScreenHeight() - 5) fCameraPosY += fMapScrollSpeed * fElapsedTime;
+
+            if (pObjectUnderControl != nullptr) {
+                if (pObjectUnderControl->bStable) {
+                    if (m_keys[L'Z'].bPressed) {
+                        float a = ((cWorm*)pObjectUnderControl)->fShootAngle;
+                        pObjectUnderControl->vx = 4.0f * cosf(a);
+                        pObjectUnderControl->vy = 8.0f * sinf(a);
+                        pObjectUnderControl->bStable = false;
+                    }
+                    if (m_keys[L'A'].bPressed) {
+                        cWorm* worm = (cWorm *)pObjectUnderControl;
+                        worm->fShootAngle -= 1.0f * fElapsedTime;
+                        if (worm->fShootAngle < -3.14159f) worm->fShootAngle += 3.14159f * 2.0f;
+                    }
+                    if (m_keys[L'S'].bPressed) {
+                        cWorm* worm = (cWorm *)pObjectUnderControl;
+                        worm->fShootAngle += 1.0f * fElapsedTime;
+                        if (worm->fShootAngle > 3.14159f) worm->fShootAngle -= 3.14159f * 2.0f;
+                    }
+                    if (m_keys[VK_SPACE].bPressed) {
+                        bEnergising = true;
+                        bFireWeapon = false;
+                        fEnergyLevel = 0.0f;
+                    }
+                    if (m_keys[VK_SPACE].bHeld) {
+                        if (bEnergising) {
+                            fEnergyLevel += 0.75f * fElapsedTime;
+                            if (fEnergyLevel >= 1.0f) {
+                                fEnergyLevel = 0.0f;
+                            }
+                        }
+                    }
+
+                    if (m_keys[VK_SPACE].bReleased) {
+                        if (bEnergising) {
+                            bFireWeapon = true;
+                        }
+                        bEnergising = false;
+                    }
+                }
+
+                if (bFireWeapon) {
+                    cWorm* worm = (cWorm *)pObjectUnderControl;
+
+                    // Get Weapon Origin
+                    float ox = worm->px;
+                    float oy = worm->py;
+
+                    // Get Weapon Direction
+                    float dx = cosf(worm->fShootAngle);
+                    float dy = sinf(worm->fShootAngle);
+
+                    // Create Weapon Object
+                    cMissile *m = new cMissile(ox, oy, dx * 40.0f * fEnergyLevel, dy * 40.0f * fEnergyLevel);
+                    listObjects.push_back(std::unique_ptr<cMissile>(m));
+                    pCameraTrackingObject = m;
+
+                    bFireWeapon = false;
+                    fEnergyLevel = 0.0f;
+                    bEnergising = false;
+                }
+            }
+
+            if (pCameraTrackingObject != nullptr) {
+                // fCameraPosX = pCameraTrackingObject->px - ScreenWidth() / 2.0f; // (fCameraPosX, fCameraPosY)表示相机左上角
+                // fCameraPosY = pCameraTrackingObject->py - ScreenHeight() / 2.0f;
+                fCameraPosXTarget = pCameraTrackingObject->px - ScreenWidth() / 2.0f;
+                fCameraPosYTarget = pCameraTrackingObject->py - ScreenHeight() / 2.0f;
+                fCameraPosX += (fCameraPosXTarget - fCameraPosX) * 5.0f * fElapsedTime;
+                fCameraPosY += (fCameraPosYTarget - fCameraPosY) * 5.0f * fElapsedTime;
+            }
 
             if (fCameraPosX < 0) fCameraPosX = 0;
             if (fCameraPosX >= nMapWidth - ScreenWidth()) fCameraPosX = nMapWidth - ScreenWidth();
@@ -261,6 +347,7 @@ namespace Worms {
                                 int nResponse = p->BounceDeathAction();
                                 if (nResponse > 0) {
                                     Boom(p->px, p->py, nResponse);
+                                    pCameraTrackingObject = pObjectUnderControl;
                                 }
                             }
                         }
@@ -290,6 +377,25 @@ namespace Worms {
 
             for (auto &p : listObjects) {
                 p->Draw(this, fCameraPosX, fCameraPosY);
+                cWorm* worm = (cWorm*)pObjectUnderControl;
+                if (p.get() == worm) {
+                    float cx = worm->px + 8.0f * cosf(worm->fShootAngle) - fCameraPosX;
+                    float cy = worm->py + 8.0f * sinf(worm->fShootAngle) - fCameraPosY;
+
+                    // Draw "+" symbol
+                    Draw(cx, cy, PIXEL_SOLID, FG_BLACK);
+                    Draw(cx + 1, cy, PIXEL_SOLID, FG_BLACK);
+                    Draw(cx - 1, cy, PIXEL_SOLID, FG_BLACK);
+                    Draw(cx, cy + 1, PIXEL_SOLID, FG_BLACK);
+                    Draw(cx, cy - 1, PIXEL_SOLID, FG_BLACK);
+
+                    // Draws an Energy Bar, indicating how much energy should the weapon be
+                    // fired with
+                    for (int i = 0; i < 11 * fEnergyLevel; i++){
+                        Draw(worm->px - 5 + i - fCameraPosX, worm->py - 12 - fCameraPosY, PIXEL_SOLID, FG_GREEN);
+                        Draw(worm->px - 5 + i - fCameraPosX, worm->py - 11 - fCameraPosY, PIXEL_SOLID, FG_RED);
+                    }
+                }
             }
 
             return true;

@@ -6,5 +6,6 @@
 
 namespace Math {
     void App::run() {
-        }
+
+    }
 }
