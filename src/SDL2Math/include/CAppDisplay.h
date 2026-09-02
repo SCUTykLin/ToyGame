@@ -13,7 +13,7 @@ namespace Math::Display {
         CAppDisplay();
         int OneExecute();
         bool OnInit();
-        void OnEvent(SDL_Event &event);
+        void OnEvent(SDL_Event *event);
         void OnLoop();
         void OnRender();
         void OnExit();
