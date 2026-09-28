@@ -50,8 +50,7 @@ public:
 		nBounceBeforeDeath = 2; // After 2 bounces, dispose
 	}
 
-	virtual void Draw(olcConsoleGameEngine *engine, float fOffsetX, float fOffsetY, bool bPixel = false)
-	{
+	virtual void Draw(olcConsoleGameEngine *engine, float fOffsetX, float fOffsetY, bool bPixel = false){
 		engine->DrawWireFrameModel(vecModel, px - fOffsetX, py - fOffsetY, atan2f(vy, vx), bPixel ? 0.5f : radius, FG_DARK_GREEN);
 	}
 
@@ -116,9 +115,7 @@ private:
 	static std::vector<std::pair<float, float>> vecModel;
 };
 
-std::vector<std::pair<float, float>> DefineMissile()
-{
-	// Defines a rocket like shape
+std::vector<std::pair<float, float>> DefineMissile(){
 	std::vector<std::pair<float, float>> vecModel;
 	vecModel.push_back({ 0.0f, 0.0f });
 	vecModel.push_back({ 1.0f, 1.0f });
@@ -143,11 +140,9 @@ std::vector<std::pair<float, float>> DefineMissile()
 
 std::vector<std::pair<float, float>> cMissile::vecModel = DefineMissile();
 
-class cWorm : public cPhysicsObject // A unit, or worm
-{
+class cWorm : public cPhysicsObject {
 public:
-	cWorm(float x = 0.0f, float y = 0.0f) : cPhysicsObject(x, y)
-	{
+	cWorm(float x = 0.0f, float y = 0.0f) : cPhysicsObject(x, y){
 		radius = 3.5f;
 		fFriction = 0.2f;
 		bDead = false;
@@ -159,10 +154,8 @@ public:
 			sprWorm = new olcSprite(L"src/Worms/assets/worms1.spr");
 	}
 
-	virtual void Draw(olcConsoleGameEngine *engine, float fOffsetX, float fOffsetY, bool bPixel = false)
-	{
-		if (bIsPlayable) // Draw Worm Sprite with health bar, in team colours
-		{
+	virtual void Draw(olcConsoleGameEngine *engine, float fOffsetX, float fOffsetY, bool bPixel = false){
+		if (bIsPlayable){
 			engine->DrawPartialSprite(px - fOffsetX - radius, py - fOffsetY - radius, sprWorm, nTeam * 8, 0, 8, 8);
 
 			// Draw health bar for worm
@@ -172,19 +165,16 @@ public:
 				engine->Draw(px - 5 + i - fOffsetX, py + 6 - fOffsetY, PIXEL_SOLID, FG_BLUE);
 			}
 		}
-		else // Draw tombstone sprite for team colour
-		{
+		else{
 			engine->DrawPartialSprite(px - fOffsetX - radius, py - fOffsetY - radius, sprWorm, nTeam * 8, 8, 8, 8);
 		}
 	}
 
-	virtual int BounceDeathAction()
-	{
+	virtual int BounceDeathAction(){
 		return 0; // Nothing
 	}
 
-	virtual bool Damage(float d) // Reduce worm's health by said amount
-	{
+	virtual bool Damage(float d){
 		fHealth -= d;
 		if (fHealth <= 0)
 		{ // Worm has died, no longer playable
@@ -208,15 +198,13 @@ olcSprite* cWorm::sprWorm = nullptr;
 
 
 
-class cTeam // Defines a group of worms
-{
+class cTeam{
 public:
 	std::vector<cWorm*> vecMembers;
 	int nCurrentMember = 0;		// Index into std::vector for current worms turn
 	int nTeamSize = 0;			// Total number of worms in team
 
-	bool IsTeamAlive()
-	{
+	bool IsTeamAlive(){
 		// Iterate through all team members, if any of them have >0 health, return true;
 		bool bAllDead = false;
 		for (auto w : vecMembers)
@@ -224,8 +212,7 @@ public:
 		return bAllDead;
 	}
 
-	cWorm* GetNextMember()
-	{
+	cWorm* GetNextMember(){
 		// Return a pointer to the next team member that is valid for control
 		do {
 			nCurrentMember++;
@@ -237,7 +224,7 @@ public:
 
 
 // Main Game Engine Class
-class OneLoneCoder_Worms : public olcConsoleGameEngine // The game
+class OneLoneCoder_Worms : public olcConsoleGameEngine
 {
 public:
 	OneLoneCoder_Worms()
@@ -419,10 +406,8 @@ private:
 			}
 			break;
 
-		case GS_ALLOCATING_UNITS: // Wait for units to "parachute" in
-			{
-				if (bGameIsStable)
-				{
+		case GS_ALLOCATING_UNITS:{
+				if (bGameIsStable){
 					bEnablePlayerControl = true;
 					bEnableComputerControl = false;
 					fTurnTime = 15.0f;
@@ -432,8 +417,7 @@ private:
 			}
 			break;
 
-		case GS_START_PLAY:
-			{
+		case GS_START_PLAY:{
 				bShowCountDown = true;
 
 				// If player has discharged weapon, or turn time is up, move on to next state

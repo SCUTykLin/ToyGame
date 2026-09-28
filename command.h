@@ -102,6 +102,11 @@ public:
     void run_command_Impl();
 };
 
+class TilePlatform_Command : public Base_Command<TilePlatform_Command> {
+public:
+    void run_command_Impl();
+};
+
 template <typename T>
 void add_command(T t, std::string&& name) {
     auto command = std::make_shared<T>();
