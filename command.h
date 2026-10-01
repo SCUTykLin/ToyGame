@@ -107,6 +107,11 @@ public:
     void run_command_Impl();
 };
 
+class RolePlaying_Command : public Base_Command<RolePlaying_Command> {
+public:
+    void run_command_Impl();
+};
+
 template <typename T>
 void add_command(T t, std::string&& name) {
     auto command = std::make_shared<T>();

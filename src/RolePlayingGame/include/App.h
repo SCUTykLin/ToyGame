@@ -5,6 +5,12 @@
 /**
  * 1) Tell A Story
  * 2）Exprore Towns + Dungeons
+ * 3）Battles
+ * 4）items
+ *
+ * Static Objects: static
+ * Dynamic Objects: Px, Py, Vx, Vy, Solid Object
+ *
  */
 
 #ifndef TOYPROJECTS_RoleGame_APP_H

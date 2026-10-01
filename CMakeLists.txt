@@ -28,6 +28,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/TextEditor)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Asteroids)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/Worms)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/TileBasedPlatform)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/RolePlayingGame)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -98,5 +99,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE texteditor)
 target_link_libraries(${PROJECT_NAME} PRIVATE asteroids)
 target_link_libraries(${PROJECT_NAME} PRIVATE worms)
 target_link_libraries(${PROJECT_NAME} PRIVATE tilebased)
+target_link_libraries(${PROJECT_NAME} PRIVATE rolegame)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)
