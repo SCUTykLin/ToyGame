@@ -8,6 +8,7 @@
 #include "olcConsoleGameEngine.h"
 #include "RPG_Maps.h"
 #include "RPG_Assets.h"
+#include "RPG_Dynamic.h"
 
 class OneLoneCoder_RPG : public olcConsoleGameEngine {
 public:
@@ -18,11 +19,7 @@ public:
 private:
     RoleGame::cMap* m_pCurrentMap = nullptr;
 
-    float fPlayerPosX = 5.0f;
-    float fPlayerPosY = 6.0f;
-
-    float fPlayerVelX = 0.0f;
-    float fPlayerVelY = 0.0f;
+    RoleGame::cDynamic* m_pPlayer = nullptr;
 
     bool bPlayerOnGround = false;
 
@@ -52,7 +49,7 @@ protected:
         RoleGame::RPG_Assets::get().LoadSprites();
         m_sprFont = RoleGame::RPG_Assets::get().GetSprite("font");
         m_pCurrentMap = new RoleGame::cMap_Village1();
-
+        m_pPlayer = new RoleGame::cDynamic_Creature("player", RoleGame::RPG_Assets::get().GetSprite("player"));
         spriteTiles = new olcSprite(L"src/TileBasedPlatform/assets/leveljario.spr");
         spriteMan = new olcSprite(L"src/TileBasedPlatform/assets/minijario.spr");
         return true;
