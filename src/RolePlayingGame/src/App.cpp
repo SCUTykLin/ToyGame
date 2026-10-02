@@ -50,84 +50,79 @@ protected:
         m_sprFont = RoleGame::RPG_Assets::get().GetSprite("font");
         m_pCurrentMap = new RoleGame::cMap_Village1();
         m_pPlayer = new RoleGame::cDynamic_Creature("player", RoleGame::RPG_Assets::get().GetSprite("player"));
+        m_pPlayer->px = 5.0f;
+        m_pPlayer->py = 5.0f;
+
         spriteTiles = new olcSprite(L"src/TileBasedPlatform/assets/leveljario.spr");
         spriteMan = new olcSprite(L"src/TileBasedPlatform/assets/minijario.spr");
         return true;
     }
 
     virtual bool OnUserUpdate(float fElapsedTime) {
-        fPlayerVelX = 0.0f;
-        fPlayerVelY = 0.0f;
-
+        m_pPlayer->vx = 0.0f;
+        m_pPlayer->vy = 0.0f;
         // Handle Input
         if (IsFocused()) {
-            if (GetKey(VK_UP).bHeld) {
-                fPlayerVelY = -6.0f;
+            if (GetKey(VK_UP).bHeld){
+                m_pPlayer->vy = -4.0f;
             }
-            if (GetKey(VK_DOWN).bHeld) {
-                fPlayerVelY = 6.0f;
+
+            if (GetKey(VK_DOWN).bHeld){
+                m_pPlayer->vy = 4.0f;
             }
-            if (GetKey(VK_LEFT).bHeld) {
-                fPlayerVelX += (bPlayerOnGround ? -25.0f : -15.0f) * fElapsedTime;
-                nDirModY = 1;
+
+            if (GetKey(VK_LEFT).bHeld){
+                m_pPlayer->vx = -4.0f;
             }
-            if (GetKey(VK_RIGHT).bHeld) {
-                fPlayerVelX += (bPlayerOnGround ? 25 : 15.0f) * fElapsedTime;
-                nDirModY = 0;
-            }
-            if (GetKey(VK_SPACE).bPressed) {
-                if (fPlayerVelY == 0) {
-                    fPlayerVelY = -12.0f;
-                    nDirModX = 1;
-                }
+
+            if (GetKey(VK_RIGHT).bHeld){
+                m_pPlayer->vx = 4.0f;
             }
         }
-        fPlayerVelY += 20.0f * fElapsedTime;
-        if (bPlayerOnGround) {
-            fPlayerVelX += -3.0f * fPlayerVelX * fElapsedTime;
-            if (fabs(fPlayerVelX) < 0.01f) fPlayerVelX = 0.0f;
-        }
 
-        float fNewPlayerPosX = fPlayerPosX + fPlayerVelX * fElapsedTime;
-        float fNewPlayerPosY = fPlayerPosY + fPlayerVelY * fElapsedTime;
+        RoleGame::cDynamic* object = m_pPlayer;
+        float fNewObjectPosX = object->px + object->vx * fElapsedTime;
+        float fNewObjectPosY = object->py + object->vy * fElapsedTime;
 
-        if (fPlayerVelX > 10.0f) fPlayerVelX = 10.0f;
-        if (fPlayerVelX < -10.0f) fPlayerVelX = -10.0f;
-        if (fPlayerVelY > 100.0f) fPlayerVelY = 100.0f;
-        if (fPlayerVelY < -100.0f) fPlayerVelY = -100.0f;
+        if (object->vx > 10.0f) object->vx = 10.0f;
+        if (object->vx < -10.0f) object->vx = -10.0f;
+        if (object->vy > 100.0f) object->vy = 100.0f;
+        if (object->vy < -100.0f) object->vy = -100.0f;
 
-        if (fPlayerVelX <= 0) {
-            if (m_pCurrentMap->GetSolid(fNewPlayerPosX + 0.0f, fPlayerPosY + 0.0f) || m_pCurrentMap->GetSolid(fNewPlayerPosX + 0.0f, fPlayerPosY + 0.9f)) {
-                fNewPlayerPosX = (int) fNewPlayerPosX + 1;
-                fPlayerVelX = 0;
+        if (object->vx <= 0) {
+            if (m_pCurrentMap->GetSolid(fNewObjectPosX + 0.0f, object->py + 0.0f) || m_pCurrentMap->GetSolid(fNewObjectPosX + 0.0f, object->py + 0.9f)) {
+                fNewObjectPosX = (int) fNewObjectPosX + 1;
+                object->vx = 0;
             }
         } else {
-            if (m_pCurrentMap->GetSolid(fNewPlayerPosX + 1.0f, fPlayerPosY + 0.0f) || m_pCurrentMap->GetSolid(fNewPlayerPosX + 1.0f, fPlayerPosY + 0.9f)) {
-                fNewPlayerPosX = (int) fNewPlayerPosX;
-                fPlayerVelX = 0;
+            if (m_pCurrentMap->GetSolid(fNewObjectPosX + 1.0f, object->py + 0.0f) || m_pCurrentMap->GetSolid(fNewObjectPosX + 1.0f, object->py + 0.9f)) {
+                fNewObjectPosX = (int) fNewObjectPosX;
+                object->vx = 0;
             }
         }
 
         bPlayerOnGround = true;
-        if (fPlayerVelY <= 0) {
-            if (m_pCurrentMap->GetSolid(fNewPlayerPosX + 0.0f, fNewPlayerPosY) || m_pCurrentMap->GetSolid(fNewPlayerPosX + 0.9f, fNewPlayerPosY)) {
-                fNewPlayerPosY = (int) fNewPlayerPosY + 1;
-                fPlayerVelY = 0;
+        if (object->vy <= 0) {
+            if (m_pCurrentMap->GetSolid(fNewObjectPosX + 0.0f, fNewObjectPosY) || m_pCurrentMap->GetSolid(fNewObjectPosX + 0.9f, fNewObjectPosY)) {
+                fNewObjectPosY = (int) fNewObjectPosY + 1;
+                object->vy = 0;
             }
         } else {
-            if (m_pCurrentMap->GetSolid(fNewPlayerPosX + 0.0f, fNewPlayerPosY + 1.0f) || m_pCurrentMap->GetSolid(fNewPlayerPosX + 0.9f, fNewPlayerPosY + 1.0f)) {
-                fNewPlayerPosY = (int) fNewPlayerPosY;
-                fPlayerVelY = 0;
+            if (m_pCurrentMap->GetSolid(fNewObjectPosX + 0.0f, fNewObjectPosY + 1.0f) || m_pCurrentMap->GetSolid(fNewObjectPosX + 0.9f, fNewObjectPosY + 1.0f)) {
+                fNewObjectPosY = (int) fNewObjectPosY;
+                object->vy = 0;
                 bPlayerOnGround = true;
                 nDirModX = 0;
             }
         }
 
-        fPlayerPosX = fNewPlayerPosX;
-        fPlayerPosY = fNewPlayerPosY;
+        object->px = fNewObjectPosX;
+        object->py = fNewObjectPosY;
 
-        fCameraPosX = fPlayerPosX;
-        fCameraPosY = fPlayerPosY;
+        object->Update(fElapsedTime);
+
+        fCameraPosX = m_pPlayer->px;
+        fCameraPosY = m_pPlayer->py;
 
         // Draw Level
         int nTileWidth = 16; // 一个tile大小16 x 16
@@ -155,9 +150,7 @@ protected:
                 DrawPartialSprite(x * nTileWidth - fTileOffsetX, y * nTileHeight - fTileOffsetY, m_pCurrentMap->pSprite, sx * nTileWidth, sy * nTileHeight, nTileWidth, nTileHeight);
             }
         }
-        DrawPartialSprite((fPlayerPosX - fOffsetX) * nTileWidth, (fPlayerPosY - fOffsetY) * nTileWidth, spriteMan, nDirModX * nTileWidth, nDirModY * nTileHeight, nTileWidth, nTileHeight);
-
-        DrawBigText("Hello Everybody", 30, 30);
+        object->DrawSelf(this, fOffsetX, fOffsetY);
 
         return true;
     }
