@@ -12,7 +12,8 @@ namespace RoleGame {
     class cDynamic {
     public:
         cDynamic(std::string n);
-        ~cDynamic();
+
+        virtual ~cDynamic();
     public:
         float px, py;
         float vx, vy;
@@ -23,7 +24,7 @@ namespace RoleGame {
 
     public:
         virtual void DrawSelf(olcConsoleGameEngine* gfx, float ox, float oy) {}
-        virtual void Update(float fElapsedTime) {}
+        virtual void Update(float fElapsedTime, cDynamic* player = nullptr) {}
     };
 
     class cDynamic_Creature : public cDynamic {
@@ -54,7 +55,18 @@ namespace RoleGame {
 
     public:
         void DrawSelf(olcConsoleGameEngine *gfx, float ox, float oy) override;
-        void Update(float fElapsedTime) override;
+        void Update(float fElapsedTime, cDynamic* player = nullptr) override;
+    };
+
+    class cDynamic_Teleport : public cDynamic {
+    public:
+        cDynamic_Teleport(float x, float y, const std::string& mapName, float tx, float ty);
+        void DrawSelf(olcConsoleGameEngine *gfx, float ox, float oy) override;
+        void Update(float fElapsedTime, cDynamic* player = nullptr) override;
+    public:
+        std::string sMapName;
+        float fMapPosX;
+        float fMapPosY;
     };
 
 }

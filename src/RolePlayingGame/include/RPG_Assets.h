@@ -8,6 +8,8 @@
 #include "olcConsoleGameEngine.h"
 #include <map>
 #include <string>
+#include "RPG_Maps.h"
+
 namespace RoleGame {
     class RPG_Assets {
     public:
@@ -24,14 +26,19 @@ namespace RoleGame {
             return m_mapSprites[name];
         }
 
+        cMap* GetMap(const std::string& name) {
+            return m_mapMaps[name];
+        }
+
         void LoadSprites();
+        void LoadMaps();
 
     private:
         RPG_Assets();
         ~RPG_Assets();
 
         std::map<std::string, olcSprite*> m_mapSprites;
-
+        std::map<std::string, cMap*> m_mapMaps;
     };
 }
 #endif //TOYPROJECTS_RoleGame_RPG_ASSETS_H

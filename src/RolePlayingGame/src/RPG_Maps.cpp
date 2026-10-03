@@ -50,4 +50,19 @@ namespace RoleGame {
     cMap_Village1::cMap_Village1() {
         Create("src/RolePlayingGame/assets/map/village1.lvl", RPG_Assets::get().GetSprite("village"), "coder town");
     }
+
+    bool cMap_Village1::PopulateDynamic(std::vector<cDynamic *> &vecDyns) {
+        vecDyns.push_back(new cDynamic_Teleport(12.0f, 6.0f, "home", 5.0f, 12.0f));
+        return true;
+    }
+
+    bool cMap_Home1::PopulateDynamic(std::vector<cDynamic *> &vecDyns) {
+        vecDyns.push_back(new cDynamic_Teleport(5.0f, 13.0f, "coder town", 12.0f, 7.0f));
+        vecDyns.push_back(new cDynamic_Teleport(4.0f, 13.0f, "coder town", 12.0f, 7.0f));
+        return true;
+    }
+
+    cMap_Home1::cMap_Home1() {
+        Create("src/RolePlayingGame/assets/map/home.lvl", RPG_Assets::get().GetSprite("hitech"), "home");
+    }
 }

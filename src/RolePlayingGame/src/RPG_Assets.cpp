@@ -31,4 +31,13 @@ namespace RoleGame {
         load("healthboost", L"src/RolePlayingGame/assets/gfx/item_healthboost.spr");
         load("Basic Sword", L"src/RolePlayingGame/assets/gfx/weapon_basic_sword.spr");
     }
+
+    void RPG_Assets::LoadMaps() {
+        auto load = [&](cMap* m) {
+            m_mapMaps[m->sName] = m;
+        };
+
+        load(new cMap_Village1());
+        load(new cMap_Home1());
+    }
 }

@@ -12,7 +12,7 @@ namespace RoleGame {
 
     cDynamic_Creature::cDynamic_Creature(std::string n, olcSprite *sprite) : cDynamic(n), m_pSprite(sprite), nHealth(10), nHealthMax(10), m_nFacingDirection(SOUTH), m_nGraphicState(STANDING), m_fTimer(0.0f), m_nGraphicCounter(0) {}
 
-    void cDynamic_Creature::Update(float fElapsedTime) {
+    void cDynamic_Creature::Update(float fElapsedTime, cDynamic* player) {
         m_fTimer += fElapsedTime;
         if (m_fTimer >= 0.2f) {
             m_fTimer -= 0.2f;
@@ -63,5 +63,23 @@ namespace RoleGame {
 
         gfx->DrawPartialSprite((px - ox) * 16.0f, (py - oy) * 16.0f, m_pSprite, nSheetOffsetX, nSheetOffsetY, 16, 16);
 
+    }
+
+    cDynamic_Teleport::cDynamic_Teleport(float x, float y, const std::string &mapName, float tx, float ty) : cDynamic(sMapName) {
+        px = x;
+        py = y;
+        fMapPosX = tx;
+        fMapPosY = ty;
+        sMapName = mapName;
+        bSolidVsDyn = false;
+        bSolidVsMap = false;
+    }
+
+    void cDynamic_Teleport::DrawSelf(olcConsoleGameEngine *gfx, float ox, float oy) {
+        gfx->DrawCircle(((px + 0.5f) - ox) * 16.0f, ((py + 0.5f) - oy) * 16.0f, 0.5f * 16.0f);
+    }
+
+    void cDynamic_Teleport::Update(float fElapsedTime, cDynamic *player) {
+        cDynamic::Update(fElapsedTime, player);
     }
 }
