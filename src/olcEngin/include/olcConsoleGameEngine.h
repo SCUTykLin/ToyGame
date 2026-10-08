@@ -800,7 +800,7 @@ public:
         }
     }
 
-    ~olcConsoleGameEngine()
+    virtual ~olcConsoleGameEngine()
     {
         SetConsoleActiveScreenBuffer(m_hOriginalConsole);
         delete[] m_bufScreen;

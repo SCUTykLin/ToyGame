@@ -3,16 +3,19 @@
 //
 
 #include "RPG_Assets.h"
-#include <string>
+#include "RPG_Maps.h"
+#include "RPG_Items.h"
 
 namespace RoleGame {
-    RPG_Assets::RPG_Assets() {}
+    RPG_Assets::RPG_Assets() {
+    }
 
-    RPG_Assets::~RPG_Assets() {}
+    RPG_Assets::~RPG_Assets() {
+    }
 
     void RPG_Assets::LoadSprites() {
-        auto load = [&](const std::string& sName, const std::wstring& sFileName) {
-            olcSprite* s = new olcSprite(sFileName);
+        auto load = [&](const std::string &sName, const std::wstring &sFileName) {
+            olcSprite *s = new olcSprite(sFileName);
             m_mapSprites[sName] = s;
         };
 
@@ -33,11 +36,23 @@ namespace RoleGame {
     }
 
     void RPG_Assets::LoadMaps() {
-        auto load = [&](cMap* m) {
+        auto load = [&](cMap *m) {
             m_mapMaps[m->sName] = m;
         };
 
-        load(new cMap_Village1());
-        load(new cMap_Home1());
+        load(new RoleGame::cMap_Village1());
+        load(new RoleGame::cMap_Home1());
+    }
+
+
+    void RPG_Assets::LoadItems() {
+        auto load = [&](cItem *i) {
+            m_mapItems[i->sName] = i;
+        };
+
+        load(new cItem_Health());
+        load(new cItem_HealthBoost());
+
+        load(new cWeapon_Sword());
     }
 }
