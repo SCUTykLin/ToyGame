@@ -22,6 +22,7 @@
 #include "src/Worms/include/App.h"
 #include "src/TileBasedPlatform/include/App.h"
 #include "src/RolePlayingGame/include/App.h"
+#include "src/GameEngine/include/App.h"
 
 std::unordered_map<std::string, std::function<void()>> commands;
 std::once_flag flag;
@@ -98,6 +99,10 @@ void RolePlaying_Command::run_command_Impl() {
     RoleGame::App{}.run();
 }
 
+void olc3DEngine_Command::run_command_Impl() {
+    olc3D::App{}.run();
+}
+
 void create_commands_set() {
     std::call_once(flag, []() {
         add_command(Pong_Command{}, "Pong");
@@ -118,6 +123,7 @@ void create_commands_set() {
         add_command(Worms_Command{}, "Worms");
         add_command(TilePlatform_Command{}, "TilePlatform");
         add_command(RolePlaying_Command{}, "RolePlaying");
+        add_command(olc3DEngine_Command{}, "olc3DEngine");
     });
 }
 

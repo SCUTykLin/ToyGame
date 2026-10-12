@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(olc3DEngine)
+add_library(olc3DEngine STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+target_sources(olc3DEngine PRIVATE ${SOURCE})
+target_include_directories(olc3DEngine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(olc3DEngine PRIVATE olcEngin)
+target_compile_definitions(olc3DEngine PRIVATE _UNICODE UNICODE)
