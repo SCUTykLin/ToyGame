@@ -4,6 +4,7 @@
 
 #ifndef TOYPROJECTS_olc3DEngine_APP_H
 #define TOYPROJECTS_olc3DEngine_APP_H
+
 namespace olc3D{
     class App{
     public:
