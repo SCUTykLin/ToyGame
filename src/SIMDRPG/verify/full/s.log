@@ -1,0 +1,45 @@
+main.cpp
+Input.cpp
+Window.cpp
+Atlas.cpp
+src/gfx/Atlas.cpp(45): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+Blitter.cpp
+Surface.cpp
+Ui.cpp
+Backend.cpp
+Kernels.cpp
+KernelsAVX2.cpp
+Collision.cpp
+Props.cpp
+TileMap.cpp
+src/world/TileMap.cpp(104): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/world/TileMap.cpp(113): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/world/TileMap.cpp(123): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/world/TileMap.cpp(151): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/world/TileMap.cpp(203): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/world/TileMap.cpp(216): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+Weather.cpp
+Enemy.cpp
+Game.cpp
+src/game/Game.cpp(69): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(71): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(73): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(141): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(210): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(225): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(223): warning C4477: “printf”: 格式字符串“%d”需要类型“int”的参数，但可变参数 2 拥有了类型“const _Elem *”
+        with
+        [
+            _Elem=char
+        ]
+src/game/Game.cpp(223): warning C4313: “printf”: 格式字符串中的“%d”与“const _Elem *”类型的参数 2 冲突
+        with
+        [
+            _Elem=char
+        ]
+src/game/Game.cpp(237): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(296): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(469): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(670): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+src/game/Game.cpp(1007): warning C4819: 该文件包含不能在当前代码页(0)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+正在生成代码...

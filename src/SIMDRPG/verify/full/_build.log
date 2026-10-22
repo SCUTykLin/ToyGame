@@ -1,0 +1,40 @@
+main.cpp
+ImGuiLayer.cpp
+Input.cpp
+TextureCache.cpp
+Window.cpp
+Atlas.cpp
+Blitter.cpp
+Surface.cpp
+Ui.cpp
+Backend.cpp
+Kernels.cpp
+KernelsAVX2.cpp
+AssetBank.cpp
+Collision.cpp
+EditSession.cpp
+Props.cpp
+TileMap.cpp
+Weather.cpp
+Enemy.cpp
+Game.cpp
+src/game/Game.cpp(274): warning C4477: “printf”: 格式字符串“%d”需要类型“int”的参数，但可变参数 2 拥有了类型“const _Elem *”
+        with
+        [
+            _Elem=char
+        ]
+src/game/Game.cpp(274): warning C4313: “printf”: 格式字符串中的“%d”与“const _Elem *”类型的参数 2 冲突
+        with
+        [
+            _Elem=char
+        ]
+正在生成代码...
+正在编译...
+EditorUi.cpp
+imgui.cpp
+imgui_draw.cpp
+imgui_tables.cpp
+imgui_widgets.cpp
+imgui_impl_sdl2.cpp
+imgui_impl_sdlrenderer2.cpp
+正在生成代码...
