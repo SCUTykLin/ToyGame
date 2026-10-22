@@ -2,8 +2,11 @@
 // Created by 15813 on 2026/8/24.
 //
 #include "App.h"
+#include <fstream>
 #include "olcConsoleGameEngine.h"
 #include <vector>
+#include <sstream>
+#include <algorithm>
 
 namespace olc3D::math {
     struct vec3d {
@@ -12,10 +15,40 @@ namespace olc3D::math {
 
     struct triangle {
         vec3d p[3];
+        wchar_t sym;
+        short col;
     };
 
     struct mesh {
         std::vector<triangle> tri;
+
+        bool LoadFromObjectFile(std::string sFilename) {
+            std::ifstream f(sFilename);
+            if (!f.is_open()) {
+                return false;
+            }
+
+            std::vector<math::vec3d> verts;
+            while (!f.eof()) {
+                char line[128];
+                f.getline(line, 128);
+                std::stringstream s;
+                s << line;
+
+                char junk;
+
+                if (line[0] == 'v') {
+                    math::vec3d v{};
+                    s >> junk >> v.x >> v.y >> v.z;
+                    verts.emplace_back(v.x, v.y, v.z);
+                }
+                if (line[0] == 'f') {
+                    int f[3];
+                    s >> junk >> f[0] >> f[1] >> f[2];
+                    tri.push_back({verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1]});
+                }
+            }
+        }
     };
 
     struct mat4x4 {
@@ -28,6 +61,7 @@ namespace olc3D {
     private:
         math::mesh meshCube;
         math::mat4x4 matProj;
+        math::vec3d vCamera{0, 0, 0};
         float fTheta = 0.0f;
 
         void MultiplyMatrixVector(math::vec3d &i, math::vec3d &o, math::mat4x4 &m) {
@@ -43,38 +77,87 @@ namespace olc3D {
             }
         }
 
+        math::vec3d Vector_Add(math::vec3d& v1, )
+
+        CHAR_INFO GetColour(float lum) {
+            short bg_col, fg_col;
+            wchar_t sym;
+            int pixel_bw = (int) (13.0f * lum);
+            switch (pixel_bw) {
+                case 0: bg_col = BG_BLACK;
+                    fg_col = FG_BLACK;
+                    sym = PIXEL_SOLID;
+                    break;
+
+                case 1: bg_col = BG_BLACK;
+                    fg_col = FG_DARK_GREY;
+                    sym = PIXEL_QUARTER;
+                    break;
+                case 2: bg_col = BG_BLACK;
+                    fg_col = FG_DARK_GREY;
+                    sym = PIXEL_HALF;
+                    break;
+                case 3: bg_col = BG_BLACK;
+                    fg_col = FG_DARK_GREY;
+                    sym = PIXEL_THREEQUARTERS;
+                    break;
+                case 4: bg_col = BG_BLACK;
+                    fg_col = FG_DARK_GREY;
+                    sym = PIXEL_SOLID;
+                    break;
+
+                case 5: bg_col = BG_DARK_GREY;
+                    fg_col = FG_GREY;
+                    sym = PIXEL_QUARTER;
+                    break;
+                case 6: bg_col = BG_DARK_GREY;
+                    fg_col = FG_GREY;
+                    sym = PIXEL_HALF;
+                    break;
+                case 7: bg_col = BG_DARK_GREY;
+                    fg_col = FG_GREY;
+                    sym = PIXEL_THREEQUARTERS;
+                    break;
+                case 8: bg_col = BG_DARK_GREY;
+                    fg_col = FG_GREY;
+                    sym = PIXEL_SOLID;
+                    break;
+
+                case 9: bg_col = BG_GREY;
+                    fg_col = FG_WHITE;
+                    sym = PIXEL_QUARTER;
+                    break;
+                case 10: bg_col = BG_GREY;
+                    fg_col = FG_WHITE;
+                    sym = PIXEL_HALF;
+                    break;
+                case 11: bg_col = BG_GREY;
+                    fg_col = FG_WHITE;
+                    sym = PIXEL_THREEQUARTERS;
+                    break;
+                case 12: bg_col = BG_GREY;
+                    fg_col = FG_WHITE;
+                    sym = PIXEL_SOLID;
+                    break;
+                default:
+                    bg_col = BG_BLACK;
+                    fg_col = FG_BLACK;
+                    sym = PIXEL_SOLID;
+            }
+
+            CHAR_INFO c;
+            c.Attributes = bg_col | fg_col;
+            c.Char.UnicodeChar = sym;
+            return c;
+        }
+
     public:
         olcEngine3D() {
             m_sAppName = L"3D Engine By OlcEngine";
         }
 
         bool OnUserCreate() override {
-            // 按照顺时针顺序存储
-            meshCube.tri = {
-                // SOUTH
-                {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f},
-                {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f},
-
-                // EAST
-                {1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f},
-                {1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-
-                // NORTH
-                {1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f},
-                {1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f},
-
-                // WEST
-                {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f},
-                {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-
-                // TOP
-                {0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f},
-                {0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f},
-
-                // BOTTOM
-                {1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f},
-                {1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
-            };
+            meshCube.LoadFromObjectFile("src/olcEngin/assets/VideoShip.obj");
 
             // Projection Matrix
             float fNear = 0.1f;
@@ -112,6 +195,9 @@ namespace olc3D {
             matRotX.m[2][1] = -sinf(fTheta * 0.5f);
             matRotX.m[2][2] = cosf(fTheta * 0.5f);
             matRotX.m[3][3] = 1;
+
+            std::vector<math::triangle> vecTrianglesToRester;
+
             // Draw Triangle
             for (auto tri: meshCube.tri) {
                 math::triangle triProjected{}, triTranslated{}, triRotatedZ{}, triRotatedZX{};;
@@ -127,31 +213,86 @@ namespace olc3D {
                 MultiplyMatrixVector(triRotatedZ.p[2], triRotatedZX.p[2], matRotX);
 
                 triTranslated = triRotatedZX;
-                triTranslated.p[0].z = triRotatedZX.p[0].z + 3.0f;
-                triTranslated.p[1].z = triRotatedZX.p[1].z + 3.0f;
-                triTranslated.p[2].z = triRotatedZX.p[2].z + 3.0f;
+                triTranslated.p[0].z = triRotatedZX.p[0].z + 8.0f;
+                triTranslated.p[1].z = triRotatedZX.p[1].z + 8.0f;
+                triTranslated.p[2].z = triRotatedZX.p[2].z + 8.0f;
 
-                MultiplyMatrixVector(triTranslated.p[0], triProjected.p[0], matProj);
-                MultiplyMatrixVector(triTranslated.p[1], triProjected.p[1], matProj);
-                MultiplyMatrixVector(triTranslated.p[2], triProjected.p[2], matProj);
+                math::vec3d normal{}, line1{}, line2{};
+                line1.x = triTranslated.p[1].x - triTranslated.p[0].x;
+                line1.y = triTranslated.p[1].y - triTranslated.p[0].y;
+                line1.z = triTranslated.p[1].z - triTranslated.p[0].z;
 
-                // Scale into view
-                triProjected.p[0].x += 1.0f; triProjected.p[0].y += 1.0f;
-                triProjected.p[1].x += 1.0f; triProjected.p[1].y += 1.0f;
-                triProjected.p[2].x += 1.0f; triProjected.p[2].y += 1.0f;
+                line2.x = triTranslated.p[2].x - triTranslated.p[0].x;
+                line2.y = triTranslated.p[2].y - triTranslated.p[0].y;
+                line2.z = triTranslated.p[2].z - triTranslated.p[0].z;
 
-                triProjected.p[0].x *= 0.5f * (float)ScreenWidth();
-                triProjected.p[0].y *= 0.5f * (float)ScreenHeight();
-                triProjected.p[1].x *= 0.5f * (float)ScreenWidth();
-                triProjected.p[1].y *= 0.5f * (float)ScreenHeight();
-                triProjected.p[2].x *= 0.5f * (float)ScreenWidth();
-                triProjected.p[2].y *= 0.5f * (float)ScreenHeight();
+                normal.x = line1.y * line2.z - line1.z * line2.y;
+                normal.y = line1.z * line2.x - line1.x * line2.z;
+                normal.z = line1.x * line2.y - line1.y * line2.x;
 
-                DrawTriangle(triProjected.p[0].x, triProjected.p[0].y,
-                    triProjected.p[1].x, triProjected.p[1].y,
-                    triProjected.p[2].x, triProjected.p[2].y,
-                    PIXEL_SOLID, FG_WHITE);
+                float l = sqrtf(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
+                normal.x /= l;
+                normal.y /= l;
+                normal.z /= l;
+
+                if (normal.x * (triTranslated.p[0].x - vCamera.x) +
+                    normal.y * (triTranslated.p[0].y - vCamera.y) +
+                    normal.z * (triTranslated.p[0].z - vCamera.z) < 0.0f) {
+                    math::vec3d light_direction = {0.0f, 0.0f, -1.0f};
+                    float l = sqrtf(
+                        light_direction.x * light_direction.x + light_direction.y * light_direction.y + light_direction.
+                        z * light_direction.z);
+                    light_direction.x /= l;
+                    light_direction.y /= l;
+                    light_direction.z /= l;
+
+                    float dp = normal.x * light_direction.x + normal.y * light_direction.y + normal.z * light_direction.
+                               z;
+
+                    CHAR_INFO c = GetColour(dp);
+                    triTranslated.col = c.Attributes;
+                    triTranslated.sym = c.Char.UnicodeChar;
+
+                    MultiplyMatrixVector(triTranslated.p[0], triProjected.p[0], matProj);
+                    MultiplyMatrixVector(triTranslated.p[1], triProjected.p[1], matProj);
+                    MultiplyMatrixVector(triTranslated.p[2], triProjected.p[2], matProj);
+                    triProjected.col = triTranslated.col;
+                    triProjected.sym = triTranslated.sym;
+
+                    // Scale into view
+                    triProjected.p[0].x += 1.0f;
+                    triProjected.p[0].y += 1.0f;
+                    triProjected.p[1].x += 1.0f;
+                    triProjected.p[1].y += 1.0f;
+                    triProjected.p[2].x += 1.0f;
+                    triProjected.p[2].y += 1.0f;
+
+                    triProjected.p[0].x *= 0.5f * (float) ScreenWidth();
+                    triProjected.p[0].y *= 0.5f * (float) ScreenHeight();
+                    triProjected.p[1].x *= 0.5f * (float) ScreenWidth();
+                    triProjected.p[1].y *= 0.5f * (float) ScreenHeight();
+                    triProjected.p[2].x *= 0.5f * (float) ScreenWidth();
+                    triProjected.p[2].y *= 0.5f * (float) ScreenHeight();
+
+                    vecTrianglesToRester.push_back(triProjected);
+                }
             }
+
+            // Sort
+            std::sort(vecTrianglesToRester.begin(), vecTrianglesToRester.end(),
+                      [](math::triangle &t1, math::triangle &t2) {
+                          float z1 = (t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
+                          float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
+                          return z1 > z2;
+                      });
+
+            for (auto &triProjected: vecTrianglesToRester) {
+                FillTriangle(triProjected.p[0].x, triProjected.p[0].y,
+                             triProjected.p[1].x, triProjected.p[1].y,
+                             triProjected.p[2].x, triProjected.p[2].y,
+                             triProjected.sym, triProjected.col);
+            }
+
             return true;
         }
     };
