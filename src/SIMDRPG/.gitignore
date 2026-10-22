@@ -1,1 +1,18 @@
+# 构建产物：verify/full 是讲义生成的参考实现，只提交源码
+verify/full/_obj/
+verify/full/_sb/
+verify/full/_sb2/
+verify/full/build/
+verify/full/*.exe
+# 但保留一个可以直接双击的参考实现（README 里承诺过）
+!verify/full/simdrpg_reference.exe
 verify/full/tests/*.exe
+verify/full/_build.log
+verify/full/_test.log
+verify/full/s.log
+
+# 测试临时文件
+_hot/
+_edit_*.map
+_st.txt
+_stagecheck/
