@@ -1,3 +1,6 @@
+
+# game处理游戏逻辑 -> ecs场景管理，更新 -> gfx发出绘制请求 -> simd混合像素 -> platform平台渲染
+
 cmake_minimum_required(VERSION 3.20)
 project(simdrpg CXX)
 
@@ -10,19 +13,12 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 if(MSVC)
-    # /utf-8 不是可选项：源码是 UTF-8 无 BOM，不加这个 MSVC 会按 GBK 解析，
-    # 中文注释会把后面的代码"吃掉"，报错行号能偏 200 行。
     add_compile_options(/utf-8 /W3)
-    # 我们自己写 main()，不让 SDL 替换它
     add_compile_definitions(SDL_MAIN_HANDLED)
 else()
     add_compile_options(-Wall -Wextra -Wno-unused-parameter)
 endif()
 
-# ---------------------------------------------------------------
-# 找 SDL2：从当前目录向上最多 5 层，找 Thirdparty/SDL2/<版本>/CMakeLists.txt
-# （Thirdparty 可能和项目同级，也可能在项目里面，向上找最省事）
-# ---------------------------------------------------------------
 function(simdrpg_find_thirdparty out_var rel)
     set(_probe "${CMAKE_CURRENT_SOURCE_DIR}")
     set(${out_var} "" PARENT_SCOPE)
@@ -38,9 +34,6 @@ endfunction()
 simdrpg_find_thirdparty(_SDL2_SRC "Thirdparty/SDL2/SDL-release-2.32.6")
 simdrpg_find_thirdparty(_SDL2IMG_SRC "Thirdparty/SDL2/SDL_image-release-2.8.0")
 
-# ---------------------------------------------------------------
-# SDL2：优先用装好的（vcpkg / 官方 cmake 安装），找不到就用 Thirdparty 源码构建
-# ---------------------------------------------------------------
 find_package(SDL2 CONFIG QUIET)
 
 if(SDL2_FOUND)
@@ -60,7 +53,7 @@ else()
     set(SDL_SHARED OFF CACHE BOOL "" FORCE)
     set(SDL_STATIC ON  CACHE BOOL "" FORCE)
     set(SDL_TEST   OFF CACHE BOOL "" FORCE)
-    # 树外源码必须显式给一个二进制目录
+
     add_subdirectory("${SDL2_ROOT}" "${CMAKE_BINARY_DIR}/_sdl2" EXCLUDE_FROM_ALL)
     if(TARGET SDL2-static)
         set(SIMDRPG_SDL_TARGET SDL2-static)
@@ -99,19 +92,6 @@ else()
     endif()
 endif()
 
-# ---------------------------------------------------------------
-# ImGui：直接编源码，不用包管理器
-#
-# 需要这些文件（从 imgui 官方仓库拷，版本 1.89.7）：
-#   Thirdparty/imgui/imgui.cpp
-#                   imgui_draw.cpp
-#                   imgui_tables.cpp
-#                   imgui_widgets.cpp
-#                   imgui.h  imconfig.h  imgui_internal.h
-#                   imstb_rectpack.h  imstb_textedit.h  imstb_truetype.h
-#   Thirdparty/imgui/backends/imgui_impl_sdl2.cpp / .h
-#   Thirdparty/imgui/backends/imgui_impl_sdlrenderer2.cpp / .h
-# ---------------------------------------------------------------
 simdrpg_find_thirdparty(_IMGUI_SRC "Thirdparty/imgui")
 if(NOT _IMGUI_SRC)
     message(FATAL_ERROR
@@ -130,9 +110,6 @@ add_library(imgui STATIC
 target_include_directories(imgui PUBLIC "${_IMGUI_SRC}" "${_IMGUI_SRC}/backends")
 target_link_libraries(imgui PUBLIC ${SIMDRPG_SDL_TARGET})
 
-# ---------------------------------------------------------------
-# 源文件：自动收集，加文件不用改这里
-# ---------------------------------------------------------------
 file(GLOB_RECURSE SIMDRPG_SOURCES CONFIGURE_DEPENDS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
@@ -145,7 +122,6 @@ endif()
 add_executable(simdrpg ${SIMDRPG_SOURCES})
 
 target_include_directories(simdrpg PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
-# SDL2_image 的头在源码树的 include/ 里，静态库目标不一定会导出它
 if(SDL2_IMAGE_ROOT)
     target_include_directories(simdrpg PRIVATE "${SDL2_IMAGE_ROOT}/include")
 endif()
