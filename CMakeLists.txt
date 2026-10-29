@@ -30,6 +30,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src/Worms)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/TileBasedPlatform)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/RolePlayingGame)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/GameEngine)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/GameShooter)
 # ==================> Projects file list <=====================
 
 # ==================> executable file <=====================
@@ -102,5 +103,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE worms)
 target_link_libraries(${PROJECT_NAME} PRIVATE tilebased)
 target_link_libraries(${PROJECT_NAME} PRIVATE rolegame)
 target_link_libraries(${PROJECT_NAME} PRIVATE olc3DEngine)
+target_link_libraries(${PROJECT_NAME} PRIVATE gameshooter)
 # =================== Link Projects ===================
 target_link_libraries(${PROJECT_NAME} PRIVATE fltk::fltk)
