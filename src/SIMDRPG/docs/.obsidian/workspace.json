@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00-世界观与六张地图.md",
+                "file": "02-SIMD从零到能用.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "00-世界观与六张地图"
+              "title": "02-SIMD从零到能用"
             }
           }
         ]
@@ -189,5 +189,8 @@
     }
   },
   "active": "231a221b925af622",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "01-架构设计.md",
+    "00-世界观与六张地图.md"
+  ]
 }
