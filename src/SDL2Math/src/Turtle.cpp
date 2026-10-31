@@ -60,6 +60,33 @@ namespace Math::Display {
         m_y = yPos;
     }
 
+    void Turtle::LookAt(float xPos, float yPos) {
+        float dx = xPos - m_x;
+        float dy = yPos - m_y;
+
+        if (dx == 0.0) {
+            if (dy > 0.0) {
+                m_angle = M_PI / 2.0f;
+            }else {
+                m_angle = M_PI + (M_PI / 2.0f);
+            }
+        }else {
+            m_angle = atan(dy / dx);
+        }
+
+        if (dx < 0.0) {
+            m_angle += M_PI;
+        }
+    }
+
+    float Turtle::GetX() const {
+        return m_x;
+    }
+
+    float Turtle::GetY() const {
+        return m_y;
+    }
+
     void Turtle::Step() {
         float startX = m_x;
         float startY = m_y;
@@ -71,8 +98,8 @@ namespace Math::Display {
         if (m_pRenderer) {
             SDL_SetRenderDrawColor(m_pRenderer, m_r, m_g, m_b, m_alpha);
             SDL_RenderDrawLine(m_pRenderer,
-                static_cast<int>(round(startX)), static_cast<int>(round(startY)),
-                static_cast<int>(round(endX)), static_cast<int>(round(endY)));
+                               static_cast<int>(round(startX)), static_cast<int>(round(startY)),
+                               static_cast<int>(round(endX)), static_cast<int>(round(endY)));
         }
     }
 }

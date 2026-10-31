@@ -6,22 +6,38 @@
 #define TOYPROJECTS_SDL_RAYTRACING_TURTLE_H
 #include <SDL_render.h>
 
-namespace Math::Display{
+namespace Math::Display {
     class Turtle {
     public:
         Turtle();
-        void SetRenderer(SDL_Renderer* m_pRenderer);
+
+        void SetRenderer(SDL_Renderer *m_pRenderer);
+
         void PenUp();
+
         void PenDown();
+
         void SetPenColor(int r, int g, int b, int alpha);
+
         void SetAngle(float angle);
+
         void SetLength(float length);
+
         void RotateRight(float angle);
+
         void RotateLeft(float angle);
+
         void MoveTo(float xPos, float yPos);
+
+        void LookAt(float xPos, float yPos);
+
+        float GetX() const;
+        float GetY() const;
+
         void Step();
+
     private:
-        SDL_Renderer* m_pRenderer;
+        SDL_Renderer *m_pRenderer;
         float m_x, m_y;
         float m_angle, m_length;
         int m_r, m_g, m_b, m_alpha;
