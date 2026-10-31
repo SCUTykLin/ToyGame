@@ -8,6 +8,10 @@
 #include <iostream>
 #include <format>
 
+namespace CLOX_V1::Token {
+    class Token;
+};
+
 namespace CLOX_V1::Err {
     void report(int line, const std::string &where, const std::string &message) {
         std::cout << std::format("[line {}] Error {}: {}", line, where, message) << std::endl;
@@ -16,6 +20,8 @@ namespace CLOX_V1::Err {
     void error(int line, const std::string &message) {
         report(line, "", message);
     }
+
+    void error(const Token::Token& token, const std::string &message);
 }
 
 #endif //TOYPROJECTS_Interpreter_v1_ERROR_H

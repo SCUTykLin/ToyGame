@@ -19,6 +19,7 @@ namespace CLOX_V1::Parser {
         };
 
     private:
+        class ParseError : public std::exception {};
         std::list<Token::Token> tokens;
         int current = 0;
 
