@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <exception>
 #include <initializer_list>
+#include <list>
 #include <memory>
 #include <string>
 #include <utility>
@@ -16,17 +17,17 @@
 #include "Expr.h"
 #include "Token.h"
 #include "error.h"
+#include "Stmt.h"
 
 namespace CLOX_V1::Parser {
     class Parser {
     public:
         explicit Parser(std::vector<Token::Token> tokens) : tokens(std::move(tokens)) {}
 
-        std::unique_ptr<Ast::Expr> parse() {
-            try {
-                return expression();
-            } catch (const ParseError&) {
-                return nullptr;
+        std::list<Ast::Stmt> parse() {
+            std::list<Ast::Stmt>* statements;
+            while (!isAtEnd()) {
+                statements->push_back(statement());
             }
         }
 
@@ -84,10 +85,25 @@ namespace CLOX_V1::Parser {
             throw error(peek(), message);
         }
 
-        // ------------------------------------------------------- grammar rules
-
         std::unique_ptr<Ast::Expr> expression() {
             return equality();
+        }
+
+        std::unique_ptr<Ast::Stmt> statement() {
+            if (match({Token::PRINT})) return printStatement();
+            return expressionStatement();
+        }
+
+        std::unique_ptr<Ast::Stmt> printStatement() {
+            std::unique_ptr<Ast::Expr> value = expression();
+            consume(Token::SEMICOLON, "Expect ';' after value");
+            return std::make_unique<Ast::Print>(std::move(value));
+        }
+
+        std::unique_ptr<Ast::Stmt> expressionStatement() {
+            std::unique_ptr<Ast::Expr> expr = expression();
+            consume(Token::SEMICOLON, "Expect ';' after expression.");
+            return std::make_unique<Ast::Expression>(std::move(expr));
         }
 
         std::unique_ptr<Ast::Expr> equality() {
@@ -160,8 +176,6 @@ namespace CLOX_V1::Parser {
             throw error(peek(), "Expect expression.");
         }
 
-        // ------------------------------------------------------------ recovery
-        // 第 6 章还没有语句，同步机制暂时用不上；第 8 章把它接进 parse() 的 catch 里。
         void synchronize() {
             advance();
             while (!isAtEnd()) {

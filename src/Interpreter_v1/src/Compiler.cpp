@@ -6,7 +6,7 @@
 #include <utility>
 #include "Scanner.h"
 #include "Parser.h"
-#include "AstPrint.h"
+#include "AstInterpreter.h"
 
 namespace CLOX_V1::Compiler{
     void CompilerSystem::run(const std::string& source_code){
@@ -24,6 +24,10 @@ namespace CLOX_V1::Compiler{
             return;
         }
 
-        std::cout << Ast::AstPrinter{}.print(expression) << std::endl;
+        Ast::AstInterpreter interpreter;
+        interpreter.interpret(std::move(expression));
+        if (interpreter.hasRuntimeError()) {
+            hadRuntimeError = true;
+        }
     }
 }

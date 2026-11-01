@@ -24,7 +24,7 @@ namespace CLOX_V1::Ast{
         }
 
         std::string print(const std::unique_ptr<Expr>& expr){
-            if (!expr) return std::string("<null>");
+            if (!expr) return {"<null>"};
             return std::any_cast<std::string>(expr->accept(this));
         }
 

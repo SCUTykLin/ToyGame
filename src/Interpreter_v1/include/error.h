@@ -25,6 +25,10 @@ namespace CLOX_V1::Err {
     }
 
     void error(const Token::Token& token, const std::string &message);
+
+    // 运行时错误的输出格式跟解析错误不同（书里 runtimeError 是 "message\n[line N]"，
+    // 不带 "at 'lexeme'"），所以单独一个入口，别复用上面的 error。
+    void runtimeError(const Token::Token& token, const std::string &message);
 }
 
 #endif //TOYPROJECTS_Interpreter_v1_ERROR_H

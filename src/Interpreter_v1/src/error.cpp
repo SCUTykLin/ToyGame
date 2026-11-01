@@ -12,4 +12,8 @@ namespace CLOX_V1::Err {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
     }
+
+    void runtimeError(const Token::Token& token, const std::string &message) {
+        std::cerr << message << "\n[line " << token.line << "]" << std::endl;
+    }
 }
