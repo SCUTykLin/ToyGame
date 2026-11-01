@@ -1,0 +1,15 @@
+class Animal {
+  init(name) { this.name = name; }
+  speak() { print this.name + " makes a sound"; }
+}
+
+class Dog < Animal {
+  init(name) { super.init(name); }
+  speak() { super.speak(); print this.name + " barks"; }
+}
+
+fun fib(n) { if (n < 2) return n; return fib(n-1) + fib(n-2); }
+
+var d = Dog("Rex");
+d.speak();
+print fib(20);

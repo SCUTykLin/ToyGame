@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(Interpreter_v2)
+add_library(Interpreter_v2 STATIC)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+target_sources(Interpreter_v2 PRIVATE ${SOURCE})
+target_include_directories(Interpreter_v2 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
