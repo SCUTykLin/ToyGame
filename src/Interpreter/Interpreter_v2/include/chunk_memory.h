@@ -10,11 +10,11 @@
     ((capacity) < 8 ? 8 : (capacity) * 2)
 
 #define GROW_ARRAY(type, pointer, oldCount, newCount) \
-    (type*)CLOX_V1::Mem::reallocate(pointer, sizeof(type) * (oldCount), \
+    (type*)CLOX_V2::Mem::reallocate(pointer, sizeof(type) * (oldCount), \
         sizeof(type) * (newCount))
 
 #define FREE_ARRAY(type, pointer, oldCount) \
-    reallocate(pointer, sizeof(type) * (oldCount), 0)
+    CLOX_V2::Mem::reallocate(pointer, sizeof(type) * (oldCount), 0)
 
 namespace CLOX_V2::Mem {
     void* reallocate(void* pointer, size_t oldSize, size_t newSize);
