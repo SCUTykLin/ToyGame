@@ -11,7 +11,7 @@ namespace CLOX_V1::Compiler{
     class CompilerSystem{
     public:
         void run(const std::string& source_code);
-        inline bool hasError() {return hadError;}
+        bool hasError() const {return hadError;}
     private:
         bool hadError = false;
     };

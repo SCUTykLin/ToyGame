@@ -3,6 +3,7 @@
 //
 #include "App.h"
 #include <cassert>
+#include <iostream>
 #include "IO.h"
 #include "Compiler.h"
 
@@ -23,13 +24,17 @@
 
 
 namespace CLOX_V1 {
-    const char* source_file = "src/Interpreter_v1/example/print.lox";
+    const char* source_file = "src/Interpreter_v1/example/expr.lox";
     void App::run() {
-        if (!source_file) assert("No Source Code!");
+        // assert("字符串") 永远为真（指针非空），起不到检查作用，别这么写。
+        assert(source_file != nullptr);
+
         const std::string source_code = IO::IOSystem::readAllBytes(source_file);
 
         Compiler::CompilerSystem compilerSystem;
         compilerSystem.run(source_code);
-        if (compilerSystem.hasError()) assert("Compile Source code failed.");
+        if (compilerSystem.hasError()) {
+            std::cerr << "Compile source code failed." << std::endl;
+        }
     }
 }

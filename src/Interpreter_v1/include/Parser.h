@@ -5,26 +5,57 @@
 #ifndef TOYPROJECTS_Interpreter_v1_PARSER_H
 #define TOYPROJECTS_Interpreter_v1_PARSER_H
 
-#include <format>
+#include <cstddef>
+#include <exception>
+#include <initializer_list>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
+#include "Expr.h"
 #include "Token.h"
-#include <list>
-
-#include "AstPrint.h"
+#include "error.h"
 
 namespace CLOX_V1::Parser {
     class Parser {
     public:
-        Parser(std::list<Token::Token> tokens) : tokens(tokens) {
-        };
+        explicit Parser(std::vector<Token::Token> tokens) : tokens(std::move(tokens)) {}
+
+        std::unique_ptr<Ast::Expr> parse() {
+            try {
+                return expression();
+            } catch (const ParseError&) {
+                return nullptr;
+            }
+        }
+
+        bool hasError() const { return hadError; }
 
     private:
-        class ParseError : public std::exception {};
-        std::list<Token::Token> tokens;
-        int current = 0;
+        struct ParseError : std::exception {
+            const char* what() const noexcept override { return "parse error"; }
+        };
 
-        std::unique_ptr<Ast::Expr> expression() {
-            return equality();
+        std::vector<Token::Token> tokens;
+        std::size_t current = 0;
+        bool hadError = false;
+
+        bool isAtEnd() {
+            return peek().type == Token::EOF_Type;
+        }
+
+        const Token::Token& peek() {
+            return tokens[current];
+        }
+
+        const Token::Token& previous() {
+            return tokens[current - 1];
+        }
+
+        const Token::Token& advance() {
+            if (!isAtEnd()) ++current;
+            return previous();
         }
 
         bool check(Token::TokenType_t type) {
@@ -32,26 +63,8 @@ namespace CLOX_V1::Parser {
             return peek().type == type;
         }
 
-        Token::Token advance() {
-            if (!isAtEnd()) current++;
-            return previous();
-        }
-
-        bool isAtEnd() {
-            return peek().type == Token::EOF_Type;
-        }
-
-        Token::Token peek() {
-            return *std::next(tokens.begin(), current);
-        }
-
-        Token::Token previous() {
-            return *std::next(tokens.begin(), current - 1);
-        }
-
-
         bool match(std::initializer_list<Token::TokenType_t> types) {
-            for (auto type: types) {
+            for (auto type : types) {
                 if (check(type)) {
                     advance();
                     return true;
@@ -60,55 +73,68 @@ namespace CLOX_V1::Parser {
             return false;
         }
 
-        Token::Token consume(Token::TokenType_t type, std::string message) {
+        ParseError error(const Token::Token& token, const std::string& message) {
+            Err::error(token, message);
+            hadError = true;
+            return ParseError{};
+        }
+
+        const Token::Token& consume(Token::TokenType_t type, const std::string& message) {
             if (check(type)) return advance();
-            throw std::runtime_error(std::format("Error: {}", message));
+            throw error(peek(), message);
+        }
+
+        // ------------------------------------------------------- grammar rules
+
+        std::unique_ptr<Ast::Expr> expression() {
+            return equality();
         }
 
         std::unique_ptr<Ast::Expr> equality() {
-            std::unique_ptr<Ast::Expr> expr = comparison();
+            auto expr = comparison();
             while (match({Token::BANG_EQUAL, Token::EQUAL_EQUAL})) {
-                Token::Token operator_ = previous();
-                std::unique_ptr<Ast::Expr> right = comparison();
-                expr = std::make_unique<Ast::Binary>(expr, operator_, right);
+                Token::Token op = previous();
+                auto right = comparison();
+                expr = std::make_unique<Ast::Binary>(std::move(expr), std::move(op), std::move(right));
             }
-            return std::move(expr);
+            return expr;
         }
 
         std::unique_ptr<Ast::Expr> comparison() {
-            std::unique_ptr<Ast::Expr> expr = term();
+            auto expr = term();
             while (match({Token::GREATER, Token::GREATER_EQUAL, Token::LESS, Token::LESS_EQUAL})) {
-                Token::Token operator_ = previous();
-                std::unique_ptr<Ast::Expr> right = term();
-                expr = std::make_unique<Ast::Expr>()->Binary(expr, operator_, right);
+                Token::Token op = previous();
+                auto right = term();
+                expr = std::make_unique<Ast::Binary>(std::move(expr), std::move(op), std::move(right));
             }
-            return std::move(expr);
+            return expr;
         }
 
         std::unique_ptr<Ast::Expr> term() {
-            std::unique_ptr<Ast::Expr> expr = factor();
+            auto expr = factor();
             while (match({Token::MINUS, Token::PLUS})) {
-                Token::Token operator_ = previous();
-                std::unique_ptr<Ast::Expr> right = factor();
-                expr = std::make_unique<Ast::Expr>()->Binary(expr, operator_, right);
+                Token::Token op = previous();
+                auto right = factor();
+                expr = std::make_unique<Ast::Binary>(std::move(expr), std::move(op), std::move(right));
             }
+            return expr;
         }
 
         std::unique_ptr<Ast::Expr> factor() {
-            std::unique_ptr<Ast::Expr> expr = unary();
+            auto expr = unary();
             while (match({Token::SLASH, Token::STAR})) {
-                Token::Token operator_ = previous();
-                std::unique_ptr<Ast::Expr> right = unary();
-                expr = std::make_unique<Ast::Binary>(expr, operator_, right);
+                Token::Token op = previous();
+                auto right = unary();
+                expr = std::make_unique<Ast::Binary>(std::move(expr), std::move(op), std::move(right));
             }
-            return std::move(expr);
+            return expr;
         }
 
         std::unique_ptr<Ast::Expr> unary() {
             if (match({Token::BANG, Token::MINUS})) {
-                Token::Token operator_ = previous();
-                std::unique_ptr<Ast::Expr> right = unary();
-                return std::make_unique<Ast::Unary>(operator_, right);
+                Token::Token op = previous();
+                auto right = unary();
+                return std::make_unique<Ast::Unary>(std::move(op), std::move(right));
             }
             return primary();
         }
@@ -120,8 +146,41 @@ namespace CLOX_V1::Parser {
 
             if (match({Token::NUMBER})) {
                 return std::make_unique<Ast::Literal>(previous().literal, Token::NUMBER);
-            }else if (match({Token::STRING})) {
+            }
+            if (match({Token::STRING})) {
                 return std::make_unique<Ast::Literal>(previous().literal, Token::STRING);
+            }
+
+            if (match({Token::LEFT_PAREN})) {
+                auto expr = expression();
+                consume(Token::RIGHT_PAREN, "Expect ')' after expression.");
+                return std::make_unique<Ast::Grouping>(std::move(expr));
+            }
+
+            throw error(peek(), "Expect expression.");
+        }
+
+        // ------------------------------------------------------------ recovery
+        // 第 6 章还没有语句，同步机制暂时用不上；第 8 章把它接进 parse() 的 catch 里。
+        void synchronize() {
+            advance();
+            while (!isAtEnd()) {
+                if (previous().type == Token::SEMICOLON) return;
+
+                switch (peek().type) {
+                    case Token::CLASS:
+                    case Token::FUN:
+                    case Token::VAR:
+                    case Token::FOR:
+                    case Token::IF:
+                    case Token::WHILE:
+                    case Token::PRINT:
+                    case Token::RETURN:
+                        return;
+                    default:
+                        break;
+                }
+                advance();
             }
         }
     };

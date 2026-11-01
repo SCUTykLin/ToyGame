@@ -74,6 +74,7 @@ namespace CLOX_V1::Scanner{
             case '<': addToken(match('=') ? Token::LESS_EQUAL : Token::LESS);
                 break;
             case '>': addToken(match('=') ? Token::GREATER_EQUAL : Token::GREATER);
+                break;
             case '/':
                 if (match('/')){
                     while (peek() != '\n' && !isAtEnd()) advance();
@@ -171,7 +172,7 @@ namespace CLOX_V1::Scanner{
             while (isDigit(peek())) advance();
         }
 
-        std::string temp = source.substr(start, current - start + 1);
+        std::string temp = source.substr(start, current - start);
         addToken(Token::NUMBER, static_cast<double>(std::atof(temp.c_str())));
     }
 
