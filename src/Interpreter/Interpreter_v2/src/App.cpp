@@ -11,6 +11,7 @@ namespace CLOX_V2 {
             Chunk::Chunk chunk;
             Chunk::initChunk(&chunk);
             Chunk::writeChunk(&chunk, Chunk::OP_RETURN);
+            Chunk::disassembleChunk(&chunk, "test chunk");
             Chunk::freeChunk(&chunk);
         }
     };
