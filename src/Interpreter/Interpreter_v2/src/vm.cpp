@@ -5,6 +5,7 @@
 #include "vm.h"
 #include "debug.h"
 #include <cstdio>
+#include "compiler.h"
 
 namespace CLOX_V2::VM {
     VM vm;
@@ -81,7 +82,7 @@ namespace CLOX_V2::VM {
     }
 
     InterpretResult interpret(const char* source) {
-        compile(source);
+        Compiler::compile(source);
         return INTERPRET_OK;
     }
 
