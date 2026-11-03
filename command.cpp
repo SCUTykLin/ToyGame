@@ -13,7 +13,7 @@
 #include "src/UI/ImGUIDesign/ImGUI_001/include/App.h"
 #include "src/Tetris/include/App.h"
 #include "src/ConFPS/include/App.h"
-#include "src/Interpreter/Interpreter_v1/include/App.h"
+#include "src/Interpreter/Interpreter_v2/include/App.h"
 #include "src/UpFPS/include/App.h"
 #include "src/RacingGame/include/App.h"
 #include "src/Frogger/include/App.h"
@@ -69,7 +69,7 @@ void UpFPS_Command::run_command_Impl() {
 }
 
 void CloxInterpreter_Command::run_command_Impl() {
-    CLOX_V1::App{}.run();
+    CLOX_V2::App{}.run();
 }
 
 void RacingGame_Command::run_command_Impl() {

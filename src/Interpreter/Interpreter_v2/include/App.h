@@ -8,7 +8,7 @@
 namespace CLOX_V2 {
     class App {
     public:
-        void run();
+        void run(const char* fileName, bool fromFile = true);
     };
 }
 
