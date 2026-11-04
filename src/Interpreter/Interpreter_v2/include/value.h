@@ -8,7 +8,19 @@
 #include "common.h"
 
 namespace CLOX_V2::Const {
-    typedef double Value;
+    typedef enum {
+        VAL_BOOL,
+        VAL_NIL,
+        VAL_NUMBER,
+      } ValueType;
+
+    typedef struct {
+        ValueType type;
+        union {
+            bool boolean;
+            double number;
+        } as;
+    } Value;
 
     typedef struct {
         int capacity;

@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 
+#define DEBUG_PRINT_CODE
 #define DEBUG_TRACE_EXECUTION
 
 #endif //TOYPROJECTS_Interpreter_v2_COMMON_H

@@ -10,6 +10,10 @@
 #include "common.h"
 #include "scanner.h"
 
+#ifdef DEBUG_PRINT_CODE
+#include "debug.h"
+#endif
+
 namespace CLOX_V2::Compiler {
     typedef struct {
         Scan::Token current;
@@ -120,8 +124,14 @@ namespace CLOX_V2::Compiler {
 
     static void endCompiler() {
         emitReturn();
+#ifdef DEBUG_PRINT_CODE
+        if (!parser.hadError) {
+            Debug::disassembleChunk(currentChunk(), "code");
+        }
+#endif
     }
 
+    // 从当前位置开始读一个算式
     static void expression() {
         parsePrecedence(PREC_ASSIGNMENT);
     }
@@ -220,6 +230,7 @@ namespace CLOX_V2::Compiler {
         [Scan::TOKEN_EOF] = {nullptr, nullptr, PREC_NONE},
     };
 
+    // parsePrecedence的调用方承诺必须在这个位置要有一个可调用规则
     static void parsePrecedence(Precedence precedence) {
         advance();
         ParseFn prefixRule = getRule(parser.previous.type)->prefix;
@@ -228,6 +239,11 @@ namespace CLOX_V2::Compiler {
             return;
         }
         prefixRule();
+        while (precedence <= getRule(parser.current.type)->precedence) {
+            advance();
+            ParseFn infixRule = getRule(parser.previous.type)->infix;
+            infixRule();
+        }
     }
 
     static ParseRule *getRule(Scan::TokenType type) {
