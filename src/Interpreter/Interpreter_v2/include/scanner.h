@@ -35,6 +35,8 @@ namespace CLOX_V2::Scan {
         int line;
     } Token;
 
+    static void advance();
+
     void initScanner(const char *source);
 
     Token scanToken();

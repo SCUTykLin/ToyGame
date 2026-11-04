@@ -82,8 +82,18 @@ namespace CLOX_V2::VM {
     }
 
     InterpretResult interpret(const char* source) {
-        Compiler::compile(source);
-        return INTERPRET_OK;
+        Chunk::Chunk chunk;
+        Chunk::initChunk(&chunk);
+        if (!Compiler::compile(source, &chunk)) {
+            Chunk::freeChunk(&chunk);
+            return INTERPRET_COMPILE_ERROR;
+        }
+
+        vm.chunk = &chunk;
+        vm.ip = vm.chunk->code; // 指向指令
+        InterpretResult result = run();
+        Chunk::freeChunk(&chunk);
+        return result;
     }
 
     void freeVM() {
