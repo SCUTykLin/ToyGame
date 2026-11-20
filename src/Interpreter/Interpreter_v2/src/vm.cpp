@@ -33,9 +33,12 @@ namespace CLOX_V2::VM {
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 #define BINARY_OP(op) \
     do { \
-      double b = pop(); \
-      double a = pop(); \
-      push(a op b); \
+      double b = pop().as.number; \
+      double a = pop().as.number; \
+      Const::Value r; \
+      r.type = Const::VAL_NUMBER; \
+      r.as.number = a op b; \
+      push(r); \
     } while (false)
 
         for (;;) {
@@ -66,9 +69,12 @@ namespace CLOX_V2::VM {
                     break;
                 case Chunk::OP_DIVIDE: BINARY_OP(/);
                     break;
-                case Chunk::OP_NEGATE:
-                    push(-pop());
+                case Chunk::OP_NEGATE: {
+                    Const::Value v = pop();
+                    v.as.number = -v.as.number;
+                    push(v);
                     break;
+                }
                 case Chunk::OP_RETURN: {
                     Const::printValue(pop());
                     printf("\n");

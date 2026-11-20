@@ -8,6 +8,7 @@
 #include <optional>
 #include <functional>
 #include <SDL2/SDL.h>
+#include <algorithm>
 
 namespace bouncy::window_tool {
         extern SDL_Window* window;

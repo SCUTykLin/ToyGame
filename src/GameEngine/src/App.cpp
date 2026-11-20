@@ -445,6 +445,7 @@ private:
             out_tri2.t[2].w = t * (outside_tex[0]->w - inside_tex[1]->w) + inside_tex[1]->w;
             return 2; // Return two newly formed triangles which form a quad
         }
+        return 0;
     }
 
 
@@ -698,7 +699,7 @@ public:
                 light_direction = Vector_Normalise(light_direction);
 
                 // How "aligned" are light direction and triangle surface normal?
-                float dp = max(0.1f, Vector_DotProduct(light_direction, normal));
+                float dp = (std::max)(0.1f, Vector_DotProduct(light_direction, normal));
 
                 // Choose console colours as required (much easier with RGB)
                 CHAR_INFO c = GetColour(dp);

@@ -61,7 +61,7 @@ namespace RoleGame {
 		m_fTargetPosX = x;
 		m_fTargetPosY = y;
 		m_fTimeSoFar = 0.0f;
-		m_fDuration = max(duration, 0.001f);
+		m_fDuration = (std::max)(duration, 0.001f);
 		m_pObject = object;
 	}
 

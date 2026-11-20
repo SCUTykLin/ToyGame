@@ -143,6 +143,8 @@ Character Set -> Use Unicode. Thanks! - Javidx9
 
 #include <iostream>
 #include <chrono>
+#include <cstring>
+#include <cmath>
 #include <vector>
 #include <list>
 #include <thread>
@@ -1193,7 +1195,7 @@ protected: // Audio Engine =====================================================
     }
 
     // Handler for soundcard request for more data
-    void waveOutProc(HWAVEOUT hWaveOut, UINT uMsg, DWORD dwParam1, DWORD dwParam2)
+    void waveOutProc(HWAVEOUT hWaveOut, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
     {
         if (uMsg != WOM_DONE) return;
         m_nBlockFree++;
@@ -1202,9 +1204,9 @@ protected: // Audio Engine =====================================================
     }
 
     // Static wrapper for sound card handler
-    static void CALLBACK waveOutProcWrap(HWAVEOUT hWaveOut, UINT uMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
+    static void CALLBACK waveOutProcWrap(HWAVEOUT hWaveOut, UINT uMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
     {
-        ((olcConsoleGameEngine*)dwInstance)->waveOutProc(hWaveOut, uMsg, dwParam1, dwParam2);
+        reinterpret_cast<olcConsoleGameEngine*>(dwInstance)->waveOutProc(hWaveOut, uMsg, dwParam1, dwParam2);
     }
 
     // Audio thread. This loop responds to requests from the soundcard to fill 'blocks'

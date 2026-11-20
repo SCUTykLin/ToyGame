@@ -4,6 +4,7 @@
 
 #include "FPS.h"
 #include "SDL_FPS.h"
+#include <algorithm>
 #include <chrono>
 
 namespace ConFPS {
@@ -155,7 +156,7 @@ namespace ConFPS {
                                 }
                             }
 
-                            sort(p.begin(), p.end(), [](const std::pair<float, float> &left, const std::pair<float, float> &right) {return left.first < right.first; });
+                            std::sort(p.begin(), p.end(), [](const std::pair<float, float> &left, const std::pair<float, float> &right) {return left.first < right.first; });
 
                             float fBound = 0.01;
                             if (acos(p.at(0).second) < fBound) bBoundary = true;

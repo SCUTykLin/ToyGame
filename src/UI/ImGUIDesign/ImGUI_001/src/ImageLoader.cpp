@@ -6,6 +6,7 @@
 #include <SDL_opengl.h>
 #include <stb_image.h>
 #include <imgui.h>
+#include <cstdint>
 
 namespace HImage {
 
@@ -38,7 +39,7 @@ namespace HImage {
     }
 
     void HTextureUnload(ImTextureID tex) {
-        GLuint texID = (GLuint)tex;
+        GLuint texID = static_cast<GLuint>(reinterpret_cast<std::uintptr_t>(tex));
         glDeleteTextures(1, &texID);
     }
 }

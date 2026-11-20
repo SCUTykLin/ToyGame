@@ -24,7 +24,7 @@ namespace RoleGame {
     bool cItem_Health::OnUse(cDynamic *object) {
         if (object != nullptr) {
             cDynamic_Creature *dyn = (cDynamic_Creature *) object;
-            dyn->nHealth = min(dyn->nHealth + 10, dyn->nHealthMax);
+            dyn->nHealth = (std::min)(dyn->nHealth + 10, dyn->nHealthMax);
         }
         return true;
     }

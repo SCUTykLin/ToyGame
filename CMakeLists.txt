@@ -48,6 +48,9 @@ set(SDL2IMAGE_INSTALL OFF CACHE BOOL "" FORCE)
 set(SDL2IMAGE_SAMPLES OFF CACHE BOOL "" FORCE)
 set(SDL2TTF_INSTALL OFF CACHE BOOL "" FORCE)
 set(SDL2TTF_SAMPLES OFF CACHE BOOL "" FORCE)
+# 强制 SDL_ttf 使用内置的 freetype（源码位于 external/freetype），
+# 否则非 MSVC 工具链会去找系统 freetype 开发包导致 FREETYPE_INCLUDE_DIRS 缺失
+set(SDL2TTF_VENDORED ON CACHE BOOL "" FORCE)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL-release-2.32.6 EXCLUDE_FROM_ALL)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Thirdparty/SDL2/SDL_image-release-2.8.0 EXCLUDE_FROM_ALL)

@@ -23,6 +23,7 @@
 #define HORIZONTAL_SUBSTEPS 5 // substeps of rule2
 
 #include <vector>
+#include <cstdint>
 
 namespace fluid {
     class Grid {

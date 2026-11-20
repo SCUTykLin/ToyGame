@@ -1,5 +1,6 @@
 #include "RPG_Engine.h"
 
+#undef X
 #define X(n) m_script.AddCommand(new cCommand_ ## n)
 
 namespace RoleGame {

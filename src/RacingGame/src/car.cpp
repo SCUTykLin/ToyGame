@@ -331,8 +331,9 @@ namespace Racing{
             case LEFT: return left_graph;
                 break;
             default:
-                break;
+                return normal_graph;
         }
+        return normal_graph;
     }
 
     void carGraph::render(float carX, float carY, float CELL, CarStatus status, SDL_Renderer* renderer) {

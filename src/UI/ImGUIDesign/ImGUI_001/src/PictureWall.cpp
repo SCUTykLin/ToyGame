@@ -41,7 +41,7 @@ namespace PictureWall {
             return (void*)tex;
         };
         ifd::FileDialog::Instance().DeleteTexture = [](void* tex) {
-            GLuint texID = (GLuint)tex;
+            GLuint texID =  static_cast<GLuint>(reinterpret_cast<std::uintptr_t>(tex));
             glDeleteTextures(1, &texID);
         };
     }

@@ -3,6 +3,7 @@
 //
 
 #include "SDL_Racing.h"
+#include <algorithm>
 #include <iostream>
 
 namespace Racing{

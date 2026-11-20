@@ -7,6 +7,7 @@
 
 #include "RPG_Assets.h"
 RoleGame::cScriptProcessor *RoleGame::cMap::g_script = nullptr;
+#undef X
 #define X(n) g_script->AddCommand(new cCommand_ ## n)
 
 namespace RoleGame {
