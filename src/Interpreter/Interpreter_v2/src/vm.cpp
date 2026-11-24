@@ -6,12 +6,27 @@
 #include "debug.h"
 #include <cstdio>
 #include "compiler.h"
+#include <cstdarg>   // 加到文件顶部
 
 namespace CLOX_V2::VM {
     VM vm;
 
     static void resetStack() {
         vm.stackTop = vm.stack;
+    }
+
+    static void runtimeError(const char *format, ...) {
+        va_list args;
+        va_start(args, format);
+        vfprintf(stderr, format, args);
+        va_end(args);
+        fputs("\n", stderr);
+
+        size_t instruction = vm.ip - vm.chunk->code - 1;
+        int line = vm.chunk->lines[instruction];
+        fprintf(stderr, "[line %d] in script\n", line);
+
+        resetStack();
     }
 
     void initVM() {
@@ -23,6 +38,14 @@ namespace CLOX_V2::VM {
         vm.stackTop++;
     }
 
+    static Const::Value peek(int distance) {
+        return vm.stackTop[-1 - distance];
+    }
+
+    static bool isFalsey(Const::Value value) {
+        return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+    }
+
     Const::Value pop() {
         vm.stackTop--;
         return *vm.stackTop;
@@ -31,14 +54,15 @@ namespace CLOX_V2::VM {
     static InterpretResult run() {
 #define READ_BYTE() (*vm.ip++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
-#define BINARY_OP(op) \
+#define BINARY_OP(valueType, op) \
     do { \
-      double b = pop().as.number; \
-      double a = pop().as.number; \
-      Const::Value r; \
-      r.type = Const::VAL_NUMBER; \
-      r.as.number = a op b; \
-      push(r); \
+      if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
+        runtimeError("Operands must be numbers."); \
+        return INTERPRET_RUNTIME_ERROR; \
+      } \
+      double b = AS_NUMBER(pop()); \
+      double a = AS_NUMBER(pop()); \
+      push(valueType(a op b)); \
     } while (false)
 
         for (;;) {
@@ -61,18 +85,39 @@ namespace CLOX_V2::VM {
                     break;
                 }
 
-                case Chunk::OP_ADD: BINARY_OP(+);
+                case Chunk::OP_NIL: push(NIL_VAL);
                     break;
-                case Chunk::OP_SUBTRACT: BINARY_OP(-);
+                case Chunk::OP_TRUE: push(BOOL_VAL(true));
                     break;
-                case Chunk::OP_MULTIPLY: BINARY_OP(*);
+                case Chunk::OP_FALSE: push(BOOL_VAL(false));
                     break;
-                case Chunk::OP_DIVIDE: BINARY_OP(/);
+                case Chunk::OP_EQUAL: {
+                    Const::Value b = pop();
+                    Const::Value a = pop();
+                    push(BOOL_VAL(valuesEqual(a, b)));
+                    break;
+                }
+                case Chunk::OP_GREATER: BINARY_OP(BOOL_VAL, >);
+                    break;
+                case Chunk::OP_LESS: BINARY_OP(BOOL_VAL, <);
+                    break;
+                case Chunk::OP_ADD: BINARY_OP(NUMBER_VAL, +);
+                    break;
+                case Chunk::OP_SUBTRACT: BINARY_OP(NUMBER_VAL, -);
+                    break;
+                case Chunk::OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *);
+                    break;
+                case Chunk::OP_DIVIDE: BINARY_OP(NUMBER_VAL, /);
+                    break;
+                case Chunk::OP_NOT:
+                    push(BOOL_VAL(isFalsey(pop())));
                     break;
                 case Chunk::OP_NEGATE: {
-                    Const::Value v = pop();
-                    v.as.number = -v.as.number;
-                    push(v);
+                    if (!IS_NUMBER(peek(0))) {
+                        runtimeError("Operand must be a number.");
+                        return INTERPRET_RUNTIME_ERROR;
+                    }
+                    push(NUMBER_VAL(-AS_NUMBER(pop())));
                     break;
                 }
                 case Chunk::OP_RETURN: {
@@ -87,7 +132,7 @@ namespace CLOX_V2::VM {
 #undef READ_BYTE
     }
 
-    InterpretResult interpret(const char* source) {
+    InterpretResult interpret(const char *source) {
         Chunk::Chunk chunk;
         Chunk::initChunk(&chunk);
         if (!Compiler::compile(source, &chunk)) {
@@ -103,6 +148,5 @@ namespace CLOX_V2::VM {
     }
 
     void freeVM() {
-        Chunk::freeChunk(vm.chunk);
     }
 }

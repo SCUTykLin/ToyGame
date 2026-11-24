@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
 project(toyProjects)
 
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
 set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")

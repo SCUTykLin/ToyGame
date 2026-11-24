@@ -151,7 +151,7 @@ namespace CLOX_V2::Compiler {
 
     static void number() {
         double value = strtod(parser.previous.start, nullptr);
-        emitConstant(Const::Value{Const::ValueType::VAL_NUMBER, {.number = value}});
+        emitConstant(NUMBER_VAL(value));
     }
 
     static void grouping() {
@@ -163,6 +163,8 @@ namespace CLOX_V2::Compiler {
         Scan::TokenType operatorType = parser.previous.type;
         parsePrecedence(PREC_UNARY);
         switch (operatorType) {
+            case Scan::TOKEN_BANG: emitByte(Chunk::OP_NOT);
+                break;
             case Scan::TOKEN_MINUS: emitByte(Chunk::OP_NEGATE);
                 break;
             default: return;
@@ -175,6 +177,18 @@ namespace CLOX_V2::Compiler {
         parsePrecedence((Precedence) (rule->precedence + 1));
 
         switch (operatorType) {
+            case Scan::TOKEN_BANG_EQUAL: emitBytes(Chunk::OP_EQUAL, Chunk::OP_NOT);
+                break;
+            case Scan::TOKEN_EQUAL_EQUAL: emitByte(Chunk::OP_EQUAL);
+                break;
+            case Scan::TOKEN_GREATER: emitByte(Chunk::OP_GREATER);
+                break;
+            case Scan::TOKEN_GREATER_EQUAL: emitBytes(Chunk::OP_LESS, Chunk::OP_NOT);
+                break;
+            case Scan::TOKEN_LESS: emitByte(Chunk::OP_LESS);
+                break;
+            case Scan::TOKEN_LESS_EQUAL: emitBytes(Chunk::OP_GREATER, Chunk::OP_NOT);
+                break;
             case Scan::TOKEN_PLUS: emitByte(Chunk::OP_ADD);
                 break;
             case Scan::TOKEN_MINUS: emitByte(Chunk::OP_SUBTRACT);
@@ -187,47 +201,59 @@ namespace CLOX_V2::Compiler {
         }
     }
 
+    static void literal() {
+        switch (parser.previous.type) {
+            case Scan::TOKEN_FALSE: emitByte(Chunk::OP_FALSE);
+                break;
+            case Scan::TOKEN_NIL: emitByte(Chunk::OP_NIL);
+                break;
+            case Scan::TOKEN_TRUE: emitByte(Chunk::OP_TRUE);
+                break;
+            default: return;
+        }
+    }
+
     ParseRule rules[] = {
-        {grouping, nullptr, PREC_NONE},   // TOKEN_LEFT_PAREN
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_RIGHT_PAREN
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_LEFT_BRACE
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_RIGHT_BRACE
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_COMMA
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_DOT
-        {unary,    binary,  PREC_TERM},   // TOKEN_MINUS
-        {nullptr,  binary,  PREC_TERM},   // TOKEN_PLUS
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_SEMICOLON
-        {nullptr,  binary,  PREC_FACTOR}, // TOKEN_SLASH
-        {nullptr,  binary,  PREC_FACTOR}, // TOKEN_STAR
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_BANG
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_BANG_EQUAL
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_EQUAL
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_EQUAL_EQUAL
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_GREATER
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_GREATER_EQUAL
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_LESS
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_LESS_EQUAL
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_IDENTIFIER
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_STRING
-        {number,   nullptr, PREC_NONE},   // TOKEN_NUMBER
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_AND
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_CLASS
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_ELSE
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_FALSE
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_FOR
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_FUN
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_IF
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_NIL
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_OR
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_PRINT
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_RETURN
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_SUPER
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_THIS
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_TRUE
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_VAR
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_WHILE
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_ERROR
-        {nullptr,  nullptr, PREC_NONE},   // TOKEN_EOF
+        {grouping, nullptr, PREC_NONE}, // TOKEN_LEFT_PAREN
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_RIGHT_PAREN
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_LEFT_BRACE
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_RIGHT_BRACE
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_COMMA
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_DOT
+        {unary, binary, PREC_TERM}, // TOKEN_MINUS
+        {nullptr, binary, PREC_TERM}, // TOKEN_PLUS
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_SEMICOLON
+        {nullptr, binary, PREC_FACTOR}, // TOKEN_SLASH
+        {nullptr, binary, PREC_FACTOR}, // TOKEN_STAR
+        {unary, nullptr, PREC_NONE}, // TOKEN_BANG
+        {nullptr, binary, PREC_EQUALITY}, // TOKEN_BANG_EQUAL
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_EQUAL
+        {nullptr, binary, PREC_EQUALITY}, // TOKEN_EQUAL_EQUAL
+        {nullptr, binary, PREC_COMPARISON}, // TOKEN_GREATER
+        {nullptr, binary, PREC_COMPARISON}, // TOKEN_GREATER_EQUAL
+        {nullptr, binary, PREC_COMPARISON}, // TOKEN_LESS
+        {nullptr, binary, PREC_COMPARISON}, // TOKEN_LESS_EQUAL
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_IDENTIFIER
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_STRING
+        {number, nullptr, PREC_NONE}, // TOKEN_NUMBER
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_AND
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_CLASS
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_ELSE
+        {literal, nullptr, PREC_NONE}, // TOKEN_FALSE
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_FOR
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_FUN
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_IF
+        {literal, nullptr, PREC_NONE}, // TOKEN_NIL
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_OR
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_PRINT
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_RETURN
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_SUPER
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_THIS
+        {literal, nullptr, PREC_NONE}, // TOKEN_TRUE
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_VAR
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_WHILE
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_ERROR
+        {nullptr, nullptr, PREC_NONE}, // TOKEN_EOF
     };
 
     // parsePrecedence的调用方承诺必须在这个位置要有一个可调用规则

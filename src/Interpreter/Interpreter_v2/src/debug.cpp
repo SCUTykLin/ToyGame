@@ -32,7 +32,7 @@ namespace CLOX_V2::Debug {
 
         if (offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
             printf("   | ");
-        }else {
+        } else {
             printf("%4d ", chunk->lines[offset]);
         }
 
@@ -40,6 +40,18 @@ namespace CLOX_V2::Debug {
         switch (instruction) {
             case Chunk::OP_CONSTANT:
                 return constantInstruction("OP_CONSTANT", chunk, offset);
+            case Chunk::OP_NIL:
+                return simpleInstruction("OP_NIL", offset);
+            case Chunk::OP_TRUE:
+                return simpleInstruction("OP_TRUE", offset);
+            case Chunk::OP_FALSE:
+                return simpleInstruction("OP_FALSE", offset);
+            case Chunk::OP_EQUAL:
+                return simpleInstruction("OP_EQUAL", offset);
+            case Chunk::OP_GREATER:
+                return simpleInstruction("OP_GREATER", offset);
+            case Chunk::OP_LESS:
+                return simpleInstruction("OP_LESS", offset);
             case Chunk::OP_ADD:
                 return simpleInstruction("OP_ADD", offset);
             case Chunk::OP_SUBTRACT:
@@ -48,6 +60,8 @@ namespace CLOX_V2::Debug {
                 return simpleInstruction("OP_MULTIPLY", offset);
             case Chunk::OP_DIVIDE:
                 return simpleInstruction("OP_DIVIDE", offset);
+            case Chunk::OP_NOT:
+                return simpleInstruction("OP_NOT", offset);
             case Chunk::OP_NEGATE:
                 return simpleInstruction("OP_NEGATE", offset);
             case Chunk::OP_RETURN:

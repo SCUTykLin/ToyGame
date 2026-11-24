@@ -5,7 +5,6 @@
 #ifndef TOYPROJECTS_Interpreter_v2_COMMON_H
 #define TOYPROJECTS_Interpreter_v2_COMMON_H
 
-#include <cstdbool>
 #include <cstddef>
 #include <cstdint>
 
