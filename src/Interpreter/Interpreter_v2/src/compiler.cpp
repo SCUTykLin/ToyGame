@@ -154,6 +154,10 @@ namespace CLOX_V2::Compiler {
         emitConstant(NUMBER_VAL(value));
     }
 
+    static void string() {
+        emitConstant(OBJ_VAL(copyString(parser.previous.start + 1, parser.previous.length - 2)));
+    }
+
     static void grouping() {
         expression();
         consume(Scan::TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
@@ -234,7 +238,7 @@ namespace CLOX_V2::Compiler {
         {nullptr, binary, PREC_COMPARISON}, // TOKEN_LESS
         {nullptr, binary, PREC_COMPARISON}, // TOKEN_LESS_EQUAL
         {nullptr, nullptr, PREC_NONE}, // TOKEN_IDENTIFIER
-        {nullptr, nullptr, PREC_NONE}, // TOKEN_STRING
+        {string, nullptr, PREC_NONE}, // TOKEN_STRING
         {number, nullptr, PREC_NONE}, // TOKEN_NUMBER
         {nullptr, nullptr, PREC_NONE}, // TOKEN_AND
         {nullptr, nullptr, PREC_NONE}, // TOKEN_CLASS
